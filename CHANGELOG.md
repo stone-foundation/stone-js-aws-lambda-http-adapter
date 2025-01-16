@@ -5,6 +5,14 @@ All notable changes to the "Stone.js AWS Lambda Adapter" extension will be docum
 ## Unreleased
 
 
+## 0.0.22 (2025-01-16)
+
+
+### Features
+
+* implement aws adapters ([8695eb2](https://github.com/stonemjs/aws-lambda-http-adapter/commit/8695eb2c7960769d56015943ac0839e787f176d2))
+* implement error handler and update lifecycle hooks ([b2e29f5](https://github.com/stonemjs/aws-lambda-http-adapter/commit/b2e29f567ac56717023f9597000ee3f0d0278093))
+
 ## 0.0.2 (2024-12-08)
 
 
