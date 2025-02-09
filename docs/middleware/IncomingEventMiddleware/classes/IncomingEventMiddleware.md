@@ -1,12 +1,12 @@
-[**AWS Lambda Adapter Documentation v0.0.2**](../../../README.md)
+[**AWS Lambda HTTP Adapter Documentation v0.0.2**](../../../README.md)
 
 ***
 
-[AWS Lambda Adapter Documentation](../../../modules.md) / [middleware/IncomingEventMiddleware](../README.md) / IncomingEventMiddleware
+[AWS Lambda HTTP Adapter Documentation](../../../modules.md) / [middleware/IncomingEventMiddleware](../README.md) / IncomingEventMiddleware
 
 # Class: IncomingEventMiddleware
 
-Defined in: [src/middleware/IncomingEventMiddleware.ts:37](https://github.com/stonemjs/aws-lambda-adapter/blob/9de4b38bb7a5afd4d5599dae1399969698a2422d/src/middleware/IncomingEventMiddleware.ts#L37)
+Defined in: [aws-lambda-http-adapter/src/middleware/IncomingEventMiddleware.ts:38](https://github.com/stonemjs/aws-lambda-http-adapter/blob/b2e29f567ac56717023f9597000ee3f0d0278093/src/middleware/IncomingEventMiddleware.ts#L38)
 
 Middleware for handling incoming events and transforming them into Stone.js events.
 
@@ -19,7 +19,7 @@ headers, cookies, and more, and forwards them to the next middleware in the pipe
 
 > **new IncomingEventMiddleware**(`options`): [`IncomingEventMiddleware`](IncomingEventMiddleware.md)
 
-Defined in: [src/middleware/IncomingEventMiddleware.ts:48](https://github.com/stonemjs/aws-lambda-adapter/blob/9de4b38bb7a5afd4d5599dae1399969698a2422d/src/middleware/IncomingEventMiddleware.ts#L48)
+Defined in: [aws-lambda-http-adapter/src/middleware/IncomingEventMiddleware.ts:49](https://github.com/stonemjs/aws-lambda-http-adapter/blob/b2e29f567ac56717023f9597000ee3f0d0278093/src/middleware/IncomingEventMiddleware.ts#L49)
 
 Create an IncomingEventMiddleware instance.
 
@@ -43,7 +43,7 @@ Options containing the blueprint for resolving configuration and dependencies.
 
 > **handle**(`context`, `next`): `Promise`\<[`AwsLambdaHttpAdapterResponseBuilder`](../../../declarations/type-aliases/AwsLambdaHttpAdapterResponseBuilder.md)\>
 
-Defined in: [src/middleware/IncomingEventMiddleware.ts:60](https://github.com/stonemjs/aws-lambda-adapter/blob/9de4b38bb7a5afd4d5599dae1399969698a2422d/src/middleware/IncomingEventMiddleware.ts#L60)
+Defined in: [aws-lambda-http-adapter/src/middleware/IncomingEventMiddleware.ts:61](https://github.com/stonemjs/aws-lambda-http-adapter/blob/b2e29f567ac56717023f9597000ee3f0d0278093/src/middleware/IncomingEventMiddleware.ts#L61)
 
 Handles the incoming event, processes it, and invokes the next middleware in the pipeline.
 

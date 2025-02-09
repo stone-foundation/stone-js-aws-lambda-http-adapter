@@ -51,8 +51,6 @@ export class RawHttpResponseWrapper implements IRawResponseWrapper<RawHttpRespon
    * The `respond` method generates a `RawHttpResponse` object based on the
    * provided options. If any required fields are missing, it assigns default values:
    * - `statusCode`: Defaults to `500`.
-   * - `statusMessage`: Defaults to an empty string.
-   * - `body`: Converts non-string bodies to a JSON string.
    *
    * @returns A `RawHttpResponse` object.
    *
@@ -65,10 +63,8 @@ export class RawHttpResponseWrapper implements IRawResponseWrapper<RawHttpRespon
    */
   respond (): RawHttpResponse {
     return {
-      headers: this.options.headers,
-      statusCode: this.options.statusCode ?? 500,
-      statusMessage: this.options.statusMessage ?? '',
-      body: typeof this.options.body === 'string' ? this.options.body : JSON.stringify(this.options.body)
+      ...this.options,
+      statusCode: this.options.statusCode ?? 500
     }
   }
 }

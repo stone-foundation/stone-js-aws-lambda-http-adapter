@@ -1,12 +1,12 @@
-[**AWS Lambda Adapter Documentation v0.0.2**](../../../README.md)
+[**AWS Lambda HTTP Adapter Documentation v0.0.2**](../../../README.md)
 
 ***
 
-[AWS Lambda Adapter Documentation](../../../modules.md) / [middleware/BodyEventMiddleware](../README.md) / BodyEventMiddleware
+[AWS Lambda HTTP Adapter Documentation](../../../modules.md) / [middleware/BodyEventMiddleware](../README.md) / BodyEventMiddleware
 
 # Class: BodyEventMiddleware
 
-Defined in: [src/middleware/BodyEventMiddleware.ts:26](https://github.com/stonemjs/aws-lambda-adapter/blob/9de4b38bb7a5afd4d5599dae1399969698a2422d/src/middleware/BodyEventMiddleware.ts#L26)
+Defined in: [aws-lambda-http-adapter/src/middleware/BodyEventMiddleware.ts:26](https://github.com/stonemjs/aws-lambda-http-adapter/blob/b2e29f567ac56717023f9597000ee3f0d0278093/src/middleware/BodyEventMiddleware.ts#L26)
 
 Class representing a BodyEventMiddleware.
 
@@ -22,7 +22,7 @@ Mr. Stone
 
 > **new BodyEventMiddleware**(`options`): [`BodyEventMiddleware`](BodyEventMiddleware.md)
 
-Defined in: [src/middleware/BodyEventMiddleware.ts:37](https://github.com/stonemjs/aws-lambda-adapter/blob/9de4b38bb7a5afd4d5599dae1399969698a2422d/src/middleware/BodyEventMiddleware.ts#L37)
+Defined in: [aws-lambda-http-adapter/src/middleware/BodyEventMiddleware.ts:37](https://github.com/stonemjs/aws-lambda-http-adapter/blob/b2e29f567ac56717023f9597000ee3f0d0278093/src/middleware/BodyEventMiddleware.ts#L37)
 
 Create a BodyEventMiddleware.
 
@@ -46,7 +46,7 @@ Options for creating the BodyEventMiddleware.
 
 > **handle**(`context`, `next`): `Promise`\<[`AwsLambdaHttpAdapterResponseBuilder`](../../../declarations/type-aliases/AwsLambdaHttpAdapterResponseBuilder.md)\>
 
-Defined in: [src/middleware/BodyEventMiddleware.ts:50](https://github.com/stonemjs/aws-lambda-adapter/blob/9de4b38bb7a5afd4d5599dae1399969698a2422d/src/middleware/BodyEventMiddleware.ts#L50)
+Defined in: [aws-lambda-http-adapter/src/middleware/BodyEventMiddleware.ts:50](https://github.com/stonemjs/aws-lambda-http-adapter/blob/b2e29f567ac56717023f9597000ee3f0d0278093/src/middleware/BodyEventMiddleware.ts#L50)
 
 Handles the incoming event, processes it, and invokes the next middleware in the pipeline.
 
@@ -73,21 +73,3 @@ A promise that resolves to the destination type after processing.
 #### Throws
 
 If required components such as the rawEvent or IncomingEventBuilder are not provided.
-
-***
-
-### toNodeMessage()
-
-> **toNodeMessage**(`rawEvent`): `IncomingMessage`
-
-Defined in: [src/middleware/BodyEventMiddleware.ts:62](https://github.com/stonemjs/aws-lambda-adapter/blob/9de4b38bb7a5afd4d5599dae1399969698a2422d/src/middleware/BodyEventMiddleware.ts#L62)
-
-#### Parameters
-
-##### rawEvent
-
-[`AwsLambdaHttpEvent`](../../../declarations/interfaces/AwsLambdaHttpEvent.md)
-
-#### Returns
-
-`IncomingMessage`

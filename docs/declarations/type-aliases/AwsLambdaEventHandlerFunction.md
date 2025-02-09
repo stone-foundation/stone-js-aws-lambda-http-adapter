@@ -1,20 +1,20 @@
-[**AWS Lambda Adapter Documentation v0.0.2**](../../README.md)
+[**AWS Lambda HTTP Adapter Documentation v0.0.2**](../../README.md)
 
 ***
 
-[AWS Lambda Adapter Documentation](../../modules.md) / [declarations](../README.md) / AwsLambdaEventHandlerFunction
+[AWS Lambda HTTP Adapter Documentation](../../modules.md) / [declarations](../README.md) / AwsLambdaEventHandlerFunction
 
 # Type Alias: AwsLambdaEventHandlerFunction()\<RawResponseType\>
 
 > **AwsLambdaEventHandlerFunction**\<`RawResponseType`\>: (`rawEvent`, `context`) => `Promise`\<`RawResponseType`\>
 
-Defined in: [src/declarations.ts:34](https://github.com/stonemjs/aws-lambda-adapter/blob/9de4b38bb7a5afd4d5599dae1399969698a2422d/src/declarations.ts#L34)
+Defined in: [aws-lambda-http-adapter/src/declarations.ts:23](https://github.com/stonemjs/aws-lambda-http-adapter/blob/b2e29f567ac56717023f9597000ee3f0d0278093/src/declarations.ts#L23)
 
 Represents an AWS Lambda event handler function.
 
 ## Type Parameters
 
-• **RawResponseType** = [`RawResponse`](RawResponse.md)
+• **RawResponseType** = [`RawHttpResponse`](RawHttpResponse.md)
 
 The type of the response returned by the handler.
 
@@ -22,7 +22,7 @@ The type of the response returned by the handler.
 
 ### rawEvent
 
-[`AwsLambdaEvent`](AwsLambdaEvent.md)
+[`AwsLambdaHttpEvent`](../interfaces/AwsLambdaHttpEvent.md)
 
 The raw event received by the AWS Lambda function.
 

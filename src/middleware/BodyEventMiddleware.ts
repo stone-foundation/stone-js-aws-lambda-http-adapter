@@ -1,10 +1,10 @@
 import bytes from 'bytes'
 import typeIs from 'type-is'
-import { IBlueprint } from '@stone-js/core'
 import { IncomingMessage } from 'node:http'
 import { NextPipe } from '@stone-js/pipeline'
+import { classMiddleware, IBlueprint } from '@stone-js/core'
 import { isMultipart, getCharset, getType } from '@stone-js/http-core'
-import { AwsLambdaAdapterError } from '../errors/AwsLambdaAdapterError'
+import { AwsLambdaHttpAdapterError } from '../errors/AwsLambdaHttpAdapterError'
 import { AwsLambdaHttpAdapterContext, AwsLambdaHttpAdapterResponseBuilder, AwsLambdaHttpEvent } from '../declarations'
 
 /**
@@ -45,21 +45,32 @@ export class BodyEventMiddleware {
    * @param next - The next middleware to be invoked in the pipeline.
    * @returns A promise that resolves to the destination type after processing.
    *
-   * @throws {AwsLambdaAdapterError} If required components such as the rawEvent or IncomingEventBuilder are not provided.
+   * @throws {AwsLambdaHttpAdapterError} If required components such as the rawEvent or IncomingEventBuilder are not provided.
    */
   async handle (context: AwsLambdaHttpAdapterContext, next: NextPipe<AwsLambdaHttpAdapterContext, AwsLambdaHttpAdapterResponseBuilder>): Promise<AwsLambdaHttpAdapterResponseBuilder> {
     if (context.rawEvent === undefined || context.incomingEventBuilder?.add === undefined) {
-      throw new AwsLambdaAdapterError('The context is missing required components.')
+      throw new AwsLambdaHttpAdapterError('The context is missing required components.')
     }
 
     if (!isMultipart(this.toNodeMessage(context.rawEvent))) {
-      context.incomingEventBuilder.add('body', this.getBody(this.toNodeMessage(context.rawEvent), context.rawEvent))
+      const body = this.getBody(this.toNodeMessage(context.rawEvent), context.rawEvent)
+
+      context
+        .incomingEventBuilder
+        .add('body', body)
+        .add('metadata', body)
     }
 
     return await next(context)
   }
 
-  toNodeMessage (rawEvent: AwsLambdaHttpEvent): IncomingMessage {
+  /**
+   * Convert the raw event into a Node.js IncomingMessage.
+   *
+   * @param rawEvent - The raw event from the platform.
+   * @returns The converted IncomingMessage.
+   */
+  private toNodeMessage (rawEvent: AwsLambdaHttpEvent): IncomingMessage {
     return {
       headers: {
         'content-type': rawEvent.headers['content-type'] ?? rawEvent.headers['Content-Type'],
@@ -74,7 +85,7 @@ export class BodyEventMiddleware {
    *
    * @param message - The incoming HTTP message.
    * @returns A Promise resolving to the parsed body.
-   * @throws {AwsLambdaAdapterError} If the body parsing fails or is invalid.
+   * @throws {AwsLambdaHttpAdapterError} If the body parsing fails or is invalid.
    */
   private getBody (message: IncomingMessage, rawEvent: AwsLambdaHttpEvent): unknown {
     if (!typeIs.hasBody(message)) {
@@ -99,9 +110,14 @@ export class BodyEventMiddleware {
         )
 
     if (Buffer.byteLength(stringifiedBody, encoding as BufferEncoding) > limit) {
-      throw new AwsLambdaAdapterError('The context is missing required components.')
+      throw new AwsLambdaHttpAdapterError('The context is missing required components.')
     }
 
     return rawEvent.body
   }
 }
+
+/**
+ * Meta Middleware for processing the request body.
+ */
+export const MetaBodyEventMiddleware = classMiddleware(BodyEventMiddleware)

@@ -1,12 +1,12 @@
-[**AWS Lambda Adapter Documentation v0.0.2**](../../../README.md)
+[**AWS Lambda HTTP Adapter Documentation v0.0.2**](../../../README.md)
 
 ***
 
-[AWS Lambda Adapter Documentation](../../../modules.md) / [middleware/FilesEventMiddleware](../README.md) / FilesEventMiddleware
+[AWS Lambda HTTP Adapter Documentation](../../../modules.md) / [middleware/FilesEventMiddleware](../README.md) / FilesEventMiddleware
 
 # Class: FilesEventMiddleware
 
-Defined in: [src/middleware/FilesEventMiddleware.ts:13](https://github.com/stonemjs/aws-lambda-adapter/blob/9de4b38bb7a5afd4d5599dae1399969698a2422d/src/middleware/FilesEventMiddleware.ts#L13)
+Defined in: [aws-lambda-http-adapter/src/middleware/FilesEventMiddleware.ts:13](https://github.com/stonemjs/aws-lambda-http-adapter/blob/b2e29f567ac56717023f9597000ee3f0d0278093/src/middleware/FilesEventMiddleware.ts#L13)
 
 Class representing a FilesEventMiddleware.
 
@@ -20,7 +20,7 @@ Mr. Stone <evensstone@gmail.com>
 
 > **new FilesEventMiddleware**(`options`): [`FilesEventMiddleware`](FilesEventMiddleware.md)
 
-Defined in: [src/middleware/FilesEventMiddleware.ts:24](https://github.com/stonemjs/aws-lambda-adapter/blob/9de4b38bb7a5afd4d5599dae1399969698a2422d/src/middleware/FilesEventMiddleware.ts#L24)
+Defined in: [aws-lambda-http-adapter/src/middleware/FilesEventMiddleware.ts:24](https://github.com/stonemjs/aws-lambda-http-adapter/blob/b2e29f567ac56717023f9597000ee3f0d0278093/src/middleware/FilesEventMiddleware.ts#L24)
 
 Create a FilesEventMiddleware.
 
@@ -44,7 +44,7 @@ Options for creating the FilesEventMiddleware.
 
 > **handle**(`context`, `next`): `Promise`\<[`AwsLambdaHttpAdapterResponseBuilder`](../../../declarations/type-aliases/AwsLambdaHttpAdapterResponseBuilder.md)\>
 
-Defined in: [src/middleware/FilesEventMiddleware.ts:37](https://github.com/stonemjs/aws-lambda-adapter/blob/9de4b38bb7a5afd4d5599dae1399969698a2422d/src/middleware/FilesEventMiddleware.ts#L37)
+Defined in: [aws-lambda-http-adapter/src/middleware/FilesEventMiddleware.ts:37](https://github.com/stonemjs/aws-lambda-http-adapter/blob/b2e29f567ac56717023f9597000ee3f0d0278093/src/middleware/FilesEventMiddleware.ts#L37)
 
 Handles the incoming event, processes it, and invokes the next middleware in the pipeline.
 

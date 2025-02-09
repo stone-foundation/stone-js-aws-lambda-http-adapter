@@ -1,12 +1,12 @@
 import deepmerge from 'deepmerge'
-import { addBlueprint, ClassType } from '@stone-js/core'
-import { awsLambdaHttpAdapterBlueprint, AwsLambdaHttpAdapterConfig } from '../options/AwsLambdaHttpAdapterBlueprint'
+import { addBlueprint, classDecoratorLegacyWrapper, ClassType } from '@stone-js/core'
+import { awsLambdaHttpAdapterBlueprint, AwsLambdaHttpAdapterAdapterConfig } from '../options/AwsLambdaHttpAdapterBlueprint'
 
 /**
  * Configuration options for the `AwsLambdaHttp` decorator.
  * These options extend the default AWS Lambda HTTP adapter configuration.
  */
-export interface AwsLambdaHttpOptions extends Partial<AwsLambdaHttpAdapterConfig> {}
+export interface AwsLambdaHttpOptions extends Partial<AwsLambdaHttpAdapterAdapterConfig> {}
 
 /**
  * A Stone.js decorator that integrates the AWS Lambda HTTP Adapter with a class.
@@ -22,7 +22,7 @@ export interface AwsLambdaHttpOptions extends Partial<AwsLambdaHttpAdapterConfig
  *
  * @example
  * ```typescript
- * import { AwsLambdaHttp } from '@stone-js/aws-lambda-adapter';
+ * import { AwsLambdaHttp } from '@stone-js/aws-lambda-http-adapter';
  *
  * @AwsLambdaHttp({
  *   alias: 'MyAwsLambdaHttpAdapter',
@@ -33,10 +33,8 @@ export interface AwsLambdaHttpOptions extends Partial<AwsLambdaHttpAdapterConfig
  * }
  * ```
  */
-export const AwsLambdaHttp = <T extends ClassType = ClassType>(
-  options: AwsLambdaHttpOptions = {}
-): ((target: T, context: ClassDecoratorContext<T>) => void) => {
-  return (target: T, context: ClassDecoratorContext<T>) => {
+export const AwsLambdaHttp = <T extends ClassType = ClassType>(options: AwsLambdaHttpOptions = {}): ClassDecorator => {
+  return classDecoratorLegacyWrapper<T>((target: T, context: ClassDecoratorContext<T>): undefined => {
     if (awsLambdaHttpAdapterBlueprint.stone?.adapters?.[0] !== undefined) {
       // Merge provided options with the default AWS Lambda HTTP adapter blueprint.
       awsLambdaHttpAdapterBlueprint.stone.adapters[0] = deepmerge(awsLambdaHttpAdapterBlueprint.stone.adapters[0], options)
@@ -44,5 +42,5 @@ export const AwsLambdaHttp = <T extends ClassType = ClassType>(
 
     // Add the modified blueprint to the target class.
     addBlueprint(target, context, awsLambdaHttpAdapterBlueprint)
-  }
+  })
 }

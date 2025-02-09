@@ -1,22 +1,11 @@
-import { RawResponseWrapper } from './RawResponseWrapper'
 import { RawHttpResponseWrapper } from './RawHttpResponseWrapper'
+import { AdapterContext, IAdapterEventBuilder, RawResponseOptions } from '@stone-js/core'
 import { IncomingHttpEvent, IncomingHttpEventOptions, OutgoingHttpResponse } from '@stone-js/http-core'
-import { AdapterContext, IAdapterEventBuilder, IncomingEvent, IncomingEventOptions, OutgoingResponse, RawResponseOptions } from '@stone-js/core'
-
-/**
- * Represents a generic raw response as a key-value pair.
- */
-export type RawResponse = Record<string, unknown>
 
 /**
  * Represents a raw HTTP response, extending from `RawHttpResponseOptions`.
  */
 export type RawHttpResponse = RawHttpResponseOptions
-
-/**
- * Represents a generic AWS Lambda event as a key-value pair.
- */
-export type AwsLambdaEvent = Record<string, unknown>
 
 /**
  * Represents the AWS Lambda execution context as a key-value pair.
@@ -31,15 +20,10 @@ export type AwsLambdaContext = Record<string, unknown>
  * @param context - The AWS Lambda execution context.
  * @returns A promise resolving to the response of type `RawResponseType`.
  */
-export type AwsLambdaEventHandlerFunction<RawResponseType = RawResponse> = (
-  rawEvent: AwsLambdaEvent,
+export type AwsLambdaEventHandlerFunction<RawResponseType = RawHttpResponse> = (
+  rawEvent: AwsLambdaHttpEvent,
   context: AwsLambdaContext
 ) => Promise<RawResponseType>
-
-/**
- * Represents the response builder for the AWS Lambda Adapter.
- */
-export type AwsLambdaAdapterResponseBuilder = IAdapterEventBuilder<RawResponseOptions, RawResponseWrapper>
 
 /**
  * Represents the response builder for the AWS Lambda http Adapter.
@@ -129,26 +113,6 @@ OutgoingHttpResponse
 }
 
 /**
- * Represents the context for the AWS Lambda Adapter.
- *
- * This interface extends `AdapterContext` and includes additional properties
- * specific to generic AWS Lambda events.
- */
-export interface AwsLambdaAdapterContext extends AdapterContext<
-AwsLambdaEvent,
-RawResponse,
-AwsLambdaContext,
-IncomingEvent,
-IncomingEventOptions,
-OutgoingResponse
-> {
-  /**
-   * The raw response associated with the current context.
-   */
-  rawResponse: RawResponse
-}
-
-/**
  * Represents options for configuring a raw HTTP response.
  *
  * Extends the `RawResponseOptions` interface to include additional properties
@@ -175,4 +139,9 @@ export interface RawHttpResponseOptions extends RawResponseOptions {
    * Can be provided as key-value pairs.
    */
   headers?: Record<string, string>
+
+  /**
+   * The encoding format of the response body, such as `base64`.
+   */
+  isBase64Encoded?: boolean
 }

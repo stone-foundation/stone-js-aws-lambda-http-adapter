@@ -1,7 +1,7 @@
 import { Mock } from 'vitest'
 import { AwsLambdaHttpAdapterContext } from '../../src/declarations'
 import { isMultipart, getFilesUploads } from '@stone-js/http-core'
-import { AwsLambdaAdapterError } from '../../src/errors/AwsLambdaAdapterError'
+import { AwsLambdaHttpAdapterError } from '../../src/errors/AwsLambdaHttpAdapterError'
 import { FilesEventMiddleware } from '../../src/middleware/FilesEventMiddleware'
 
 vi.mock('@stone-js/http-core')
@@ -35,14 +35,14 @@ describe('FilesEventMiddleware', () => {
     // @ts-expect-error
     mockContext.rawEvent = undefined
 
-    await expect(middleware.handle(mockContext, next)).rejects.toThrow(AwsLambdaAdapterError)
+    await expect(middleware.handle(mockContext, next)).rejects.toThrow(AwsLambdaHttpAdapterError)
 
     // @ts-expect-error
     mockContext.rawEvent = {}
     // @ts-expect-error
     mockContext.incomingEventBuilder = null
 
-    await expect(middleware.handle(mockContext, next)).rejects.toThrow(AwsLambdaAdapterError)
+    await expect(middleware.handle(mockContext, next)).rejects.toThrow(AwsLambdaHttpAdapterError)
   })
 
   it('should skip file upload handling if the request is not multipart', async () => {

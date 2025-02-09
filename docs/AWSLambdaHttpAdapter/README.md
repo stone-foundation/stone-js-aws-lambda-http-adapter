@@ -1,11 +1,11 @@
-[**AWS Lambda Adapter Documentation v0.0.2**](../README.md)
+[**AWS Lambda HTTP Adapter Documentation v0.0.2**](../README.md)
 
 ***
 
-[AWS Lambda Adapter Documentation](../modules.md) / AWSLambdaHttpAdapter
+[AWS Lambda HTTP Adapter Documentation](../modules.md) / AwsLambdaHttpAdapter
 
-# AWSLambdaHttpAdapter
+# AwsLambdaHttpAdapter
 
 ## Classes
 
-- [AWSLambdaHttpAdapter](classes/AWSLambdaHttpAdapter.md)
+- [AwsLambdaHttpAdapter](classes/AwsLambdaHttpAdapter.md)

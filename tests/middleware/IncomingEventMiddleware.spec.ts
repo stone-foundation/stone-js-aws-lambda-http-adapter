@@ -1,6 +1,6 @@
 import proxyAddr from 'proxy-addr'
 import { NextPipe } from '@stone-js/pipeline'
-import { AwsLambdaAdapterError } from '../../src/errors/AwsLambdaAdapterError'
+import { AwsLambdaHttpAdapterError } from '../../src/errors/AwsLambdaHttpAdapterError'
 import { IncomingEventMiddleware } from '../../src/middleware/IncomingEventMiddleware'
 import { getProtocol, CookieCollection, getHostname, isIpTrusted } from '@stone-js/http-core'
 import { AwsLambdaHttpAdapterContext, AwsLambdaHttpAdapterResponseBuilder } from '../../src/declarations'
@@ -58,16 +58,16 @@ describe('IncomingEventMiddleware', () => {
 
   it('should throw error if context is missing rawEvent or incomingEventBuilder', async () => {
     // @ts-expect-error
-    mockContext.rawEvent = null
+    mockContext.rawEvent = undefined
 
-    await expect(middleware.handle(mockContext, next)).rejects.toThrow(AwsLambdaAdapterError)
+    await expect(middleware.handle(mockContext, next)).rejects.toThrow(AwsLambdaHttpAdapterError)
 
     // @ts-expect-error
     mockContext.rawEvent = { foo: 'bar' } as any
     // @ts-expect-error
-    mockContext.incomingEventBuilder = null
+    mockContext.incomingEventBuilder = undefined
 
-    await expect(middleware.handle(mockContext, next)).rejects.toThrow(AwsLambdaAdapterError)
+    await expect(middleware.handle(mockContext, next)).rejects.toThrow(AwsLambdaHttpAdapterError)
   })
 
   it('should call next with the modified context', async () => {

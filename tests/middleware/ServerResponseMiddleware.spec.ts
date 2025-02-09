@@ -2,7 +2,7 @@ import { Mock } from 'vitest'
 import statuses from 'statuses'
 import { BinaryFileResponse } from '@stone-js/http-core'
 import { AwsLambdaHttpAdapterContext } from '../../src/declarations'
-import { AwsLambdaAdapterError } from '../../src/errors/AwsLambdaAdapterError'
+import { AwsLambdaHttpAdapterError } from '../../src/errors/AwsLambdaHttpAdapterError'
 import { ServerResponseMiddleware } from '../../src/middleware/ServerResponseMiddleware'
 
 /* eslint-disable @typescript-eslint/no-extraneous-class */
@@ -48,14 +48,14 @@ describe('ServerResponseMiddleware', () => {
     // @ts-expect-error
     mockContext.rawEvent = undefined
 
-    await expect(middleware.handle(mockContext, next)).rejects.toThrow(AwsLambdaAdapterError)
+    await expect(middleware.handle(mockContext, next)).rejects.toThrow(AwsLambdaHttpAdapterError)
 
     // @ts-expect-error
     mockContext.rawEvent = {}
     // @ts-expect-error
     mockContext.rawResponseBuilder = null
 
-    await expect(middleware.handle(mockContext, next)).rejects.toThrow(AwsLambdaAdapterError)
+    await expect(middleware.handle(mockContext, next)).rejects.toThrow(AwsLambdaHttpAdapterError)
   })
 
   it('should add headers, status code, and status message to the response builder', async () => {

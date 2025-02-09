@@ -1,14 +1,14 @@
-[**AWS Lambda Adapter Documentation v0.0.2**](../../../README.md)
+[**AWS Lambda HTTP Adapter Documentation v0.0.2**](../../../README.md)
 
 ***
 
-[AWS Lambda Adapter Documentation](../../../modules.md) / [decorators/AwsLambdaHttp](../README.md) / AwsLambdaHttp
+[AWS Lambda HTTP Adapter Documentation](../../../modules.md) / [decorators/AwsLambdaHttp](../README.md) / AwsLambdaHttp
 
 # Function: AwsLambdaHttp()
 
-> **AwsLambdaHttp**\<`T`\>(`options`): (`target`, `context`) => `void`
+> **AwsLambdaHttp**\<`T`\>(`options`): `ClassDecorator`
 
-Defined in: src/decorators/AwsLambdaHttp.ts:36
+Defined in: [aws-lambda-http-adapter/src/decorators/AwsLambdaHttp.ts:36](https://github.com/stonemjs/aws-lambda-http-adapter/blob/b2e29f567ac56717023f9597000ee3f0d0278093/src/decorators/AwsLambdaHttp.ts#L36)
 
 A Stone.js decorator that integrates the AWS Lambda HTTP Adapter with a class.
 
@@ -32,28 +32,14 @@ Optional configuration to customize the AWS Lambda HTTP Adapter.
 
 ## Returns
 
-`Function`
+`ClassDecorator`
 
 A class decorator that applies the AWS Lambda HTTP adapter configuration.
-
-### Parameters
-
-#### target
-
-`T`
-
-#### context
-
-`ClassDecoratorContext`\<`T`\>
-
-### Returns
-
-`void`
 
 ## Example
 
 ```typescript
-import { AwsLambdaHttp } from '@stone-js/aws-lambda-adapter';
+import { AwsLambdaHttp } from '@stone-js/aws-lambda-http-adapter';
 
 @AwsLambdaHttp({
   alias: 'MyAwsLambdaHttpAdapter',

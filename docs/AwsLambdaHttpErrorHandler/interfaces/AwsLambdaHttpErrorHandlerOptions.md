@@ -1,12 +1,12 @@
-[**AWS Lambda Adapter Documentation v0.0.2**](../../README.md)
+[**AWS Lambda HTTP Adapter Documentation v0.0.2**](../../README.md)
 
 ***
 
-[AWS Lambda Adapter Documentation](../../modules.md) / [AwsLambdaHttpErrorHandler](../README.md) / AwsLambdaHttpErrorHandlerOptions
+[AWS Lambda HTTP Adapter Documentation](../../modules.md) / [AwsLambdaHttpErrorHandler](../README.md) / AwsLambdaHttpErrorHandlerOptions
 
 # Interface: AwsLambdaHttpErrorHandlerOptions
 
-Defined in: src/AwsLambdaHttpErrorHandler.ts:11
+Defined in: [aws-lambda-http-adapter/src/AwsLambdaHttpErrorHandler.ts:11](https://github.com/stonemjs/aws-lambda-http-adapter/blob/b2e29f567ac56717023f9597000ee3f0d0278093/src/AwsLambdaHttpErrorHandler.ts#L11)
 
 AwsLambdaHttpErrorHandler options.
 
@@ -16,4 +16,4 @@ AwsLambdaHttpErrorHandler options.
 
 > **logger**: `ILogger`
 
-Defined in: src/AwsLambdaHttpErrorHandler.ts:12
+Defined in: [aws-lambda-http-adapter/src/AwsLambdaHttpErrorHandler.ts:12](https://github.com/stonemjs/aws-lambda-http-adapter/blob/b2e29f567ac56717023f9597000ee3f0d0278093/src/AwsLambdaHttpErrorHandler.ts#L12)

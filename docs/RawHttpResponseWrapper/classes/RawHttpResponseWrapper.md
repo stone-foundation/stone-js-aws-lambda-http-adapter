@@ -1,12 +1,12 @@
-[**AWS Lambda Adapter Documentation v0.0.2**](../../README.md)
+[**AWS Lambda HTTP Adapter Documentation v0.0.2**](../../README.md)
 
 ***
 
-[AWS Lambda Adapter Documentation](../../modules.md) / [RawHttpResponseWrapper](../README.md) / RawHttpResponseWrapper
+[AWS Lambda HTTP Adapter Documentation](../../modules.md) / [RawHttpResponseWrapper](../README.md) / RawHttpResponseWrapper
 
 # Class: RawHttpResponseWrapper
 
-Defined in: [src/RawHttpResponseWrapper.ts:12](https://github.com/stonemjs/aws-lambda-adapter/blob/9de4b38bb7a5afd4d5599dae1399969698a2422d/src/RawHttpResponseWrapper.ts#L12)
+Defined in: [aws-lambda-http-adapter/src/RawHttpResponseWrapper.ts:12](https://github.com/stonemjs/aws-lambda-http-adapter/blob/b2e29f567ac56717023f9597000ee3f0d0278093/src/RawHttpResponseWrapper.ts#L12)
 
 Wrapper for HTTP raw responses in AWS Lambda.
 
@@ -25,15 +25,13 @@ with the Stone.js framework.
 
 > **respond**(): [`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)
 
-Defined in: [src/RawHttpResponseWrapper.ts:66](https://github.com/stonemjs/aws-lambda-adapter/blob/9de4b38bb7a5afd4d5599dae1399969698a2422d/src/RawHttpResponseWrapper.ts#L66)
+Defined in: [aws-lambda-http-adapter/src/RawHttpResponseWrapper.ts:64](https://github.com/stonemjs/aws-lambda-http-adapter/blob/b2e29f567ac56717023f9597000ee3f0d0278093/src/RawHttpResponseWrapper.ts#L64)
 
 Constructs and returns the raw HTTP response.
 
 The `respond` method generates a `RawHttpResponse` object based on the
 provided options. If any required fields are missing, it assigns default values:
 - `statusCode`: Defaults to `500`.
-- `statusMessage`: Defaults to an empty string.
-- `body`: Converts non-string bodies to a JSON string.
 
 #### Returns
 
@@ -59,7 +57,7 @@ console.log(response); // { statusCode: 500, statusMessage: '', body: 'Hello, wo
 
 > `static` **create**(`options`): [`RawHttpResponseWrapper`](RawHttpResponseWrapper.md)
 
-Defined in: [src/RawHttpResponseWrapper.ts:34](https://github.com/stonemjs/aws-lambda-adapter/blob/9de4b38bb7a5afd4d5599dae1399969698a2422d/src/RawHttpResponseWrapper.ts#L34)
+Defined in: [aws-lambda-http-adapter/src/RawHttpResponseWrapper.ts:34](https://github.com/stonemjs/aws-lambda-http-adapter/blob/b2e29f567ac56717023f9597000ee3f0d0278093/src/RawHttpResponseWrapper.ts#L34)
 
 Factory method to create an instance of `RawHttpResponseWrapper`.
 

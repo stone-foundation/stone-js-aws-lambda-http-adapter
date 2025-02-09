@@ -5,20 +5,30 @@ import { awsLambdaHttpAdapterBlueprint } from '../../src/options/AwsLambdaHttpAd
 
 /* eslint-disable @typescript-eslint/no-extraneous-class */
 
-// Mock setClassMetadata
-vi.mock('@stone-js/core')
+// Mock @stone-js/core
+vi.mock('@stone-js/core', async (importOriginal) => {
+  const actual: any = await importOriginal()
+  return {
+    ...actual,
+    addBlueprint: vi.fn(() => {}),
+    classDecoratorLegacyWrapper: (fn: Function) => {
+      fn()
+      return fn
+    }
+  }
+})
 
 describe('AwsLambdaHttp', () => {
-  it('should call setClassMetadata with correct parameters', () => {
+  it('should call addBlueprint with correct parameters', () => {
     (addBlueprint as Mock).mockReturnValueOnce(() => {})
     const options: AwsLambdaHttpOptions = awsLambdaHttpAdapterBlueprint.stone.adapters?.[0] ?? {}
-    AwsLambdaHttp(options)(class {}, {} as any)
+    AwsLambdaHttp(options)(class {})
     expect(addBlueprint).toHaveBeenCalled()
   })
 
-  it('should call setClassMetadata with default options if none are provided', () => {
+  it('should call addBlueprint with default options if none are provided', () => {
     vi.mocked(addBlueprint).mockImplementation(() => {})
-    AwsLambdaHttp()(class {}, {} as any)
+    AwsLambdaHttp()(class {})
     expect(addBlueprint).toHaveBeenCalled()
   })
 })

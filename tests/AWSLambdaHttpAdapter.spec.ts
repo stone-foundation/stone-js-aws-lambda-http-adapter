@@ -6,9 +6,9 @@ import {
   IncomingHttpEvent,
   OutgoingHttpResponse
 } from '@stone-js/http-core'
-import { AWSLambdaHttpAdapter } from '../src/AWSLambdaHttpAdapter'
+import { AwsLambdaHttpAdapter } from '../src/AwsLambdaHttpAdapter'
 import { RawHttpResponseWrapper } from '../src/RawHttpResponseWrapper'
-import { AwsLambdaAdapterError } from '../src/errors/AwsLambdaAdapterError'
+import { AwsLambdaHttpAdapterError } from '../src/errors/AwsLambdaHttpAdapterError'
 
 vi.mock('../src/RawHttpResponseWrapper', () => ({
   RawHttpResponseWrapper: {
@@ -28,31 +28,27 @@ describe('AWSLambdaHttpAdapter', () => {
       handlerResolver: vi.fn(),
       logger: {
         error: vi.fn()
-      },
-      errorHandler: {
-        render: vi.fn(),
-        report: vi.fn()
       }
     } as any
   })
 
   it('should create an instance with correct https configuration', () => {
-    const adapter = AWSLambdaHttpAdapter.create(adapterOptions)
-    expect(adapter).toBeInstanceOf(AWSLambdaHttpAdapter)
+    const adapter = AwsLambdaHttpAdapter.create(adapterOptions)
+    expect(adapter).toBeInstanceOf(AwsLambdaHttpAdapter)
   })
 
   it('should throw error when used outside AWS Lambda context', async () => {
-    const adapter = AWSLambdaHttpAdapter.create(adapterOptions)
+    const adapter = AwsLambdaHttpAdapter.create(adapterOptions)
 
     global.window = {} as any // Simulate browser context
 
-    await expect(adapter.run()).rejects.toThrow(AwsLambdaAdapterError)
+    await expect(adapter.run()).rejects.toThrow(AwsLambdaHttpAdapterError)
 
     delete (global as any).window // Cleanup
   })
 
   it('should call the appropriate event listener on request', async () => {
-    const adapter = AWSLambdaHttpAdapter.create(adapterOptions)
+    const adapter = AwsLambdaHttpAdapter.create(adapterOptions)
     const mockEvent = {} as any
 
     IncomingHttpEvent.create = vi.fn()
