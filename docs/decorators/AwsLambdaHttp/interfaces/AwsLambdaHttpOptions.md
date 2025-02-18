@@ -6,7 +6,7 @@
 
 # Interface: AwsLambdaHttpOptions
 
-Defined in: [aws-lambda-http-adapter/src/decorators/AwsLambdaHttp.ts:9](https://github.com/stonemjs/aws-lambda-http-adapter/blob/b2e29f567ac56717023f9597000ee3f0d0278093/src/decorators/AwsLambdaHttp.ts#L9)
+Defined in: [aws-lambda-http-adapter/src/decorators/AwsLambdaHttp.ts:9](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/decorators/AwsLambdaHttp.ts#L9)
 
 Configuration options for the `AwsLambdaHttp` decorator.
 These options extend the default AWS Lambda HTTP adapter configuration.

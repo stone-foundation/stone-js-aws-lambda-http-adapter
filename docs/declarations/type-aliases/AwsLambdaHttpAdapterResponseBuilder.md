@@ -8,6 +8,6 @@
 
 > **AwsLambdaHttpAdapterResponseBuilder**: `IAdapterEventBuilder`\<[`RawHttpResponseOptions`](../interfaces/RawHttpResponseOptions.md), [`RawHttpResponseWrapper`](../../RawHttpResponseWrapper/classes/RawHttpResponseWrapper.md)\>
 
-Defined in: [aws-lambda-http-adapter/src/declarations.ts:31](https://github.com/stonemjs/aws-lambda-http-adapter/blob/b2e29f567ac56717023f9597000ee3f0d0278093/src/declarations.ts#L31)
+Defined in: [aws-lambda-http-adapter/src/declarations.ts:31](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/declarations.ts#L31)
 
 Represents the response builder for the AWS Lambda http Adapter.

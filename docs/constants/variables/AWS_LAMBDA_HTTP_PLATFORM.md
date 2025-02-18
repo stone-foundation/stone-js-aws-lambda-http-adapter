@@ -8,7 +8,7 @@
 
 > `const` **AWS\_LAMBDA\_HTTP\_PLATFORM**: `"aws_lambda_http"` = `'aws_lambda_http'`
 
-Defined in: [aws-lambda-http-adapter/src/constants.ts:8](https://github.com/stonemjs/aws-lambda-http-adapter/blob/b2e29f567ac56717023f9597000ee3f0d0278093/src/constants.ts#L8)
+Defined in: [aws-lambda-http-adapter/src/constants.ts:8](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/constants.ts#L8)
 
 A constant representing the AWS Lambda HTTP platform identifier.
 

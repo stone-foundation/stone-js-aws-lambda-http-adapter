@@ -6,7 +6,7 @@
 
 # Interface: AwsLambdaHttpAdapterConfig
 
-Defined in: [aws-lambda-http-adapter/src/options/AwsLambdaHttpAdapterBlueprint.ts:22](https://github.com/stonemjs/aws-lambda-http-adapter/blob/b2e29f567ac56717023f9597000ee3f0d0278093/src/options/AwsLambdaHttpAdapterBlueprint.ts#L22)
+Defined in: [aws-lambda-http-adapter/src/options/AwsLambdaHttpAdapterBlueprint.ts:22](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/options/AwsLambdaHttpAdapterBlueprint.ts#L22)
 
 Represents the AwsLambdaHttpAdapterConfig configuration options for the application.
 
@@ -154,7 +154,7 @@ Every Stone.js application must have an handler function.
 
 > **http**: `Partial`\<`HttpConfig`\>
 
-Defined in: [aws-lambda-http-adapter/src/options/AwsLambdaHttpAdapterBlueprint.ts:23](https://github.com/stonemjs/aws-lambda-http-adapter/blob/b2e29f567ac56717023f9597000ee3f0d0278093/src/options/AwsLambdaHttpAdapterBlueprint.ts#L23)
+Defined in: [aws-lambda-http-adapter/src/options/AwsLambdaHttpAdapterBlueprint.ts:23](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/options/AwsLambdaHttpAdapterBlueprint.ts#L23)
 
 ***
 

@@ -74,7 +74,9 @@ export class IncomingEventMiddleware {
       .add('ips', ipAddresses)
       .add('source', this.getSource(context))
       .add('headers', context.rawEvent.headers)
-      .add('method', this.getMethod(context.rawEvent))
+      // If not defined by other middleware
+      // In fullstack forms, the method is spoofed and sent as a hidden field
+      .addIf('method', this.getMethod(context.rawEvent))
       .add('queryString', context.rawEvent.queryStringParameters)
       .add('protocol', this.getProtocol(context.rawEvent, proxyOptions))
       .add('cookies', CookieCollection.create(context.rawEvent.headers.cookie, cookieOptions, this.getCookieSecret()))

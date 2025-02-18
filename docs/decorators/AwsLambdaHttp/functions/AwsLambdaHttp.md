@@ -8,7 +8,7 @@
 
 > **AwsLambdaHttp**\<`T`\>(`options`): `ClassDecorator`
 
-Defined in: [aws-lambda-http-adapter/src/decorators/AwsLambdaHttp.ts:36](https://github.com/stonemjs/aws-lambda-http-adapter/blob/b2e29f567ac56717023f9597000ee3f0d0278093/src/decorators/AwsLambdaHttp.ts#L36)
+Defined in: [aws-lambda-http-adapter/src/decorators/AwsLambdaHttp.ts:36](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/decorators/AwsLambdaHttp.ts#L36)
 
 A Stone.js decorator that integrates the AWS Lambda HTTP Adapter with a class.
 

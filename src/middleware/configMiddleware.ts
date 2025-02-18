@@ -1,7 +1,8 @@
-import { AWS_LAMBDA_HTTP_PLATFORM } from '../constants'
+import { File } from '@stone-js/filesystem'
 import { MetaPipe, NextPipe } from '@stone-js/pipeline'
+import { AWS_LAMBDA_HTTP_PLATFORM } from '../constants'
 import { ClassType, ConfigContext, IBlueprint } from '@stone-js/core'
-import { OutgoingHttpResponse, OutgoingHttpResponseOptions } from '@stone-js/http-core'
+import { BinaryFileResponse, OutgoingHttpResponse, OutgoingHttpResponseOptions } from '@stone-js/http-core'
 
 /**
  * Middleware to dynamically set response resolver for adapter.
@@ -20,7 +21,14 @@ export const SetResponseResolverMiddleware = async (
   next: NextPipe<ConfigContext<IBlueprint, ClassType>, IBlueprint>
 ): Promise<IBlueprint> => {
   if (context.blueprint.get<string>('stone.adapter.platform') === AWS_LAMBDA_HTTP_PLATFORM) {
-    context.blueprint.set('stone.kernel.responseResolver', (options: OutgoingHttpResponseOptions) => OutgoingHttpResponse.create(options))
+    context.blueprint.set(
+      'stone.kernel.responseResolver',
+      (options: OutgoingHttpResponseOptions) => {
+        return options.content instanceof File
+          ? BinaryFileResponse.file({ ...options, content: undefined, file: options.content })
+          : OutgoingHttpResponse.create(options)
+      }
+    )
   }
 
   return await next(context)

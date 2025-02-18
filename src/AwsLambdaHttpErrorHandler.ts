@@ -40,7 +40,7 @@ export class AwsLambdaHttpErrorHandler implements IAdapterErrorHandler<AwsLambda
    */
   public async handle (error: Error, context: AdapterErrorContext<AwsLambdaHttpEvent, RawHttpResponse, AwsLambdaContext>): Promise<RawHttpResponse> {
     const type = accepts(context.rawEvent as any).type(['json', 'html']) as string | false
-    const contentType = mime.getType(type !== false ? type : 'txt') ?? 'text/plain'
+    const contentType = mime.getType(type !== false ? type : 'txt') ?? context.rawEvent.headers['content-type'] ?? 'text/plain'
     const headers = new Headers({ 'Content-Type': contentType })
 
     context

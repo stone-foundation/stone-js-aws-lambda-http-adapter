@@ -6,7 +6,7 @@
 
 # Interface: AwsLambdaHttpEvent
 
-Defined in: [aws-lambda-http-adapter/src/declarations.ts:39](https://github.com/stonemjs/aws-lambda-http-adapter/blob/b2e29f567ac56717023f9597000ee3f0d0278093/src/declarations.ts#L39)
+Defined in: [aws-lambda-http-adapter/src/declarations.ts:39](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/declarations.ts#L39)
 
 Represents the structure of an AWS Lambda HTTP event.
 
@@ -27,7 +27,7 @@ including headers, query parameters, the request context, and other metadata.
 
 > `optional` **body**: `unknown`
 
-Defined in: [aws-lambda-http-adapter/src/declarations.ts:48](https://github.com/stonemjs/aws-lambda-http-adapter/blob/b2e29f567ac56717023f9597000ee3f0d0278093/src/declarations.ts#L48)
+Defined in: [aws-lambda-http-adapter/src/declarations.ts:48](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/declarations.ts#L48)
 
 The body of the HTTP request.
 
@@ -37,7 +37,7 @@ The body of the HTTP request.
 
 > `optional` **encoding**: `string`
 
-Defined in: [aws-lambda-http-adapter/src/declarations.ts:53](https://github.com/stonemjs/aws-lambda-http-adapter/blob/b2e29f567ac56717023f9597000ee3f0d0278093/src/declarations.ts#L53)
+Defined in: [aws-lambda-http-adapter/src/declarations.ts:53](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/declarations.ts#L53)
 
 The encoding format of the body, such as `base64`.
 
@@ -47,7 +47,7 @@ The encoding format of the body, such as `base64`.
 
 > **headers**: `Record`\<`string`, `string`\>
 
-Defined in: [aws-lambda-http-adapter/src/declarations.ts:68](https://github.com/stonemjs/aws-lambda-http-adapter/blob/b2e29f567ac56717023f9597000ee3f0d0278093/src/declarations.ts#L68)
+Defined in: [aws-lambda-http-adapter/src/declarations.ts:68](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/declarations.ts#L68)
 
 The headers of the HTTP request as key-value pairs.
 
@@ -57,7 +57,7 @@ The headers of the HTTP request as key-value pairs.
 
 > `optional` **httpMethod**: `string`
 
-Defined in: [aws-lambda-http-adapter/src/declarations.ts:73](https://github.com/stonemjs/aws-lambda-http-adapter/blob/b2e29f567ac56717023f9597000ee3f0d0278093/src/declarations.ts#L73)
+Defined in: [aws-lambda-http-adapter/src/declarations.ts:73](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/declarations.ts#L73)
 
 The HTTP method of the request (e.g., `GET`, `POST`).
 
@@ -67,7 +67,7 @@ The HTTP method of the request (e.g., `GET`, `POST`).
 
 > `optional` **isBase64Encoded**: `boolean`
 
-Defined in: [aws-lambda-http-adapter/src/declarations.ts:63](https://github.com/stonemjs/aws-lambda-http-adapter/blob/b2e29f567ac56717023f9597000ee3f0d0278093/src/declarations.ts#L63)
+Defined in: [aws-lambda-http-adapter/src/declarations.ts:63](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/declarations.ts#L63)
 
 Indicates whether the request body is base64-encoded.
 
@@ -77,7 +77,7 @@ Indicates whether the request body is base64-encoded.
 
 > `optional` **path**: `string`
 
-Defined in: [aws-lambda-http-adapter/src/declarations.ts:43](https://github.com/stonemjs/aws-lambda-http-adapter/blob/b2e29f567ac56717023f9597000ee3f0d0278093/src/declarations.ts#L43)
+Defined in: [aws-lambda-http-adapter/src/declarations.ts:43](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/declarations.ts#L43)
 
 The path of the HTTP request.
 
@@ -87,7 +87,7 @@ The path of the HTTP request.
 
 > `optional` **queryStringParameters**: `Record`\<`string`, `string`\>
 
-Defined in: [aws-lambda-http-adapter/src/declarations.ts:78](https://github.com/stonemjs/aws-lambda-http-adapter/blob/b2e29f567ac56717023f9597000ee3f0d0278093/src/declarations.ts#L78)
+Defined in: [aws-lambda-http-adapter/src/declarations.ts:78](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/declarations.ts#L78)
 
 The query string parameters included in the request.
 
@@ -97,7 +97,7 @@ The query string parameters included in the request.
 
 > `optional` **rawPath**: `string`
 
-Defined in: [aws-lambda-http-adapter/src/declarations.ts:58](https://github.com/stonemjs/aws-lambda-http-adapter/blob/b2e29f567ac56717023f9597000ee3f0d0278093/src/declarations.ts#L58)
+Defined in: [aws-lambda-http-adapter/src/declarations.ts:58](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/declarations.ts#L58)
 
 The raw path of the HTTP request, as sent by the client.
 
@@ -107,7 +107,7 @@ The raw path of the HTTP request, as sent by the client.
 
 > `optional` **requestContext**: `object`
 
-Defined in: [aws-lambda-http-adapter/src/declarations.ts:83](https://github.com/stonemjs/aws-lambda-http-adapter/blob/b2e29f567ac56717023f9597000ee3f0d0278093/src/declarations.ts#L83)
+Defined in: [aws-lambda-http-adapter/src/declarations.ts:83](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/declarations.ts#L83)
 
 The context of the request, including identity and HTTP metadata.
 

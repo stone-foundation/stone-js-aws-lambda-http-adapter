@@ -8,6 +8,6 @@
 
 > `const` **MetaFilesEventMiddleware**: `MetaMiddleware`\<`IncomingEvent`, `OutgoingResponse`\>
 
-Defined in: [aws-lambda-http-adapter/src/middleware/FilesEventMiddleware.ts:76](https://github.com/stonemjs/aws-lambda-http-adapter/blob/b2e29f567ac56717023f9597000ee3f0d0278093/src/middleware/FilesEventMiddleware.ts#L76)
+Defined in: [aws-lambda-http-adapter/src/middleware/FilesEventMiddleware.ts:79](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/middleware/FilesEventMiddleware.ts#L79)
 
 Meta Middleware for processing files uploads.

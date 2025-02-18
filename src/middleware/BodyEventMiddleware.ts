@@ -2,8 +2,8 @@ import bytes from 'bytes'
 import typeIs from 'type-is'
 import { IncomingMessage } from 'node:http'
 import { NextPipe } from '@stone-js/pipeline'
-import { classMiddleware, IBlueprint } from '@stone-js/core'
 import { isMultipart, getCharset, getType } from '@stone-js/http-core'
+import { classMiddleware, IBlueprint, isNotEmpty } from '@stone-js/core'
 import { AwsLambdaHttpAdapterError } from '../errors/AwsLambdaHttpAdapterError'
 import { AwsLambdaHttpAdapterContext, AwsLambdaHttpAdapterResponseBuilder, AwsLambdaHttpEvent } from '../declarations'
 
@@ -54,11 +54,14 @@ export class BodyEventMiddleware {
 
     if (!isMultipart(this.toNodeMessage(context.rawEvent))) {
       const body = this.getBody(this.toNodeMessage(context.rawEvent), context.rawEvent)
+      const method = (body as any).$method$
 
       context
         .incomingEventBuilder
         .add('body', body)
         .add('metadata', body)
+        // In fullstack forms, the method is spoofed and sent as a hidden field
+      isNotEmpty(method) && context.incomingEventBuilder.add('method', method)
     }
 
     return await next(context)
