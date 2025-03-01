@@ -71,19 +71,19 @@ export { handler };
 
 ### new AwsLambdaHttpAdapter()
 
-> `protected` **new AwsLambdaHttpAdapter**(`options`): [`AwsLambdaHttpAdapter`](AwsLambdaHttpAdapter.md)
+> `protected` **new AwsLambdaHttpAdapter**(`blueprint`): [`AwsLambdaHttpAdapter`](AwsLambdaHttpAdapter.md)
 
-Defined in: core/dist/index.d.ts:2656
+Defined in: core/dist/index.d.ts:2671
 
 Create an Adapter.
 
 #### Parameters
 
-##### options
+##### blueprint
 
-`AdapterOptions`\<`IncomingHttpEvent`, `OutgoingHttpResponse`\>
+`IBlueprint`\<`any`\>
 
-Adapter options.
+The blueprint to create the adapter.
 
 #### Returns
 
@@ -99,7 +99,7 @@ Adapter options.
 
 > `protected` `readonly` **blueprint**: `IBlueprint`\<`any`\>
 
-Defined in: core/dist/index.d.ts:2648
+Defined in: core/dist/index.d.ts:2662
 
 #### Inherited from
 
@@ -107,23 +107,11 @@ Defined in: core/dist/index.d.ts:2648
 
 ***
 
-### handlerResolver
-
-> `protected` `readonly` **handlerResolver**: `AdapterEventHandlerResolver`\<`IncomingHttpEvent`, `OutgoingHttpResponse`\>
-
-Defined in: core/dist/index.d.ts:2649
-
-#### Inherited from
-
-`Adapter.handlerResolver`
-
-***
-
 ### hooks
 
-> `protected` `readonly` **hooks**: `AdapterHooks`
+> `protected` `readonly` **hooks**: `AdapterHookType`\<[`AwsLambdaHttpAdapterContext`](../../declarations/interfaces/AwsLambdaHttpAdapterContext.md), [`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)\>
 
-Defined in: core/dist/index.d.ts:2647
+Defined in: core/dist/index.d.ts:2663
 
 #### Inherited from
 
@@ -131,33 +119,39 @@ Defined in: core/dist/index.d.ts:2647
 
 ***
 
-### logger
+### middleware
 
-> `protected` `readonly` **logger**: `ILogger`
+> `protected` `readonly` **middleware**: `AdapterMixedPipeType`\<[`AwsLambdaHttpAdapterContext`](../../declarations/interfaces/AwsLambdaHttpAdapterContext.md), [`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)\>[]
 
-Defined in: core/dist/index.d.ts:2646
+Defined in: core/dist/index.d.ts:2664
 
 #### Inherited from
 
-`Adapter.logger`
+`Adapter.middleware`
+
+***
+
+### resolvedErrorHandlers
+
+> `protected` `readonly` **resolvedErrorHandlers**: `Record`\<`string`, `IAdapterErrorHandler`\<[`AwsLambdaHttpEvent`](../../declarations/interfaces/AwsLambdaHttpEvent.md), [`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md), [`AwsLambdaContext`](../../declarations/type-aliases/AwsLambdaContext.md)\>\>
+
+Defined in: core/dist/index.d.ts:2665
+
+#### Inherited from
+
+`Adapter.resolvedErrorHandlers`
 
 ## Methods
 
-### afterHandle()
+### buildRawResponse()
 
-> `protected` **afterHandle**(`eventHandler`, `context`): `Promise`\<`void`\>
+> `protected` **buildRawResponse**(`context`, `eventHandler`?): `Promise`\<[`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)\>
 
-Defined in: core/dist/index.d.ts:2710
+Defined in: core/dist/index.d.ts:2725
 
-Hook that runs after handling each event.
+Build the raw response.
 
 #### Parameters
-
-##### eventHandler
-
-`AdapterEventHandlerType`\<`IncomingHttpEvent`, `OutgoingHttpResponse`\>
-
-Action handler to be run.
 
 ##### context
 
@@ -165,39 +159,21 @@ Action handler to be run.
 
 The event context.
 
-#### Returns
-
-`Promise`\<`void`\>
-
-#### Inherited from
-
-`Adapter.afterHandle`
-
-***
-
-### beforeHandle()
-
-> `protected` **beforeHandle**(`eventHandler`): `Promise`\<`void`\>
-
-Defined in: core/dist/index.d.ts:2703
-
-Hook that runs before handling each event.
-
-#### Parameters
-
-##### eventHandler
+##### eventHandler?
 
 `AdapterEventHandlerType`\<`IncomingHttpEvent`, `OutgoingHttpResponse`\>
 
-Action handler to be run.
+The event handler to be run.
 
 #### Returns
 
-`Promise`\<`void`\>
+`Promise`\<[`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)\>
+
+The raw response wrapper.
 
 #### Inherited from
 
-`Adapter.beforeHandle`
+`Adapter.buildRawResponse`
 
 ***
 
@@ -205,7 +181,7 @@ Action handler to be run.
 
 > `protected` **eventListener**(`rawEvent`, `executionContext`): `Promise`\<[`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)\>
 
-Defined in: aws-lambda-http-adapter/src/AwsLambdaHttpAdapter.ts:120
+Defined in: aws-lambda-http-adapter/src/AwsLambdaHttpAdapter.ts:123
 
 Processes an incoming AWS Lambda HTTP event.
 
@@ -234,27 +210,65 @@ A promise resolving to the processed `RawHttpResponse`.
 
 ***
 
-### executeHooks()
+### executeEventHandlerHooks()
 
-> `protected` **executeHooks**(`hook`, `context`?): `Promise`\<`void`\>
+> `protected` **executeEventHandlerHooks**(`hook`, `eventHandler`): `Promise`\<`void`\>
 
-Defined in: core/dist/index.d.ts:2724
+Defined in: core/dist/index.d.ts:2753
 
-Execute lifecycle hooks.
+Execute the event handler lifecycle hooks.
 
 #### Parameters
 
 ##### hook
 
-keyof `AdapterHooks`
+`KernelHookName`
 
 The hook to execute.
+
+##### eventHandler
+
+`AdapterEventHandlerType`\<`IncomingHttpEvent`, `OutgoingHttpResponse`\>
+
+The event handler to be run.
+
+#### Returns
+
+`Promise`\<`void`\>
+
+#### Inherited from
+
+`Adapter.executeEventHandlerHooks`
+
+***
+
+### executeHooks()
+
+> `protected` **executeHooks**(`name`, `context`?, `error`?): `Promise`\<`void`\>
+
+Defined in: core/dist/index.d.ts:2761
+
+Execute adapter lifecycle hooks.
+
+#### Parameters
+
+##### name
+
+`AdapterHookName`
+
+The hook's name.
 
 ##### context?
 
 [`AwsLambdaHttpAdapterContext`](../../declarations/interfaces/AwsLambdaHttpAdapterContext.md)
 
 The event context.
+
+##### error?
+
+`any`
+
+The error to handle.
 
 #### Returns
 
@@ -266,17 +280,85 @@ The event context.
 
 ***
 
+### handleError()
+
+> `protected` **handleError**(`error`, `context`): `Promise`\<`AdapterEventBuilderType`\<[`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)\>\>
+
+Defined in: core/dist/index.d.ts:2717
+
+Handle error.
+
+#### Parameters
+
+##### error
+
+`Error`
+
+The error to handle.
+
+##### context
+
+[`AwsLambdaHttpAdapterContext`](../../declarations/interfaces/AwsLambdaHttpAdapterContext.md)
+
+The event context.
+
+#### Returns
+
+`Promise`\<`AdapterEventBuilderType`\<[`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)\>\>
+
+The raw response.
+
+#### Inherited from
+
+`Adapter.handleError`
+
+***
+
+### handleEvent()
+
+> `protected` **handleEvent**(`context`, `eventHandler`): `Promise`\<`IAdapterEventBuilder`\<`RawResponseOptions`, `IRawResponseWrapper`\<[`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)\>\>\>
+
+Defined in: core/dist/index.d.ts:2709
+
+Handle the event.
+
+#### Parameters
+
+##### context
+
+[`AwsLambdaHttpAdapterContext`](../../declarations/interfaces/AwsLambdaHttpAdapterContext.md)
+
+The event context.
+
+##### eventHandler
+
+`AdapterEventHandlerType`\<`IncomingHttpEvent`, `OutgoingHttpResponse`\>
+
+The event handler to be run.
+
+#### Returns
+
+`Promise`\<`IAdapterEventBuilder`\<`RawResponseOptions`, `IRawResponseWrapper`\<[`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)\>\>\>
+
+The raw response wrapper.
+
+#### Inherited from
+
+`Adapter.handleEvent`
+
+***
+
 ### makePipelineOptions()
 
-> `protected` **makePipelineOptions**(): `PipelineOptions`\<[`AwsLambdaHttpAdapterContext`](../../declarations/interfaces/AwsLambdaHttpAdapterContext.md), `IAdapterEventBuilder`\<`RawResponseOptions`, `IRawResponseWrapper`\<[`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)\>\>\>
+> `protected` **makePipelineOptions**(): `PipelineOptions`\<[`AwsLambdaHttpAdapterContext`](../../declarations/interfaces/AwsLambdaHttpAdapterContext.md), `AdapterEventBuilderType`\<[`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)\>\>
 
-Defined in: core/dist/index.d.ts:2730
+Defined in: core/dist/index.d.ts:2731
 
 Create pipeline options for the Adapter.
 
 #### Returns
 
-`PipelineOptions`\<[`AwsLambdaHttpAdapterContext`](../../declarations/interfaces/AwsLambdaHttpAdapterContext.md), `IAdapterEventBuilder`\<`RawResponseOptions`, `IRawResponseWrapper`\<[`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)\>\>\>
+`PipelineOptions`\<[`AwsLambdaHttpAdapterContext`](../../declarations/interfaces/AwsLambdaHttpAdapterContext.md), `AdapterEventBuilderType`\<[`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)\>\>
 
 The pipeline options for transforming the event.
 
@@ -286,37 +368,11 @@ The pipeline options for transforming the event.
 
 ***
 
-### onPrepare()
-
-> `protected` **onPrepare**(`eventHandler`): `Promise`\<`void`\>
-
-Defined in: core/dist/index.d.ts:2697
-
-Hook that runs before preparing the event context.
-
-#### Parameters
-
-##### eventHandler
-
-`AdapterEventHandlerType`\<`IncomingHttpEvent`, `OutgoingHttpResponse`\>
-
-Action handler to be run.
-
-#### Returns
-
-`Promise`\<`void`\>
-
-#### Inherited from
-
-`Adapter.onPrepare`
-
-***
-
 ### onStart()
 
 > `protected` **onStart**(): `Promise`\<`void`\>
 
-Defined in: aws-lambda-http-adapter/src/AwsLambdaHttpAdapter.ts:100
+Defined in: aws-lambda-http-adapter/src/AwsLambdaHttpAdapter.ts:103
 
 Initializes the adapter and validates its execution context.
 
@@ -331,101 +387,13 @@ if it detects that the adapter is being used in an unsupported environment (e.g.
 
 If executed outside an AWS Lambda environment.
 
-#### Overrides
-
-`Adapter.onStart`
-
-***
-
-### onStop()
-
-> `protected` **onStop**(): `Promise`\<`void`\>
-
-Defined in: core/dist/index.d.ts:2691
-
-Hook that runs just before shutting down the application.
-
-#### Returns
-
-`Promise`\<`void`\>
-
-#### Inherited from
-
-`Adapter.onStop`
-
-***
-
-### onTerminate()
-
-> `protected` **onTerminate**(`eventHandler`, `context`): `Promise`\<`void`\>
-
-Defined in: core/dist/index.d.ts:2717
-
-Hook that runs after running the action handler.
-
-#### Parameters
-
-##### eventHandler
-
-`AdapterEventHandlerType`\<`IncomingHttpEvent`, `OutgoingHttpResponse`\>
-
-Action handler to be run.
-
-##### context
-
-[`AwsLambdaHttpAdapterContext`](../../declarations/interfaces/AwsLambdaHttpAdapterContext.md)
-
-The event context.
-
-#### Returns
-
-`Promise`\<`void`\>
-
-#### Inherited from
-
-`Adapter.onTerminate`
-
-***
-
-### prepareResponse()
-
-> `protected` **prepareResponse**(`eventHandler`, `context`): `Promise`\<`IAdapterEventBuilder`\<`RawResponseOptions`, `IRawResponseWrapper`\<[`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)\>\>\>
-
-Defined in: core/dist/index.d.ts:2745
-
-Prepare the response for the event handler.
-
-#### Parameters
-
-##### eventHandler
-
-`AdapterEventHandlerType`\<`IncomingHttpEvent`, `OutgoingHttpResponse`\>
-
-The event handler to prepare the response for.
-
-##### context
-
-[`AwsLambdaHttpAdapterContext`](../../declarations/interfaces/AwsLambdaHttpAdapterContext.md)
-
-The event context.
-
-#### Returns
-
-`Promise`\<`IAdapterEventBuilder`\<`RawResponseOptions`, `IRawResponseWrapper`\<[`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)\>\>\>
-
-The raw response wrapper.
-
-#### Inherited from
-
-`Adapter.prepareResponse`
-
 ***
 
 ### resolveErrorHandler()
 
 > `protected` **resolveErrorHandler**(`error`): `IAdapterErrorHandler`\<[`AwsLambdaHttpEvent`](../../declarations/interfaces/AwsLambdaHttpEvent.md), [`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md), [`AwsLambdaContext`](../../declarations/type-aliases/AwsLambdaContext.md)\>
 
-Defined in: core/dist/index.d.ts:2737
+Defined in: core/dist/index.d.ts:2746
 
 Get the error handler for the given error.
 
@@ -443,9 +411,37 @@ The error to get the handler for.
 
 The error handler.
 
+#### Throws
+
+IntegrationError
+
 #### Inherited from
 
 `Adapter.resolveErrorHandler`
+
+***
+
+### resolveEventHandler()
+
+> `protected` **resolveEventHandler**(): `AdapterEventHandlerType`\<`IncomingHttpEvent`, `OutgoingHttpResponse`\>
+
+Defined in: core/dist/index.d.ts:2738
+
+Get the event handler for the adapter.
+
+#### Returns
+
+`AdapterEventHandlerType`\<`IncomingHttpEvent`, `OutgoingHttpResponse`\>
+
+The event handler for the adapter.
+
+#### Throws
+
+If the event handler is missing.
+
+#### Inherited from
+
+`Adapter.resolveEventHandler`
 
 ***
 
@@ -453,7 +449,7 @@ The error handler.
 
 > **run**\<`ExecutionResultType`\>(): `Promise`\<`ExecutionResultType`\>
 
-Defined in: aws-lambda-http-adapter/src/AwsLambdaHttpAdapter.ts:82
+Defined in: aws-lambda-http-adapter/src/AwsLambdaHttpAdapter.ts:85
 
 Executes the adapter and provides an AWS Lambda-compatible HTTP handler function.
 
@@ -485,17 +481,13 @@ If used outside the AWS Lambda environment.
 
 ### sendEventThroughDestination()
 
-> `protected` **sendEventThroughDestination**(`eventHandler`, `context`): `Promise`\<[`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)\>
+> `protected` **sendEventThroughDestination**(`context`, `eventHandler`): `Promise`\<[`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)\>
 
-Defined in: core/dist/index.d.ts:2683
+Defined in: core/dist/index.d.ts:2701
 
-Incoming message listener.
+Send the raw event through the destination.
 
 #### Parameters
-
-##### eventHandler
-
-`AdapterEventHandlerType`\<`IncomingHttpEvent`, `OutgoingHttpResponse`\>
 
 ##### context
 
@@ -503,11 +495,21 @@ Incoming message listener.
 
 The event context.
 
+##### eventHandler
+
+`AdapterEventHandlerType`\<`IncomingHttpEvent`, `OutgoingHttpResponse`\>
+
+The event handler to be run.
+
 #### Returns
 
 `Promise`\<[`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)\>
 
-Platform-specific output.
+Platform-specific response.
+
+#### Throws
+
+IntegrationError
 
 #### Inherited from
 
@@ -515,27 +517,67 @@ Platform-specific output.
 
 ***
 
-### create()
+### validateContextAndEventHandler()
 
-> `static` **create**(`options`): [`AwsLambdaHttpAdapter`](AwsLambdaHttpAdapter.md)
+> `protected` **validateContextAndEventHandler**(`context`, `eventHandler`): `void`
 
-Defined in: aws-lambda-http-adapter/src/AwsLambdaHttpAdapter.ts:67
+Defined in: core/dist/index.d.ts:2769
 
-Creates an instance of the `AwsLambdaHttpAdapter`.
-
-This factory method initializes the adapter with the specified configuration options.
+Validate the context and event handler.
 
 #### Parameters
 
-##### options
+##### context
 
-`AdapterOptions`\<`IncomingHttpEvent`, `OutgoingHttpResponse`\>
+[`AwsLambdaHttpAdapterContext`](../../declarations/interfaces/AwsLambdaHttpAdapterContext.md)
 
-Configuration options for the adapter, including the handler resolver
-                 and error handling mechanisms.
+The context to validate.
+
+##### eventHandler
+
+`AdapterEventHandlerType`\<`IncomingHttpEvent`, `OutgoingHttpResponse`\>
+
+The event handler to validate.
+
+#### Returns
+
+`void`
+
+#### Throws
+
+IntegrationError
+
+#### Inherited from
+
+`Adapter.validateContextAndEventHandler`
+
+***
+
+### create()
+
+> `static` **create**(`blueprint`): [`AwsLambdaHttpAdapter`](AwsLambdaHttpAdapter.md)
+
+Defined in: aws-lambda-http-adapter/src/AwsLambdaHttpAdapter.ts:70
+
+Creates an instance of the `AwsLambdaHttpAdapter`.
+
+#### Parameters
+
+##### blueprint
+
+`IBlueprint`
+
+The application blueprint.
 
 #### Returns
 
 [`AwsLambdaHttpAdapter`](AwsLambdaHttpAdapter.md)
 
 A new instance of `AwsLambdaHttpAdapter`.
+
+#### Example
+
+```typescript
+const adapter = AwsLambdaHttpAdapter.create(blueprint);
+await adapter.run();
+```

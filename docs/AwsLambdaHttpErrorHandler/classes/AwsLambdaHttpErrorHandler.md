@@ -6,7 +6,7 @@
 
 # Class: AwsLambdaHttpErrorHandler
 
-Defined in: [aws-lambda-http-adapter/src/AwsLambdaHttpErrorHandler.ts:18](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/AwsLambdaHttpErrorHandler.ts#L18)
+Defined in: [aws-lambda-http-adapter/src/AwsLambdaHttpErrorHandler.ts:26](https://github.com/stonemjs/aws-lambda-http-adapter/blob/f289dee0aae635648af98bb65369a05e133b69bc/src/AwsLambdaHttpErrorHandler.ts#L26)
 
 Class representing an AwsLambdaHttpErrorHandler.
 
@@ -20,9 +20,9 @@ Class representing an AwsLambdaHttpErrorHandler.
 
 > **new AwsLambdaHttpErrorHandler**(`options`): [`AwsLambdaHttpErrorHandler`](AwsLambdaHttpErrorHandler.md)
 
-Defined in: [aws-lambda-http-adapter/src/AwsLambdaHttpErrorHandler.ts:26](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/AwsLambdaHttpErrorHandler.ts#L26)
+Defined in: [aws-lambda-http-adapter/src/AwsLambdaHttpErrorHandler.ts:34](https://github.com/stonemjs/aws-lambda-http-adapter/blob/f289dee0aae635648af98bb65369a05e133b69bc/src/AwsLambdaHttpErrorHandler.ts#L34)
 
-Create an AwsLambdaHttpErrorHandler.
+Create an NodeHttpErrorHandler.
 
 #### Parameters
 
@@ -30,7 +30,7 @@ Create an AwsLambdaHttpErrorHandler.
 
 [`AwsLambdaHttpErrorHandlerOptions`](../interfaces/AwsLambdaHttpErrorHandlerOptions.md)
 
-AwsLambdaHttpErrorHandler options.
+NodeHttpErrorHandler options.
 
 #### Returns
 
@@ -40,9 +40,9 @@ AwsLambdaHttpErrorHandler options.
 
 ### handle()
 
-> **handle**(`error`, `context`): `Promise`\<[`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)\>
+> **handle**(`error`, `context`): `AdapterEventBuilderType`\<[`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)\>
 
-Defined in: [aws-lambda-http-adapter/src/AwsLambdaHttpErrorHandler.ts:41](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/AwsLambdaHttpErrorHandler.ts#L41)
+Defined in: [aws-lambda-http-adapter/src/AwsLambdaHttpErrorHandler.ts:45](https://github.com/stonemjs/aws-lambda-http-adapter/blob/f289dee0aae635648af98bb65369a05e133b69bc/src/AwsLambdaHttpErrorHandler.ts#L45)
 
 Handle an error.
 
@@ -62,9 +62,9 @@ The context of the adapter.
 
 #### Returns
 
-`Promise`\<[`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)\>
+`AdapterEventBuilderType`\<[`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)\>
 
-The raw response.
+The raw response builder.
 
 #### Implementation of
 

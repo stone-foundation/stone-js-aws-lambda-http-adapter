@@ -6,7 +6,7 @@
 
 # Class: FilesEventMiddleware
 
-Defined in: [aws-lambda-http-adapter/src/middleware/FilesEventMiddleware.ts:13](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/middleware/FilesEventMiddleware.ts#L13)
+Defined in: [aws-lambda-http-adapter/src/middleware/FilesEventMiddleware.ts:13](https://github.com/stonemjs/aws-lambda-http-adapter/blob/f289dee0aae635648af98bb65369a05e133b69bc/src/middleware/FilesEventMiddleware.ts#L13)
 
 Class representing a FilesEventMiddleware.
 
@@ -20,7 +20,7 @@ Mr. Stone <evensstone@gmail.com>
 
 > **new FilesEventMiddleware**(`options`): [`FilesEventMiddleware`](FilesEventMiddleware.md)
 
-Defined in: [aws-lambda-http-adapter/src/middleware/FilesEventMiddleware.ts:24](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/middleware/FilesEventMiddleware.ts#L24)
+Defined in: [aws-lambda-http-adapter/src/middleware/FilesEventMiddleware.ts:24](https://github.com/stonemjs/aws-lambda-http-adapter/blob/f289dee0aae635648af98bb65369a05e133b69bc/src/middleware/FilesEventMiddleware.ts#L24)
 
 Create a FilesEventMiddleware.
 
@@ -44,7 +44,7 @@ Options for creating the FilesEventMiddleware.
 
 > **handle**(`context`, `next`): `Promise`\<[`AwsLambdaHttpAdapterResponseBuilder`](../../../declarations/type-aliases/AwsLambdaHttpAdapterResponseBuilder.md)\>
 
-Defined in: [aws-lambda-http-adapter/src/middleware/FilesEventMiddleware.ts:37](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/middleware/FilesEventMiddleware.ts#L37)
+Defined in: [aws-lambda-http-adapter/src/middleware/FilesEventMiddleware.ts:37](https://github.com/stonemjs/aws-lambda-http-adapter/blob/f289dee0aae635648af98bb65369a05e133b69bc/src/middleware/FilesEventMiddleware.ts#L37)
 
 Handles the incoming event, processes it, and invokes the next middleware in the pipeline.
 

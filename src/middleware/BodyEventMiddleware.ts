@@ -2,8 +2,8 @@ import bytes from 'bytes'
 import typeIs from 'type-is'
 import { IncomingMessage } from 'node:http'
 import { NextPipe } from '@stone-js/pipeline'
+import { IBlueprint, isNotEmpty } from '@stone-js/core'
 import { isMultipart, getCharset, getType } from '@stone-js/http-core'
-import { classMiddleware, IBlueprint, isNotEmpty } from '@stone-js/core'
 import { AwsLambdaHttpAdapterError } from '../errors/AwsLambdaHttpAdapterError'
 import { AwsLambdaHttpAdapterContext, AwsLambdaHttpAdapterResponseBuilder, AwsLambdaHttpEvent } from '../declarations'
 
@@ -123,4 +123,4 @@ export class BodyEventMiddleware {
 /**
  * Meta Middleware for processing the request body.
  */
-export const MetaBodyEventMiddleware = classMiddleware(BodyEventMiddleware)
+export const MetaBodyEventMiddleware = { module: BodyEventMiddleware, isClass: true }

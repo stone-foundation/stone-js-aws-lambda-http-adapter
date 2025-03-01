@@ -1,11 +1,12 @@
 import { AWS_LAMBDA_HTTP_PLATFORM } from '../constants'
 import { awsLambdaHttpAdapterResolver } from '../resolvers'
 import { AwsLambdaHttpErrorHandler } from '../AwsLambdaHttpErrorHandler'
-import { AdapterConfig, AppConfig, StoneBlueprint } from '@stone-js/core'
 import { metaAdapterConfigMiddleware } from '../middleware/configMiddleware'
 import { MetaIncomingEventMiddleware } from '../middleware/IncomingEventMiddleware'
 import { MetaServerResponseMiddleware } from '../middleware/ServerResponseMiddleware'
-import { HttpConfig, IncomingHttpEvent, OutgoingHttpResponse, httpCoreBlueprint } from '@stone-js/http-core'
+import { AwsLambdaContext, AwsLambdaHttpEvent, RawHttpResponse } from '../declarations'
+import { AdapterConfig, AppConfig, defaultKernelResolver, StoneBlueprint } from '@stone-js/core'
+import { HttpConfig, IncomingHttpEvent, IncomingHttpEventOptions, OutgoingHttpResponse, httpCoreBlueprint } from '@stone-js/http-core'
 
 /**
  * Configuration interface for the AWS Lambda Http Adapter.
@@ -14,7 +15,14 @@ import { HttpConfig, IncomingHttpEvent, OutgoingHttpResponse, httpCoreBlueprint 
  * customizable options specific to the AWS Lambda platform. This includes
  * alias, resolver, middleware, hooks, and various adapter state flags.
  */
-export interface AwsLambdaHttpAdapterAdapterConfig extends AdapterConfig {}
+export interface AwsLambdaHttpAdapterAdapterConfig extends AdapterConfig<
+AwsLambdaHttpEvent,
+RawHttpResponse,
+AwsLambdaContext,
+IncomingHttpEvent,
+IncomingHttpEventOptions,
+OutgoingHttpResponse
+> {}
 
 /**
  * Represents the AwsLambdaHttpAdapterConfig configuration options for the application.
@@ -54,15 +62,15 @@ export const awsLambdaHttpAdapterBlueprint: AwsLambdaHttpAdapterBlueprint = {
     },
     adapters: [
       {
-        hooks: {},
         current: false,
         default: false,
         platform: AWS_LAMBDA_HTTP_PLATFORM,
-        resolver: awsLambdaHttpAdapterResolver,
         middleware: [
           MetaIncomingEventMiddleware,
           MetaServerResponseMiddleware
         ],
+        resolver: awsLambdaHttpAdapterResolver,
+        eventHandlerResolver: defaultKernelResolver,
         errorHandlers: {
           default: { module: AwsLambdaHttpErrorHandler, isClass: true }
         }

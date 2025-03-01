@@ -12,4 +12,4 @@
 
 ## Functions
 
-- [SetResponseResolverMiddleware](functions/SetResponseResolverMiddleware.md)
+- [SetAwsLambdaHttpResponseResolverMiddleware](functions/SetAwsLambdaHttpResponseResolverMiddleware.md)

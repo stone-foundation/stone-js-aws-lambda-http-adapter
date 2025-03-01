@@ -6,8 +6,18 @@
 
 # Variable: MetaServerResponseMiddleware
 
-> `const` **MetaServerResponseMiddleware**: `MetaMiddleware`\<`IncomingEvent`, `OutgoingResponse`\>
+> `const` **MetaServerResponseMiddleware**: `object`
 
-Defined in: [aws-lambda-http-adapter/src/middleware/ServerResponseMiddleware.ts:60](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/middleware/ServerResponseMiddleware.ts#L60)
+Defined in: [aws-lambda-http-adapter/src/middleware/ServerResponseMiddleware.ts:59](https://github.com/stonemjs/aws-lambda-http-adapter/blob/f289dee0aae635648af98bb65369a05e133b69bc/src/middleware/ServerResponseMiddleware.ts#L59)
 
 Meta Middleware for processing server responses.
+
+## Type declaration
+
+### isClass
+
+> **isClass**: `boolean` = `true`
+
+### module
+
+> **module**: *typeof* [`ServerResponseMiddleware`](../classes/ServerResponseMiddleware.md) = `ServerResponseMiddleware`

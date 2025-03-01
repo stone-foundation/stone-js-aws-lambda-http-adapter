@@ -6,7 +6,7 @@
 
 # Class: RawHttpResponseWrapper
 
-Defined in: [aws-lambda-http-adapter/src/RawHttpResponseWrapper.ts:12](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/RawHttpResponseWrapper.ts#L12)
+Defined in: [aws-lambda-http-adapter/src/RawHttpResponseWrapper.ts:12](https://github.com/stonemjs/aws-lambda-http-adapter/blob/f289dee0aae635648af98bb65369a05e133b69bc/src/RawHttpResponseWrapper.ts#L12)
 
 Wrapper for HTTP raw responses in AWS Lambda.
 
@@ -25,7 +25,7 @@ with the Stone.js framework.
 
 > **respond**(): [`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)
 
-Defined in: [aws-lambda-http-adapter/src/RawHttpResponseWrapper.ts:64](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/RawHttpResponseWrapper.ts#L64)
+Defined in: [aws-lambda-http-adapter/src/RawHttpResponseWrapper.ts:64](https://github.com/stonemjs/aws-lambda-http-adapter/blob/f289dee0aae635648af98bb65369a05e133b69bc/src/RawHttpResponseWrapper.ts#L64)
 
 Constructs and returns the raw HTTP response.
 
@@ -57,7 +57,7 @@ console.log(response); // { statusCode: 500, statusMessage: '', body: 'Hello, wo
 
 > `static` **create**(`options`): [`RawHttpResponseWrapper`](RawHttpResponseWrapper.md)
 
-Defined in: [aws-lambda-http-adapter/src/RawHttpResponseWrapper.ts:34](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/RawHttpResponseWrapper.ts#L34)
+Defined in: [aws-lambda-http-adapter/src/RawHttpResponseWrapper.ts:34](https://github.com/stonemjs/aws-lambda-http-adapter/blob/f289dee0aae635648af98bb65369a05e133b69bc/src/RawHttpResponseWrapper.ts#L34)
 
 Factory method to create an instance of `RawHttpResponseWrapper`.
 

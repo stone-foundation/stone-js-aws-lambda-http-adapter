@@ -1,6 +1,5 @@
 import statuses from 'statuses'
 import { NextPipe } from '@stone-js/pipeline'
-import { classMiddleware } from '@stone-js/core'
 import { BinaryFileResponse } from '@stone-js/http-core'
 import { AwsLambdaHttpAdapterError } from '../errors/AwsLambdaHttpAdapterError'
 import { AwsLambdaHttpAdapterContext, AwsLambdaHttpAdapterResponseBuilder } from '../declarations'
@@ -57,4 +56,4 @@ export class ServerResponseMiddleware {
 /**
  * Meta Middleware for processing server responses.
  */
-export const MetaServerResponseMiddleware = classMiddleware(ServerResponseMiddleware)
+export const MetaServerResponseMiddleware = { module: ServerResponseMiddleware, isClass: true }

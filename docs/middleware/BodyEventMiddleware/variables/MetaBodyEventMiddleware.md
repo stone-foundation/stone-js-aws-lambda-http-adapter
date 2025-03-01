@@ -6,8 +6,18 @@
 
 # Variable: MetaBodyEventMiddleware
 
-> `const` **MetaBodyEventMiddleware**: `MetaMiddleware`\<`IncomingEvent`, `OutgoingResponse`\>
+> `const` **MetaBodyEventMiddleware**: `object`
 
-Defined in: [aws-lambda-http-adapter/src/middleware/BodyEventMiddleware.ts:126](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/middleware/BodyEventMiddleware.ts#L126)
+Defined in: [aws-lambda-http-adapter/src/middleware/BodyEventMiddleware.ts:126](https://github.com/stonemjs/aws-lambda-http-adapter/blob/f289dee0aae635648af98bb65369a05e133b69bc/src/middleware/BodyEventMiddleware.ts#L126)
 
 Meta Middleware for processing the request body.
+
+## Type declaration
+
+### isClass
+
+> **isClass**: `boolean` = `true`
+
+### module
+
+> **module**: *typeof* [`BodyEventMiddleware`](../classes/BodyEventMiddleware.md) = `BodyEventMiddleware`

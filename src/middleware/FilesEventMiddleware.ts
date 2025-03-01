@@ -1,5 +1,5 @@
 import { NextPipe } from '@stone-js/pipeline'
-import { classMiddleware, IBlueprint, isNotEmpty } from '@stone-js/core'
+import { IBlueprint, isNotEmpty } from '@stone-js/core'
 import { IncomingHttpHeaders, IncomingMessage } from 'node:http'
 import { isMultipart, getFilesUploads } from '@stone-js/http-core'
 import { AwsLambdaHttpAdapterError } from '../errors/AwsLambdaHttpAdapterError'
@@ -76,4 +76,4 @@ export class FilesEventMiddleware {
 /**
  * Meta Middleware for processing files uploads.
  */
-export const MetaFilesEventMiddleware = classMiddleware(FilesEventMiddleware)
+export const MetaFilesEventMiddleware = { module: FilesEventMiddleware, isClass: true }

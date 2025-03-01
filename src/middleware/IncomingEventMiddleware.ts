@@ -1,8 +1,8 @@
 import proxyAddr from 'proxy-addr'
+import { IBlueprint } from '@stone-js/core'
 import { IncomingMessage } from 'node:http'
 import { NextPipe } from '@stone-js/pipeline'
 import { AWS_LAMBDA_HTTP_PLATFORM } from '../constants'
-import { classMiddleware, IBlueprint } from '@stone-js/core'
 import { AwsLambdaHttpAdapterError } from '../errors/AwsLambdaHttpAdapterError'
 import { getHostname, getProtocol, isIpTrusted, CookieSameSite, CookieCollection } from '@stone-js/http-core'
 import { AwsLambdaHttpEvent, AwsLambdaHttpAdapterContext, AwsLambdaHttpAdapterResponseBuilder } from '../declarations'
@@ -205,4 +205,4 @@ export class IncomingEventMiddleware {
 /**
  * Meta Middleware for processing incoming events.
  */
-export const MetaIncomingEventMiddleware = classMiddleware(IncomingEventMiddleware)
+export const MetaIncomingEventMiddleware = { module: IncomingEventMiddleware, isClass: true }

@@ -1,7 +1,3 @@
-import { RawHttpResponseWrapper } from './RawHttpResponseWrapper'
-import { AwsLambdaHttpAdapterError } from './errors/AwsLambdaHttpAdapterError'
-import { IncomingHttpEvent, IncomingHttpEventOptions, OutgoingHttpResponse } from '@stone-js/http-core'
-import { Adapter, AdapterEventBuilder, AdapterOptions, LifecycleAdapterEventHandler } from '@stone-js/core'
 import {
   RawHttpResponse,
   AwsLambdaContext,
@@ -10,6 +6,10 @@ import {
   AwsLambdaHttpAdapterContext,
   AwsLambdaEventHandlerFunction
 } from './declarations'
+import { RawHttpResponseWrapper } from './RawHttpResponseWrapper'
+import { Adapter, AdapterEventBuilder, IBlueprint } from '@stone-js/core'
+import { AwsLambdaHttpAdapterError } from './errors/AwsLambdaHttpAdapterError'
+import { IncomingHttpEvent, IncomingHttpEventOptions, OutgoingHttpResponse } from '@stone-js/http-core'
 
 /**
  * AWS Lambda HTTP Adapter for Stone.js.
@@ -58,14 +58,17 @@ AwsLambdaHttpAdapterContext
   /**
    * Creates an instance of the `AwsLambdaHttpAdapter`.
    *
-   * This factory method initializes the adapter with the specified configuration options.
-   *
-   * @param options - Configuration options for the adapter, including the handler resolver
-   *                  and error handling mechanisms.
+   * @param blueprint - The application blueprint.
    * @returns A new instance of `AwsLambdaHttpAdapter`.
+   *
+   * @example
+   * ```typescript
+   * const adapter = AwsLambdaHttpAdapter.create(blueprint);
+   * await adapter.run();
+   * ```
    */
-  static create (options: AdapterOptions<IncomingHttpEvent, OutgoingHttpResponse>): AwsLambdaHttpAdapter {
-    return new this(options)
+  static create (blueprint: IBlueprint): AwsLambdaHttpAdapter {
+    return new this(blueprint)
   }
 
   /**
@@ -104,7 +107,7 @@ AwsLambdaHttpAdapterContext
       )
     }
 
-    await super.onStart()
+    await this.executeHooks('onStart')
   }
 
   /**
@@ -118,10 +121,6 @@ AwsLambdaHttpAdapterContext
    * @returns A promise resolving to the processed `RawHttpResponse`.
    */
   protected async eventListener (rawEvent: AwsLambdaHttpEvent, executionContext: AwsLambdaContext): Promise<RawHttpResponse> {
-    const eventHandler = this.handlerResolver(this.blueprint) as LifecycleAdapterEventHandler<IncomingHttpEvent, OutgoingHttpResponse>
-
-    await this.onPrepare(eventHandler)
-
     const incomingEventBuilder = AdapterEventBuilder.create<IncomingHttpEventOptions, IncomingHttpEvent>({
       resolver: (options) => IncomingHttpEvent.create(options)
     })
@@ -132,12 +131,21 @@ AwsLambdaHttpAdapterContext
 
     const rawResponse: RawHttpResponse = { statusCode: 500 }
 
-    return await this.sendEventThroughDestination(eventHandler, {
+    const context: AwsLambdaHttpAdapterContext = {
       rawEvent,
       rawResponse,
       executionContext,
       rawResponseBuilder,
       incomingEventBuilder
-    })
+    }
+
+    try {
+      const eventHandler = this.resolveEventHandler()
+      await this.executeEventHandlerHooks('onInit', eventHandler)
+      return await this.sendEventThroughDestination(context, eventHandler)
+    } catch (error: any) {
+      const rawResponseBuilder = await this.handleError(error, context)
+      return await this.buildRawResponse({ ...context, rawResponseBuilder })
+    }
   }
 }

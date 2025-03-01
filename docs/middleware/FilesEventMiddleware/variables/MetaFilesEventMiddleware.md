@@ -6,8 +6,18 @@
 
 # Variable: MetaFilesEventMiddleware
 
-> `const` **MetaFilesEventMiddleware**: `MetaMiddleware`\<`IncomingEvent`, `OutgoingResponse`\>
+> `const` **MetaFilesEventMiddleware**: `object`
 
-Defined in: [aws-lambda-http-adapter/src/middleware/FilesEventMiddleware.ts:79](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/middleware/FilesEventMiddleware.ts#L79)
+Defined in: [aws-lambda-http-adapter/src/middleware/FilesEventMiddleware.ts:79](https://github.com/stonemjs/aws-lambda-http-adapter/blob/f289dee0aae635648af98bb65369a05e133b69bc/src/middleware/FilesEventMiddleware.ts#L79)
 
 Meta Middleware for processing files uploads.
+
+## Type declaration
+
+### isClass
+
+> **isClass**: `boolean` = `true`
+
+### module
+
+> **module**: *typeof* [`FilesEventMiddleware`](../classes/FilesEventMiddleware.md) = `FilesEventMiddleware`

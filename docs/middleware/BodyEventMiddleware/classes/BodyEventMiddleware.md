@@ -6,7 +6,7 @@
 
 # Class: BodyEventMiddleware
 
-Defined in: [aws-lambda-http-adapter/src/middleware/BodyEventMiddleware.ts:26](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/middleware/BodyEventMiddleware.ts#L26)
+Defined in: [aws-lambda-http-adapter/src/middleware/BodyEventMiddleware.ts:26](https://github.com/stonemjs/aws-lambda-http-adapter/blob/f289dee0aae635648af98bb65369a05e133b69bc/src/middleware/BodyEventMiddleware.ts#L26)
 
 Class representing a BodyEventMiddleware.
 
@@ -22,7 +22,7 @@ Mr. Stone
 
 > **new BodyEventMiddleware**(`options`): [`BodyEventMiddleware`](BodyEventMiddleware.md)
 
-Defined in: [aws-lambda-http-adapter/src/middleware/BodyEventMiddleware.ts:37](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/middleware/BodyEventMiddleware.ts#L37)
+Defined in: [aws-lambda-http-adapter/src/middleware/BodyEventMiddleware.ts:37](https://github.com/stonemjs/aws-lambda-http-adapter/blob/f289dee0aae635648af98bb65369a05e133b69bc/src/middleware/BodyEventMiddleware.ts#L37)
 
 Create a BodyEventMiddleware.
 
@@ -46,7 +46,7 @@ Options for creating the BodyEventMiddleware.
 
 > **handle**(`context`, `next`): `Promise`\<[`AwsLambdaHttpAdapterResponseBuilder`](../../../declarations/type-aliases/AwsLambdaHttpAdapterResponseBuilder.md)\>
 
-Defined in: [aws-lambda-http-adapter/src/middleware/BodyEventMiddleware.ts:50](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/middleware/BodyEventMiddleware.ts#L50)
+Defined in: [aws-lambda-http-adapter/src/middleware/BodyEventMiddleware.ts:50](https://github.com/stonemjs/aws-lambda-http-adapter/blob/f289dee0aae635648af98bb65369a05e133b69bc/src/middleware/BodyEventMiddleware.ts#L50)
 
 Handles the incoming event, processes it, and invokes the next middleware in the pipeline.
 

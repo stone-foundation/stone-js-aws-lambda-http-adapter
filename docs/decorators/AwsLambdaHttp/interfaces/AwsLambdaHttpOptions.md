@@ -6,7 +6,7 @@
 
 # Interface: AwsLambdaHttpOptions
 
-Defined in: [aws-lambda-http-adapter/src/decorators/AwsLambdaHttp.ts:9](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/decorators/AwsLambdaHttp.ts#L9)
+Defined in: [aws-lambda-http-adapter/src/decorators/AwsLambdaHttp.ts:9](https://github.com/stonemjs/aws-lambda-http-adapter/blob/f289dee0aae635648af98bb65369a05e133b69bc/src/decorators/AwsLambdaHttp.ts#L9)
 
 Configuration options for the `AwsLambdaHttp` decorator.
 These options extend the default AWS Lambda HTTP adapter configuration.
@@ -21,7 +21,7 @@ These options extend the default AWS Lambda HTTP adapter configuration.
 
 > `optional` **alias**: `string`
 
-Defined in: core/dist/index.d.ts:430
+Defined in: core/dist/index.d.ts:445
 
 The alias name for the adapter.
 This is a unique identifier used to reference the adapter.
@@ -37,7 +37,7 @@ Optional property.
 
 > `optional` **current**: `boolean`
 
-Defined in: core/dist/index.d.ts:436
+Defined in: core/dist/index.d.ts:451
 
 The current status identifier for the adapter.
 Used to indicate if this adapter instance is active or currently in use.
@@ -53,7 +53,7 @@ Optional property.
 
 > `optional` **default**: `boolean`
 
-Defined in: core/dist/index.d.ts:441
+Defined in: core/dist/index.d.ts:456
 
 Defines whether this adapter is the default adapter used by the application.
 Optional property.
@@ -66,9 +66,9 @@ Optional property.
 
 ### errorHandlers?
 
-> `optional` **errorHandlers**: `Record`\<`string`, `MetaAdapterErrorHandler`\>
+> `optional` **errorHandlers**: `Record`\<`string`, `MetaAdapterErrorHandler`\<[`AwsLambdaHttpEvent`](../../../declarations/interfaces/AwsLambdaHttpEvent.md), [`RawHttpResponseOptions`](../../../declarations/interfaces/RawHttpResponseOptions.md), [`AwsLambdaContext`](../../../declarations/type-aliases/AwsLambdaContext.md)\>\>
 
-Defined in: core/dist/index.d.ts:419
+Defined in: core/dist/index.d.ts:439
 
 Error handlers used to manage and report errors that occur within the adapter.
 These handlers can be used to customize error handling behavior and logging.
@@ -79,26 +79,25 @@ These handlers can be used to customize error handling behavior and logging.
 
 ***
 
-### hooks?
+### eventHandlerResolver?
 
-> `optional` **hooks**: `AdapterHooks`
+> `optional` **eventHandlerResolver**: `AdapterEventHandlerResolver`\<`IncomingHttpEvent`, `OutgoingHttpResponse`\>
 
-Defined in: core/dist/index.d.ts:424
+Defined in: core/dist/index.d.ts:434
 
-Hooks that provide additional behavior during specific lifecycle events of the adapter.
-These hooks can be used to extend the adapter's functionality at various points.
+The event handler resolver used to create instances of the event handler.
 
 #### Inherited from
 
-`Partial.hooks`
+`Partial.eventHandlerResolver`
 
 ***
 
 ### middleware?
 
-> `optional` **middleware**: `MixedPipe`\<`any`, `any`\>[]
+> `optional` **middleware**: `AdapterMixedPipeType`\<`AdapterContext`\<[`AwsLambdaHttpEvent`](../../../declarations/interfaces/AwsLambdaHttpEvent.md), [`RawHttpResponseOptions`](../../../declarations/interfaces/RawHttpResponseOptions.md), [`AwsLambdaContext`](../../../declarations/type-aliases/AwsLambdaContext.md), `IncomingHttpEvent`, `IncomingHttpEventOptions`, `OutgoingHttpResponse`\>, [`RawHttpResponseOptions`](../../../declarations/interfaces/RawHttpResponseOptions.md)\>[]
 
-Defined in: core/dist/index.d.ts:414
+Defined in: core/dist/index.d.ts:430
 
 The middleware used for processing incoming or outgoing data in the adapter.
 Middleware can modify or handle events at different stages of the adapter's lifecycle.
@@ -113,7 +112,7 @@ Middleware can modify or handle events at different stages of the adapter's life
 
 > `optional` **platform**: `string`
 
-Defined in: core/dist/index.d.ts:405
+Defined in: core/dist/index.d.ts:421
 
 The platform identifier for the adapter.
 This is used to categorize the adapter based on the environment or technology it supports.
@@ -128,7 +127,7 @@ This is used to categorize the adapter based on the environment or technology it
 
 > `optional` **resolver**: `AdapterResolver`
 
-Defined in: core/dist/index.d.ts:409
+Defined in: core/dist/index.d.ts:425
 
 The class type resolver used to create instances of the adapter.
 

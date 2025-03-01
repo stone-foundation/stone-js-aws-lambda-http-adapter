@@ -6,7 +6,7 @@
 
 # Class: AwsLambdaHttpAdapterError
 
-Defined in: [aws-lambda-http-adapter/src/errors/AwsLambdaHttpAdapterError.ts:6](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/errors/AwsLambdaHttpAdapterError.ts#L6)
+Defined in: [aws-lambda-http-adapter/src/errors/AwsLambdaHttpAdapterError.ts:6](https://github.com/stonemjs/aws-lambda-http-adapter/blob/f289dee0aae635648af98bb65369a05e133b69bc/src/errors/AwsLambdaHttpAdapterError.ts#L6)
 
 Custom error for AWS Lambda adapter operations.
 
@@ -20,7 +20,7 @@ Custom error for AWS Lambda adapter operations.
 
 > **new AwsLambdaHttpAdapterError**(`message`, `options`?): [`AwsLambdaHttpAdapterError`](AwsLambdaHttpAdapterError.md)
 
-Defined in: [aws-lambda-http-adapter/src/errors/AwsLambdaHttpAdapterError.ts:7](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/errors/AwsLambdaHttpAdapterError.ts#L7)
+Defined in: [aws-lambda-http-adapter/src/errors/AwsLambdaHttpAdapterError.ts:7](https://github.com/stonemjs/aws-lambda-http-adapter/blob/f289dee0aae635648af98bb65369a05e133b69bc/src/errors/AwsLambdaHttpAdapterError.ts#L7)
 
 #### Parameters
 
@@ -46,7 +46,7 @@ Defined in: [aws-lambda-http-adapter/src/errors/AwsLambdaHttpAdapterError.ts:7](
 
 > `readonly` `optional` **cause**: `Error`
 
-Defined in: core/dist/index.d.ts:3296
+Defined in: core/dist/index.d.ts:2854
 
 #### Inherited from
 
@@ -58,7 +58,7 @@ Defined in: core/dist/index.d.ts:3296
 
 > `readonly` `optional` **code**: `string`
 
-Defined in: core/dist/index.d.ts:3295
+Defined in: core/dist/index.d.ts:2853
 
 #### Inherited from
 
@@ -70,7 +70,7 @@ Defined in: core/dist/index.d.ts:3295
 
 > `readonly` `optional` **metadata**: `unknown`
 
-Defined in: core/dist/index.d.ts:3297
+Defined in: core/dist/index.d.ts:2855
 
 #### Inherited from
 
@@ -82,7 +82,7 @@ Defined in: core/dist/index.d.ts:3297
 
 > **toString**(`multiline`?): `string`
 
-Defined in: core/dist/index.d.ts:3318
+Defined in: core/dist/index.d.ts:2876
 
 Converts the error to a formatted string representation.
 
@@ -110,7 +110,7 @@ A formatted error string.
 
 > `static` **create**\<`T`\>(`message`, `options`?): `T`
 
-Defined in: core/dist/index.d.ts:3304
+Defined in: core/dist/index.d.ts:2862
 
 Create a RuntimeError.
 

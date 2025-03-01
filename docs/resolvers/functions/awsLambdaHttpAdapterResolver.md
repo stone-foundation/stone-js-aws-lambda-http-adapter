@@ -8,7 +8,7 @@
 
 > **awsLambdaHttpAdapterResolver**(`blueprint`): `IAdapter`
 
-Defined in: [aws-lambda-http-adapter/src/resolvers.ts:12](https://github.com/stonemjs/aws-lambda-http-adapter/blob/c19fde3ee4450c0cd7d8d2aec48335308371d4de/src/resolvers.ts#L12)
+Defined in: [aws-lambda-http-adapter/src/resolvers.ts:12](https://github.com/stonemjs/aws-lambda-http-adapter/blob/f289dee0aae635648af98bb65369a05e133b69bc/src/resolvers.ts#L12)
 
 Adapter resolver for AWS Lambda HTTP adapter.
 
