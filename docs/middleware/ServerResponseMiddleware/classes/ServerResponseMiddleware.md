@@ -6,7 +6,7 @@
 
 # Class: ServerResponseMiddleware
 
-Defined in: [aws-lambda-http-adapter/src/middleware/ServerResponseMiddleware.ts:13](https://github.com/stonemjs/aws-lambda-http-adapter/blob/f289dee0aae635648af98bb65369a05e133b69bc/src/middleware/ServerResponseMiddleware.ts#L13)
+Defined in: [aws-lambda-http-adapter/src/middleware/ServerResponseMiddleware.ts:13](https://github.com/stonemjs/aws-lambda-http-adapter/blob/266a5c901335674bf07c5995909e8ee8116e2bba/src/middleware/ServerResponseMiddleware.ts#L13)
 
 Middleware for handling server responses and transforming them into the appropriate HTTP responses.
 
@@ -29,7 +29,7 @@ and body content to the HTTP response.
 
 > **handle**(`context`, `next`): `Promise`\<[`AwsLambdaHttpAdapterResponseBuilder`](../../../declarations/type-aliases/AwsLambdaHttpAdapterResponseBuilder.md)\>
 
-Defined in: [aws-lambda-http-adapter/src/middleware/ServerResponseMiddleware.ts:22](https://github.com/stonemjs/aws-lambda-http-adapter/blob/f289dee0aae635648af98bb65369a05e133b69bc/src/middleware/ServerResponseMiddleware.ts#L22)
+Defined in: [aws-lambda-http-adapter/src/middleware/ServerResponseMiddleware.ts:22](https://github.com/stonemjs/aws-lambda-http-adapter/blob/266a5c901335674bf07c5995909e8ee8116e2bba/src/middleware/ServerResponseMiddleware.ts#L22)
 
 Handles the outgoing response, processes it, and invokes the next middleware in the pipeline.
 

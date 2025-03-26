@@ -8,7 +8,7 @@
 
 > `const` **MetaBodyEventMiddleware**: `object`
 
-Defined in: [aws-lambda-http-adapter/src/middleware/BodyEventMiddleware.ts:126](https://github.com/stonemjs/aws-lambda-http-adapter/blob/f289dee0aae635648af98bb65369a05e133b69bc/src/middleware/BodyEventMiddleware.ts#L126)
+Defined in: [aws-lambda-http-adapter/src/middleware/BodyEventMiddleware.ts:126](https://github.com/stonemjs/aws-lambda-http-adapter/blob/266a5c901335674bf07c5995909e8ee8116e2bba/src/middleware/BodyEventMiddleware.ts#L126)
 
 Meta Middleware for processing the request body.
 

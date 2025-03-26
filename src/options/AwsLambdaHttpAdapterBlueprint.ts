@@ -1,7 +1,7 @@
 import { AWS_LAMBDA_HTTP_PLATFORM } from '../constants'
 import { awsLambdaHttpAdapterResolver } from '../resolvers'
 import { AwsLambdaHttpErrorHandler } from '../AwsLambdaHttpErrorHandler'
-import { metaAdapterConfigMiddleware } from '../middleware/configMiddleware'
+import { metaAdapterBlueprintMiddleware } from '../middleware/BlueprintMiddleware'
 import { MetaIncomingEventMiddleware } from '../middleware/IncomingEventMiddleware'
 import { MetaServerResponseMiddleware } from '../middleware/ServerResponseMiddleware'
 import { AwsLambdaContext, AwsLambdaHttpEvent, RawHttpResponse } from '../declarations'
@@ -57,8 +57,8 @@ export interface AwsLambdaHttpAdapterBlueprint extends StoneBlueprint<IncomingHt
 export const awsLambdaHttpAdapterBlueprint: AwsLambdaHttpAdapterBlueprint = {
   stone: {
     ...httpCoreBlueprint.stone,
-    builder: {
-      middleware: metaAdapterConfigMiddleware
+    blueprint: {
+      middleware: metaAdapterBlueprintMiddleware
     },
     adapters: [
       {

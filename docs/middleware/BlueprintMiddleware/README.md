@@ -2,13 +2,13 @@
 
 ***
 
-[AWS Lambda HTTP Adapter Documentation](../../modules.md) / middleware/configMiddleware
+[AWS Lambda HTTP Adapter Documentation](../../modules.md) / middleware/BlueprintMiddleware
 
-# middleware/configMiddleware
+# middleware/BlueprintMiddleware
 
 ## Variables
 
-- [metaAdapterConfigMiddleware](variables/metaAdapterConfigMiddleware.md)
+- [metaAdapterBlueprintMiddleware](variables/metaAdapterBlueprintMiddleware.md)
 
 ## Functions
 
