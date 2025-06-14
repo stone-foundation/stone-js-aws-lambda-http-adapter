@@ -6,7 +6,7 @@
 
 # Interface: AwsLambdaHttpAdapterContext
 
-Defined in: [aws-lambda-http-adapter/src/declarations.ts:101](https://github.com/stonemjs/aws-lambda-http-adapter/blob/266a5c901335674bf07c5995909e8ee8116e2bba/src/declarations.ts#L101)
+Defined in: [aws-lambda-http-adapter/src/declarations.ts:101](https://github.com/stonemjs/aws-lambda-http-adapter/blob/2fb8e4d048853c60484edbc94c3249aefb421def/src/declarations.ts#L101)
 
 Represents the context for the AWS Lambda HTTP Adapter.
 
@@ -23,7 +23,7 @@ to HTTP events in AWS Lambda.
 
 > `readonly` **executionContext**: [`AwsLambdaContext`](../type-aliases/AwsLambdaContext.md)
 
-Defined in: core/dist/index.d.ts:1746
+Defined in: core/dist/index.d.ts:1754
 
 The executionContext of type ExecutionContextType.
 
@@ -37,7 +37,7 @@ The executionContext of type ExecutionContextType.
 
 > `optional` **incomingEvent**: `IncomingHttpEvent`
 
-Defined in: core/dist/index.d.ts:1750
+Defined in: core/dist/index.d.ts:1758
 
 The incomingEvent associated with the executionContext.
 
@@ -51,7 +51,7 @@ The incomingEvent associated with the executionContext.
 
 > `readonly` **incomingEventBuilder**: `IAdapterEventBuilder`\<`IncomingHttpEventOptions`, `IncomingHttpEvent`\>
 
-Defined in: core/dist/index.d.ts:1758
+Defined in: core/dist/index.d.ts:1766
 
 The incomingEventBuilder.
 
@@ -65,7 +65,7 @@ The incomingEventBuilder.
 
 > `optional` **outgoingResponse**: `OutgoingHttpResponse`
 
-Defined in: core/dist/index.d.ts:1754
+Defined in: core/dist/index.d.ts:1762
 
 The outgoingResponse associated with the executionContext.
 
@@ -79,7 +79,7 @@ The outgoingResponse associated with the executionContext.
 
 > `readonly` **rawEvent**: [`AwsLambdaHttpEvent`](AwsLambdaHttpEvent.md)
 
-Defined in: core/dist/index.d.ts:1738
+Defined in: core/dist/index.d.ts:1746
 
 The rawEvent of type RawEventType.
 
@@ -93,7 +93,7 @@ The rawEvent of type RawEventType.
 
 > **rawResponse**: [`RawHttpResponseOptions`](RawHttpResponseOptions.md)
 
-Defined in: [aws-lambda-http-adapter/src/declarations.ts:112](https://github.com/stonemjs/aws-lambda-http-adapter/blob/266a5c901335674bf07c5995909e8ee8116e2bba/src/declarations.ts#L112)
+Defined in: [aws-lambda-http-adapter/src/declarations.ts:112](https://github.com/stonemjs/aws-lambda-http-adapter/blob/2fb8e4d048853c60484edbc94c3249aefb421def/src/declarations.ts#L112)
 
 The raw HTTP response associated with the current context.
 
@@ -107,7 +107,7 @@ The raw HTTP response associated with the current context.
 
 > `readonly` **rawResponseBuilder**: `IAdapterEventBuilder`\<`RawResponseOptions`, `IRawResponseWrapper`\<[`RawHttpResponseOptions`](RawHttpResponseOptions.md)\>\>
 
-Defined in: core/dist/index.d.ts:1762
+Defined in: core/dist/index.d.ts:1770
 
 The rawResponseBuilder.
 

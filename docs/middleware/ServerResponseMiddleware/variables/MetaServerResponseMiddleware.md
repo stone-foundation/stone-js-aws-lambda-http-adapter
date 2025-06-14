@@ -8,7 +8,7 @@
 
 > `const` **MetaServerResponseMiddleware**: `object`
 
-Defined in: [aws-lambda-http-adapter/src/middleware/ServerResponseMiddleware.ts:59](https://github.com/stonemjs/aws-lambda-http-adapter/blob/266a5c901335674bf07c5995909e8ee8116e2bba/src/middleware/ServerResponseMiddleware.ts#L59)
+Defined in: [aws-lambda-http-adapter/src/middleware/ServerResponseMiddleware.ts:59](https://github.com/stonemjs/aws-lambda-http-adapter/blob/2fb8e4d048853c60484edbc94c3249aefb421def/src/middleware/ServerResponseMiddleware.ts#L59)
 
 Meta Middleware for processing server responses.
 

@@ -8,7 +8,7 @@
 
 > **SetAwsLambdaHttpResponseResolverMiddleware**(`context`, `next`): `Promise`\<`IBlueprint`\>
 
-Defined in: aws-lambda-http-adapter/src/middleware/BlueprintMiddleware.ts:19
+Defined in: [aws-lambda-http-adapter/src/middleware/BlueprintMiddleware.ts:19](https://github.com/stonemjs/aws-lambda-http-adapter/blob/2fb8e4d048853c60484edbc94c3249aefb421def/src/middleware/BlueprintMiddleware.ts#L19)
 
 Middleware to dynamically set response resolver for adapter.
 

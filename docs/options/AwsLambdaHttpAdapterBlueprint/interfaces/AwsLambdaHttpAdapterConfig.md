@@ -6,7 +6,7 @@
 
 # Interface: AwsLambdaHttpAdapterConfig
 
-Defined in: [aws-lambda-http-adapter/src/options/AwsLambdaHttpAdapterBlueprint.ts:30](https://github.com/stonemjs/aws-lambda-http-adapter/blob/266a5c901335674bf07c5995909e8ee8116e2bba/src/options/AwsLambdaHttpAdapterBlueprint.ts#L30)
+Defined in: [aws-lambda-http-adapter/src/options/AwsLambdaHttpAdapterBlueprint.ts:31](https://github.com/stonemjs/aws-lambda-http-adapter/blob/2fb8e4d048853c60484edbc94c3249aefb421def/src/options/AwsLambdaHttpAdapterBlueprint.ts#L31)
 
 Represents the AwsLambdaHttpAdapterConfig configuration options for the application.
 
@@ -20,7 +20,7 @@ Represents the AwsLambdaHttpAdapterConfig configuration options for the applicat
 
 > `optional` **adapter**: `Partial`\<`AdapterConfig`\<`IncomingHttpEvent`, `OutgoingHttpResponse`\>\>
 
-Defined in: core/dist/index.d.ts:549
+Defined in: core/dist/index.d.ts:557
 
 Current Adapter configurations for the application.
 This key allow you to specify the current adapter with the alias key.
@@ -35,7 +35,7 @@ This key allow you to specify the current adapter with the alias key.
 
 > `optional` **adapters**: `AdapterConfig`\<`IncomingHttpEvent`, `OutgoingHttpResponse`\>[]
 
-Defined in: core/dist/index.d.ts:554
+Defined in: core/dist/index.d.ts:562
 
 Adapter configurations for the application.
 List of all adapters used in the application.
@@ -50,7 +50,7 @@ List of all adapters used in the application.
 
 > `optional` **aliases**: `Record`\<`string`, `any`\>
 
-Defined in: core/dist/index.d.ts:585
+Defined in: core/dist/index.d.ts:593
 
 Class aliases to be registered when the application starts.
 These aliases provide shorthand references to commonly used classes.
@@ -65,7 +65,7 @@ These aliases provide shorthand references to commonly used classes.
 
 > `optional` **blueprint**: `BlueprintConfig`\<`any`\>
 
-Defined in: core/dist/index.d.ts:544
+Defined in: core/dist/index.d.ts:552
 
 Configuration options for building the application blueprint, including middleware and pipe priorities.
 
@@ -79,7 +79,7 @@ Configuration options for building the application blueprint, including middlewa
 
 > `optional` **debug**: `boolean`
 
-Defined in: core/dist/index.d.ts:523
+Defined in: core/dist/index.d.ts:531
 
 Determines if the application is in debug mode.
 When enabled, detailed error messages with stack traces will be shown.
@@ -94,7 +94,7 @@ When enabled, detailed error messages with stack traces will be shown.
 
 > `optional` **env**: `Environment`
 
-Defined in: core/dist/index.d.ts:518
+Defined in: core/dist/index.d.ts:526
 
 The current environment in which the application is running.
 Possible values are development, production, and test.
@@ -109,7 +109,7 @@ Possible values are development, production, and test.
 
 > `optional` **fallback\_locale**: `string`
 
-Defined in: core/dist/index.d.ts:535
+Defined in: core/dist/index.d.ts:543
 
 The fallback locale used when a translation for the default locale is unavailable.
 
@@ -123,7 +123,7 @@ The fallback locale used when a translation for the default locale is unavailabl
 
 > **http**: `Partial`\<`HttpConfig`\>
 
-Defined in: [aws-lambda-http-adapter/src/options/AwsLambdaHttpAdapterBlueprint.ts:31](https://github.com/stonemjs/aws-lambda-http-adapter/blob/266a5c901335674bf07c5995909e8ee8116e2bba/src/options/AwsLambdaHttpAdapterBlueprint.ts#L31)
+Defined in: [aws-lambda-http-adapter/src/options/AwsLambdaHttpAdapterBlueprint.ts:32](https://github.com/stonemjs/aws-lambda-http-adapter/blob/2fb8e4d048853c60484edbc94c3249aefb421def/src/options/AwsLambdaHttpAdapterBlueprint.ts#L32)
 
 ***
 
@@ -131,7 +131,7 @@ Defined in: [aws-lambda-http-adapter/src/options/AwsLambdaHttpAdapterBlueprint.t
 
 > `optional` **kernel**: `KernelConfig`\<`IncomingHttpEvent`, `OutgoingHttpResponse`\>
 
-Defined in: core/dist/index.d.ts:558
+Defined in: core/dist/index.d.ts:566
 
 Kernel configurations for the application.
 
@@ -145,7 +145,7 @@ Kernel configurations for the application.
 
 > `optional` **lifecycleHooks**: `LifecycleHookType`\<`IBlueprint`\<`any`\>, `any`, `any`, `IncomingHttpEvent`, `OutgoingHttpResponse`\>
 
-Defined in: core/dist/index.d.ts:590
+Defined in: core/dist/index.d.ts:598
 
 Lifecycle hooks for the application.
 These hooks allow you to run custom code at different stages of the application lifecycle.
@@ -160,7 +160,7 @@ These hooks allow you to run custom code at different stages of the application 
 
 > `optional` **listeners**: `MetaEventListener`[]
 
-Defined in: core/dist/index.d.ts:571
+Defined in: core/dist/index.d.ts:579
 
 Event listeners to be automatically registered when the application starts.
 This allows you to specify functions to listen for specific events.
@@ -175,7 +175,7 @@ This allows you to specify functions to listen for specific events.
 
 > `optional` **liveConfigurations**: `MixedConfiguration`\<`any`\>[]
 
-Defined in: core/dist/index.d.ts:596
+Defined in: core/dist/index.d.ts:604
 
 Live configurations are loaded at each request.
 By default, configurations are loaded once when the application starts.
@@ -191,7 +191,7 @@ This is useful for defining dynamic configurations that do not require a restart
 
 > `optional` **locale**: `string`
 
-Defined in: core/dist/index.d.ts:531
+Defined in: core/dist/index.d.ts:539
 
 The default locale for the application.
 
@@ -205,7 +205,7 @@ The default locale for the application.
 
 > `optional` **logger**: `LoggerConfig`
 
-Defined in: core/dist/index.d.ts:562
+Defined in: core/dist/index.d.ts:570
 
 Logging settings, including the logger instance and error reporting configurations.
 
@@ -219,7 +219,7 @@ Logging settings, including the logger instance and error reporting configuratio
 
 > `optional` **name**: `string`
 
-Defined in: core/dist/index.d.ts:513
+Defined in: core/dist/index.d.ts:521
 
 The name of the application.
 
@@ -233,7 +233,7 @@ The name of the application.
 
 > `optional` **providers**: `MixedServiceProvider`[]
 
-Defined in: core/dist/index.d.ts:580
+Defined in: core/dist/index.d.ts:588
 
 Service providers to be automatically loaded for each request to the application.
 
@@ -247,7 +247,7 @@ Service providers to be automatically loaded for each request to the application
 
 > `optional` **secret**: `string`
 
-Defined in: core/dist/index.d.ts:540
+Defined in: core/dist/index.d.ts:548
 
 A secret key used for encryption purposes throughout the application.
 This key should be kept secure.
@@ -262,7 +262,7 @@ This key should be kept secure.
 
 > `optional` **services**: `MetaService`[]
 
-Defined in: core/dist/index.d.ts:566
+Defined in: core/dist/index.d.ts:574
 
 Services to be automatically registered when the application starts.
 
@@ -276,7 +276,7 @@ Services to be automatically registered when the application starts.
 
 > `optional` **subscribers**: `MixedEventSubscriber`[]
 
-Defined in: core/dist/index.d.ts:576
+Defined in: core/dist/index.d.ts:584
 
 Subscribers to be automatically registered when the application starts.
 Subscribers are used for handling and responding to events.
@@ -291,7 +291,7 @@ Subscribers are used for handling and responding to events.
 
 > `optional` **timezone**: `string`
 
-Defined in: core/dist/index.d.ts:527
+Defined in: core/dist/index.d.ts:535
 
 The default timezone for the application.
 

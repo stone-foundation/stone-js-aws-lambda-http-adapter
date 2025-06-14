@@ -1,3 +1,4 @@
+import { getString } from '@stone-js/env'
 import { AWS_LAMBDA_HTTP_PLATFORM } from '../constants'
 import { awsLambdaHttpAdapterResolver } from '../resolvers'
 import { AwsLambdaHttpErrorHandler } from '../AwsLambdaHttpErrorHandler'
@@ -5,7 +6,7 @@ import { metaAdapterBlueprintMiddleware } from '../middleware/BlueprintMiddlewar
 import { MetaIncomingEventMiddleware } from '../middleware/IncomingEventMiddleware'
 import { MetaServerResponseMiddleware } from '../middleware/ServerResponseMiddleware'
 import { AwsLambdaContext, AwsLambdaHttpEvent, RawHttpResponse } from '../declarations'
-import { AdapterConfig, AppConfig, defaultKernelResolver, StoneBlueprint } from '@stone-js/core'
+import { AdapterConfig, AppConfig, defaultKernelResolver, isNotEmpty, StoneBlueprint } from '@stone-js/core'
 import { HttpConfig, IncomingHttpEvent, IncomingHttpEventOptions, OutgoingHttpResponse, httpCoreBlueprint } from '@stone-js/http-core'
 
 /**
@@ -63,7 +64,7 @@ export const awsLambdaHttpAdapterBlueprint: AwsLambdaHttpAdapterBlueprint = {
     adapters: [
       {
         current: false,
-        default: false,
+        variant: 'server',
         platform: AWS_LAMBDA_HTTP_PLATFORM,
         middleware: [
           MetaIncomingEventMiddleware,
@@ -73,7 +74,8 @@ export const awsLambdaHttpAdapterBlueprint: AwsLambdaHttpAdapterBlueprint = {
         eventHandlerResolver: defaultKernelResolver,
         errorHandlers: {
           default: { module: AwsLambdaHttpErrorHandler, isClass: true }
-        }
+        },
+        default: isNotEmpty(getString('AWS_LAMBDA_FUNCTION_NAME', ''))
       }
     ]
   }

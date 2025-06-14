@@ -82,11 +82,15 @@ describe('ServerResponseMiddleware', () => {
   it('should add body and charset if the response is not a BinaryFileResponse', async () => {
     // @ts-expect-error
     vi.mocked(mockContext.incomingEvent.isMethod).mockReturnValue(false)
+    const content = Buffer.from('{"success": true}')
+    // @ts-expect-error
+    mockContext.outgoingResponse.content = content
 
     await middleware.handle(mockContext, next)
 
-    expect(mockContext.rawResponseBuilder?.add).toHaveBeenCalledWith('body', '{"success": true}')
     expect(mockContext.rawResponseBuilder?.add).toHaveBeenCalledWith('charset', 'utf-8')
+    expect(mockContext.rawResponseBuilder?.add).toHaveBeenCalledWith('isBase64Encoded', true)
+    expect(mockContext.rawResponseBuilder?.add).toHaveBeenCalledWith('body', content.toString('base64'))
   })
 
   it('should stream file if the response is a BinaryFileResponse', async () => {

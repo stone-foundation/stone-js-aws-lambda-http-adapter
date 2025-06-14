@@ -98,12 +98,13 @@ describe('BodyEventMiddleware', () => {
     vi.mocked(getCharset).mockReturnValue('utf-8')
     vi.mocked(typeIs.is).mockReturnValue('json')
 
-    mockContext.rawEvent.body = { key: 'value' }
+    mockContext.rawEvent.body = { key: 'value', $method$: 'POST' }
 
     await middleware.handle(mockContext, next)
 
     expect(mockBlueprint.get).toHaveBeenCalledWith('stone.http.body', expect.any(Object))
-    expect(mockContext.incomingEventBuilder?.add).toHaveBeenCalledWith('body', { key: 'value' })
+    expect(mockContext.incomingEventBuilder?.add).toHaveBeenCalledWith('body', { key: 'value', $method$: 'POST' })
+    expect(mockContext.incomingEventBuilder?.add).toHaveBeenCalledWith('method', 'POST')
     expect(next).toHaveBeenCalledWith(mockContext)
   })
 

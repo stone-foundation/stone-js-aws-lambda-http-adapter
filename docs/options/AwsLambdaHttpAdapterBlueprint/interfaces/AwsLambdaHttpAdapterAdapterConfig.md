@@ -6,7 +6,7 @@
 
 # Interface: AwsLambdaHttpAdapterAdapterConfig
 
-Defined in: [aws-lambda-http-adapter/src/options/AwsLambdaHttpAdapterBlueprint.ts:18](https://github.com/stonemjs/aws-lambda-http-adapter/blob/266a5c901335674bf07c5995909e8ee8116e2bba/src/options/AwsLambdaHttpAdapterBlueprint.ts#L18)
+Defined in: [aws-lambda-http-adapter/src/options/AwsLambdaHttpAdapterBlueprint.ts:19](https://github.com/stonemjs/aws-lambda-http-adapter/blob/2fb8e4d048853c60484edbc94c3249aefb421def/src/options/AwsLambdaHttpAdapterBlueprint.ts#L19)
 
 Configuration interface for the AWS Lambda Http Adapter.
 
@@ -24,7 +24,7 @@ alias, resolver, middleware, hooks, and various adapter state flags.
 
 > `optional` **alias**: `string`
 
-Defined in: core/dist/index.d.ts:447
+Defined in: core/dist/index.d.ts:455
 
 The alias name for the adapter.
 This is a unique identifier used to reference the adapter.
@@ -40,7 +40,7 @@ Optional property.
 
 > `optional` **current**: `boolean`
 
-Defined in: core/dist/index.d.ts:453
+Defined in: core/dist/index.d.ts:461
 
 The current status identifier for the adapter.
 Used to indicate if this adapter instance is active or currently in use.
@@ -56,7 +56,7 @@ Optional property.
 
 > `optional` **default**: `boolean`
 
-Defined in: core/dist/index.d.ts:458
+Defined in: core/dist/index.d.ts:466
 
 Defines whether this adapter is the default adapter used by the application.
 Optional property.
@@ -71,7 +71,7 @@ Optional property.
 
 > **errorHandlers**: `Record`\<`string`, `MetaAdapterErrorHandler`\<[`AwsLambdaHttpEvent`](../../../declarations/interfaces/AwsLambdaHttpEvent.md), [`RawHttpResponseOptions`](../../../declarations/interfaces/RawHttpResponseOptions.md), [`AwsLambdaContext`](../../../declarations/type-aliases/AwsLambdaContext.md)\>\>
 
-Defined in: core/dist/index.d.ts:441
+Defined in: core/dist/index.d.ts:449
 
 Error handlers used to manage and report errors that occur within the adapter.
 These handlers can be used to customize error handling behavior and logging.
@@ -86,7 +86,7 @@ These handlers can be used to customize error handling behavior and logging.
 
 > **eventHandlerResolver**: `AdapterEventHandlerResolver`\<`IncomingHttpEvent`, `OutgoingHttpResponse`\>
 
-Defined in: core/dist/index.d.ts:436
+Defined in: core/dist/index.d.ts:444
 
 The event handler resolver used to create instances of the event handler.
 
@@ -100,7 +100,7 @@ The event handler resolver used to create instances of the event handler.
 
 > **middleware**: `AdapterMixedPipeType`\<`AdapterContext`\<[`AwsLambdaHttpEvent`](../../../declarations/interfaces/AwsLambdaHttpEvent.md), [`RawHttpResponseOptions`](../../../declarations/interfaces/RawHttpResponseOptions.md), [`AwsLambdaContext`](../../../declarations/type-aliases/AwsLambdaContext.md), `IncomingHttpEvent`, `IncomingHttpEventOptions`, `OutgoingHttpResponse`\>, [`RawHttpResponseOptions`](../../../declarations/interfaces/RawHttpResponseOptions.md)\>[]
 
-Defined in: core/dist/index.d.ts:432
+Defined in: core/dist/index.d.ts:440
 
 The middleware used for processing incoming or outgoing data in the adapter.
 Middleware can modify or handle events at different stages of the adapter's lifecycle.
@@ -115,7 +115,7 @@ Middleware can modify or handle events at different stages of the adapter's life
 
 > **platform**: `string`
 
-Defined in: core/dist/index.d.ts:423
+Defined in: core/dist/index.d.ts:431
 
 The platform identifier for the adapter.
 This is used to categorize the adapter based on the environment or technology it supports.
@@ -130,7 +130,7 @@ This is used to categorize the adapter based on the environment or technology it
 
 > **resolver**: `AdapterResolver`
 
-Defined in: core/dist/index.d.ts:427
+Defined in: core/dist/index.d.ts:435
 
 The class type resolver used to create instances of the adapter.
 

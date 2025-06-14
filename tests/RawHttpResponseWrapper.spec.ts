@@ -32,7 +32,7 @@ describe('RawHttpResponseWrapper', () => {
     expect(rawResponse).not.toEqual(mockResponse)
     expect(rawResponse.statusCode).toBe(500)
     expect(rawResponse.body).toBeUndefined()
-    expect(rawResponse.statusMessage).toBe('')
     expect(rawResponse.headers).toBeUndefined()
+    expect(rawResponse.statusMessage).toBeUndefined()
   })
 })

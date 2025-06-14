@@ -62,7 +62,7 @@ describe('FilesEventMiddleware', () => {
     vi.mocked(isMultipart).mockReturnValue(true)
     vi.mocked(getFilesUploads).mockResolvedValue({
       files: { filename: [{ name: 'file1.txt', size: 123 }] } as any,
-      fields: { key: 'value' }
+      fields: { key: 'value', $method$: 'POST' } as any
     })
 
     await middleware.handle(mockContext, next)
@@ -71,7 +71,8 @@ describe('FilesEventMiddleware', () => {
     expect(mockBlueprint.get).toHaveBeenCalledWith('stone.http.files.upload', {})
     expect(getFilesUploads).toHaveBeenCalledWith(mockContext.rawEvent, {})
     expect(mockContext.incomingEventBuilder?.add).toHaveBeenCalledWith('files', { filename: [{ name: 'file1.txt', size: 123 }] })
-    expect(mockContext.incomingEventBuilder?.add).toHaveBeenCalledWith('body', { key: 'value' })
+    expect(mockContext.incomingEventBuilder?.add).toHaveBeenCalledWith('body', { key: 'value', $method$: 'POST' })
+    expect(mockContext.incomingEventBuilder?.add).toHaveBeenCalledWith('method', 'POST')
     expect(next).toHaveBeenCalledWith(mockContext)
   })
 

@@ -1,70 +1,88 @@
-import {
-  AdapterEventBuilder,
-  AdapterOptions
-} from '@stone-js/core'
-import {
-  IncomingHttpEvent,
-  OutgoingHttpResponse
-} from '@stone-js/http-core'
+import { AdapterEventBuilder, IBlueprint } from '@stone-js/core'
 import { AwsLambdaHttpAdapter } from '../src/AwsLambdaHttpAdapter'
-import { RawHttpResponseWrapper } from '../src/RawHttpResponseWrapper'
 import { AwsLambdaHttpAdapterError } from '../src/errors/AwsLambdaHttpAdapterError'
 
-vi.mock('../src/RawHttpResponseWrapper', () => ({
-  RawHttpResponseWrapper: {
-    create: vi.fn()
+vi.mock('@stone-js/core', async () => {
+  const actual = await vi.importActual<any>('@stone-js/core')
+  return {
+    ...actual,
+    AdapterEventBuilder: {
+      create: vi.fn().mockImplementation(({ resolver }) => ({ resolver }))
+    }
   }
-}))
+})
 
-describe('AWSLambdaHttpAdapter', () => {
-  let adapterOptions: AdapterOptions<IncomingHttpEvent, OutgoingHttpResponse>
+vi.mock('@stone-js/http-core', async () => {
+  const actual = await vi.importActual<any>('@stone-js/http-core')
+  return {
+    ...actual,
+    IncomingHttpEvent: {
+      create: vi.fn().mockImplementation((options) => ({ ...options, __event: true }))
+    }
+  }
+})
+
+vi.mock('../RawHttpResponseWrapper', () => {
+  return {
+    RawHttpResponseWrapper: {
+      create: vi.fn().mockImplementation((options) => ({ ...options, __response: true }))
+    }
+  }
+})
+
+describe('AwsLambdaHttpAdapter', () => {
+  let blueprint: IBlueprint
+  let adapter: AwsLambdaHttpAdapter
 
   beforeEach(() => {
-    adapterOptions = {
-      hooks: {},
-      blueprint: {
-        get: vi.fn()
-      },
-      handlerResolver: vi.fn(),
-      logger: {
-        error: vi.fn()
-      }
-    } as any
+    blueprint = {
+      get: vi.fn(),
+      set: vi.fn()
+    } as unknown as IBlueprint
+
+    adapter = AwsLambdaHttpAdapter.create(blueprint)
   })
 
-  it('should create an instance with correct https configuration', () => {
-    const adapter = AwsLambdaHttpAdapter.create(adapterOptions)
+  it('should create an instance via static method', () => {
     expect(adapter).toBeInstanceOf(AwsLambdaHttpAdapter)
   })
 
-  it('should throw error when used outside AWS Lambda context', async () => {
-    const adapter = AwsLambdaHttpAdapter.create(adapterOptions)
-
-    global.window = {} as any // Simulate browser context
+  it('should throw in browser environment when run is called', async () => {
+    // simulate browser env
+    vi.stubGlobal('window', {})
 
     await expect(adapter.run()).rejects.toThrow(AwsLambdaHttpAdapterError)
 
-    delete (global as any).window // Cleanup
+    // cleanup
+    vi.unstubAllGlobals()
   })
 
-  it('should call the appropriate event listener on request', async () => {
-    const adapter = AwsLambdaHttpAdapter.create(adapterOptions)
-    const mockEvent = {} as any
+  it('should process lambda event and return a raw response', async () => {
+    AdapterEventBuilder.create = vi.fn(({ resolver }) => resolver({}))
+    const executeHooks = vi.spyOn(adapter as any, 'executeHooks').mockResolvedValue(undefined)
 
-    IncomingHttpEvent.create = vi.fn()
-    RawHttpResponseWrapper.create = vi.fn()
-    AdapterEventBuilder.create = vi.fn((options) => options.resolver({}))
-    // @ts-expect-error
-    adapter.sendEventThroughDestination = vi.fn()
+    vi.spyOn(adapter as any, 'resolveEventHandler').mockReturnValue(vi.fn())
+    vi.spyOn(adapter as any, 'sendEventThroughDestination').mockResolvedValue({ statusCode: 200 })
+    vi.spyOn(adapter as any, 'executeEventHandlerHooks').mockResolvedValue(undefined)
 
     const handler = await adapter.run()
 
-    const rawResponse = await handler(mockEvent, {})
+    expect(executeHooks).toHaveBeenCalledWith('onStart')
+    expect(await handler({} as any, {})).toEqual({ statusCode: 200 })
+  })
 
-    expect(rawResponse).toBeUndefined()
-    expect(AdapterEventBuilder.create).toHaveBeenCalled()
-    // @ts-expect-error
-    expect(adapter.sendEventThroughDestination).toHaveBeenCalled()
-    expect(RawHttpResponseWrapper.create).toHaveBeenCalledWith(expect.anything())
+  it('should handle errors and build raw response', async () => {
+    const error = new Error('boom')
+    const mockBuilder = vi.fn().mockResolvedValue({ statusCode: 500 })
+
+    vi.spyOn(adapter as any, 'resolveEventHandler').mockImplementation(() => {
+      throw error
+    })
+    vi.spyOn(adapter as any, 'handleError').mockResolvedValue(mockBuilder)
+    vi.spyOn(adapter as any, 'buildRawResponse').mockResolvedValue({ statusCode: 500 })
+
+    const response = await (adapter as any).eventListener({ test: true }, {})
+
+    expect(response).toEqual({ statusCode: 500 })
   })
 })
