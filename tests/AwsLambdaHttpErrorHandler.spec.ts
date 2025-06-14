@@ -1,4 +1,4 @@
-import mime from 'mime/lite'
+import mime from 'mime'
 import { Mock } from 'vitest'
 import { HTTP_INTERNAL_SERVER_ERROR } from '@stone-js/http-core'
 import { AdapterErrorContext, ILogger, IBlueprint } from '@stone-js/core'
@@ -11,7 +11,7 @@ vi.mock('accepts', () => ({
   default: () => ({ type: MockAcceptsType })
 }))
 
-vi.mock('mime/lite', () => ({
+vi.mock('mime', () => ({
   getType: vi.fn(() => 'application/json'),
   default: { getType: vi.fn(() => 'application/json') }
 }))

@@ -1,7 +1,6 @@
-import { NextPipe } from '@stone-js/pipeline'
-import { IBlueprint, isNotEmpty } from '@stone-js/core'
 import { IncomingHttpHeaders, IncomingMessage } from 'node:http'
 import { isMultipart, getFilesUploads } from '@stone-js/http-core'
+import { IBlueprint, isNotEmpty, NextMiddleware } from '@stone-js/core'
 import { AwsLambdaHttpAdapterError } from '../errors/AwsLambdaHttpAdapterError'
 import { AwsLambdaHttpAdapterContext, AwsLambdaHttpAdapterResponseBuilder, AwsLambdaHttpEvent } from '../declarations'
 
@@ -34,7 +33,7 @@ export class FilesEventMiddleware {
    *
    * @throws {AwsLambdaHttpAdapterError} If required components such as the rawEvent or IncomingEventBuilder are not provided.
    */
-  async handle (context: AwsLambdaHttpAdapterContext, next: NextPipe<AwsLambdaHttpAdapterContext, AwsLambdaHttpAdapterResponseBuilder>): Promise<AwsLambdaHttpAdapterResponseBuilder> {
+  async handle (context: AwsLambdaHttpAdapterContext, next: NextMiddleware<AwsLambdaHttpAdapterContext, AwsLambdaHttpAdapterResponseBuilder>): Promise<AwsLambdaHttpAdapterResponseBuilder> {
     if (context.rawEvent === undefined || context.incomingEventBuilder?.add === undefined) {
       throw new AwsLambdaHttpAdapterError('The context is missing required components.')
     }

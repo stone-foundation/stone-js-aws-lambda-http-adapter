@@ -1,8 +1,7 @@
 import proxyAddr from 'proxy-addr'
-import { IBlueprint } from '@stone-js/core'
 import { IncomingMessage } from 'node:http'
-import { NextPipe } from '@stone-js/pipeline'
 import { AWS_LAMBDA_HTTP_PLATFORM } from '../constants'
+import { IBlueprint, NextMiddleware } from '@stone-js/core'
 import { AwsLambdaHttpAdapterError } from '../errors/AwsLambdaHttpAdapterError'
 import { getHostname, getProtocol, isIpTrusted, CookieSameSite, CookieCollection } from '@stone-js/http-core'
 import { AwsLambdaHttpEvent, AwsLambdaHttpAdapterContext, AwsLambdaHttpAdapterResponseBuilder } from '../declarations'
@@ -58,7 +57,7 @@ export class IncomingEventMiddleware {
    * @returns A promise that resolves to the processed context.
    * @throws {AwsLambdaHttpAdapterError} If required components are missing in the context.
    */
-  async handle (context: AwsLambdaHttpAdapterContext, next: NextPipe<AwsLambdaHttpAdapterContext, AwsLambdaHttpAdapterResponseBuilder>): Promise<AwsLambdaHttpAdapterResponseBuilder> {
+  async handle (context: AwsLambdaHttpAdapterContext, next: NextMiddleware<AwsLambdaHttpAdapterContext, AwsLambdaHttpAdapterResponseBuilder>): Promise<AwsLambdaHttpAdapterResponseBuilder> {
     if ((context.rawEvent === undefined) || ((context.incomingEventBuilder?.add) === undefined)) {
       throw new AwsLambdaHttpAdapterError('The context is missing required components.')
     }

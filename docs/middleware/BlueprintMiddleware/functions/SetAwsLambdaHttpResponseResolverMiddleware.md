@@ -1,14 +1,8 @@
-[**AWS Lambda HTTP Adapter Documentation v0.0.2**](../../../README.md)
-
-***
-
-[AWS Lambda HTTP Adapter Documentation](../../../modules.md) / [middleware/BlueprintMiddleware](../README.md) / SetAwsLambdaHttpResponseResolverMiddleware
-
 # Function: SetAwsLambdaHttpResponseResolverMiddleware()
 
-> **SetAwsLambdaHttpResponseResolverMiddleware**(`context`, `next`): `Promise`\<`IBlueprint`\>
-
-Defined in: [aws-lambda-http-adapter/src/middleware/BlueprintMiddleware.ts:19](https://github.com/stonemjs/aws-lambda-http-adapter/blob/2fb8e4d048853c60484edbc94c3249aefb421def/src/middleware/BlueprintMiddleware.ts#L19)
+```ts
+function SetAwsLambdaHttpResponseResolverMiddleware(context, next): Promise<IBlueprint>;
+```
 
 Middleware to dynamically set response resolver for adapter.
 
@@ -22,7 +16,7 @@ The configuration context containing modules and blueprint.
 
 ### next
 
-`NextPipe`\<`BlueprintContext`\<`IBlueprint`, `ClassType`\>, `IBlueprint`\>
+`NextMiddleware`\<`BlueprintContext`\<`IBlueprint`, `ClassType`\>, `IBlueprint`\>
 
 The next pipeline function to continue processing.
 

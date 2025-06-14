@@ -1,12 +1,4 @@
-[**AWS Lambda HTTP Adapter Documentation v0.0.2**](../../../README.md)
-
-***
-
-[AWS Lambda HTTP Adapter Documentation](../../../modules.md) / [options/AwsLambdaHttpAdapterBlueprint](../README.md) / AwsLambdaHttpAdapterBlueprint
-
 # Interface: AwsLambdaHttpAdapterBlueprint
-
-Defined in: [aws-lambda-http-adapter/src/options/AwsLambdaHttpAdapterBlueprint.ts:42](https://github.com/stonemjs/aws-lambda-http-adapter/blob/2fb8e4d048853c60484edbc94c3249aefb421def/src/options/AwsLambdaHttpAdapterBlueprint.ts#L42)
 
 Blueprint interface for the AWS Lambda Http Adapter.
 
@@ -20,18 +12,25 @@ a `stone` object with an array of `AwsLambdaHttpAdapterConfig` items.
 
 ## Indexable
 
-\[`key`: `string`\]: `unknown`
+```ts
+[key: string]: unknown
+```
+
+Allow adding any additional custom properties.
+The value of the custom properties can be of any type, depending on user requirements.
 
 ## Properties
 
 ### stone
 
-> **stone**: [`AwsLambdaHttpAdapterConfig`](AwsLambdaHttpAdapterConfig.md)
-
-Defined in: [aws-lambda-http-adapter/src/options/AwsLambdaHttpAdapterBlueprint.ts:46](https://github.com/stonemjs/aws-lambda-http-adapter/blob/2fb8e4d048853c60484edbc94c3249aefb421def/src/options/AwsLambdaHttpAdapterBlueprint.ts#L46)
+```ts
+stone: AwsLambdaHttpAdapterConfig;
+```
 
 Application-level settings, including environment, middleware, logging, and service registration.
 
 #### Overrides
 
-`StoneBlueprint.stone`
+```ts
+StoneBlueprint.stone
+```

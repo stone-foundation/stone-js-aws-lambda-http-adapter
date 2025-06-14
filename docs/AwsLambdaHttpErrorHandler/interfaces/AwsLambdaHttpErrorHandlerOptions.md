@@ -1,12 +1,4 @@
-[**AWS Lambda HTTP Adapter Documentation v0.0.2**](../../README.md)
-
-***
-
-[AWS Lambda HTTP Adapter Documentation](../../modules.md) / [AwsLambdaHttpErrorHandler](../README.md) / AwsLambdaHttpErrorHandlerOptions
-
 # Interface: AwsLambdaHttpErrorHandlerOptions
-
-Defined in: [aws-lambda-http-adapter/src/AwsLambdaHttpErrorHandler.ts:19](https://github.com/stonemjs/aws-lambda-http-adapter/blob/2fb8e4d048853c60484edbc94c3249aefb421def/src/AwsLambdaHttpErrorHandler.ts#L19)
 
 AwsLambdaHttpErrorHandler options.
 
@@ -14,6 +6,6 @@ AwsLambdaHttpErrorHandler options.
 
 ### blueprint
 
-> **blueprint**: `IBlueprint`
-
-Defined in: [aws-lambda-http-adapter/src/AwsLambdaHttpErrorHandler.ts:20](https://github.com/stonemjs/aws-lambda-http-adapter/blob/2fb8e4d048853c60484edbc94c3249aefb421def/src/AwsLambdaHttpErrorHandler.ts#L20)
+```ts
+blueprint: IBlueprint;
+```

@@ -1,12 +1,4 @@
-[**AWS Lambda HTTP Adapter Documentation v0.0.2**](../../README.md)
-
-***
-
-[AWS Lambda HTTP Adapter Documentation](../../modules.md) / [declarations](../README.md) / RawHttpResponseOptions
-
 # Interface: RawHttpResponseOptions
-
-Defined in: [aws-lambda-http-adapter/src/declarations.ts:121](https://github.com/stonemjs/aws-lambda-http-adapter/blob/2fb8e4d048853c60484edbc94c3249aefb421def/src/declarations.ts#L121)
 
 Represents options for configuring a raw HTTP response.
 
@@ -19,15 +11,17 @@ for managing response content, headers, status codes, and streaming files.
 
 ## Indexable
 
-\[`k`: `string` \| `number` \| `symbol`\]: `unknown`
+```ts
+[k: string | number | symbol]: unknown
+```
 
 ## Properties
 
 ### body?
 
-> `optional` **body**: `unknown`
-
-Defined in: [aws-lambda-http-adapter/src/declarations.ts:125](https://github.com/stonemjs/aws-lambda-http-adapter/blob/2fb8e4d048853c60484edbc94c3249aefb421def/src/declarations.ts#L125)
+```ts
+optional body: unknown;
+```
 
 The body of the HTTP response. Can be of any type, including strings, objects, or buffers.
 
@@ -35,9 +29,9 @@ The body of the HTTP response. Can be of any type, including strings, objects, o
 
 ### headers?
 
-> `optional` **headers**: `Record`\<`string`, `string`\>
-
-Defined in: [aws-lambda-http-adapter/src/declarations.ts:141](https://github.com/stonemjs/aws-lambda-http-adapter/blob/2fb8e4d048853c60484edbc94c3249aefb421def/src/declarations.ts#L141)
+```ts
+optional headers: Record<string, string>;
+```
 
 Headers to include in the HTTP response.
 Can be provided as key-value pairs.
@@ -46,9 +40,9 @@ Can be provided as key-value pairs.
 
 ### isBase64Encoded?
 
-> `optional` **isBase64Encoded**: `boolean`
-
-Defined in: [aws-lambda-http-adapter/src/declarations.ts:146](https://github.com/stonemjs/aws-lambda-http-adapter/blob/2fb8e4d048853c60484edbc94c3249aefb421def/src/declarations.ts#L146)
+```ts
+optional isBase64Encoded: boolean;
+```
 
 The encoding format of the response body, such as `base64`.
 
@@ -56,9 +50,9 @@ The encoding format of the response body, such as `base64`.
 
 ### statusCode
 
-> **statusCode**: `number`
-
-Defined in: [aws-lambda-http-adapter/src/declarations.ts:130](https://github.com/stonemjs/aws-lambda-http-adapter/blob/2fb8e4d048853c60484edbc94c3249aefb421def/src/declarations.ts#L130)
+```ts
+statusCode: number;
+```
 
 The HTTP status code of the response (e.g., `200`, `404`).
 
@@ -66,8 +60,8 @@ The HTTP status code of the response (e.g., `200`, `404`).
 
 ### statusMessage?
 
-> `optional` **statusMessage**: `string`
-
-Defined in: [aws-lambda-http-adapter/src/declarations.ts:135](https://github.com/stonemjs/aws-lambda-http-adapter/blob/2fb8e4d048853c60484edbc94c3249aefb421def/src/declarations.ts#L135)
+```ts
+optional statusMessage: string;
+```
 
 The status message accompanying the HTTP status code (e.g., `OK`, `Not Found`).

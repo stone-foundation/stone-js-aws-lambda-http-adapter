@@ -1,6 +1,6 @@
 import { IBlueprint } from '@stone-js/core'
 import { awsLambdaHttpAdapterResolver } from '../src/resolvers'
-import { AwsLambdaHttpAdapter } from '../src/AwsLambdaHttpAdapter'
+import { AwsLambdaHttpAdapter } from '../src/AWSLambdaHttpAdapter'
 
 const mockBlueprint = {
   get: vi.fn().mockReturnValue(() => ({}))

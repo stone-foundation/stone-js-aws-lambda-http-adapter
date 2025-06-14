@@ -1,14 +1,8 @@
-[**AWS Lambda HTTP Adapter Documentation v0.0.2**](../../../README.md)
-
-***
-
-[AWS Lambda HTTP Adapter Documentation](../../../modules.md) / [decorators/AwsLambdaHttp](../README.md) / AwsLambdaHttp
-
 # Function: AwsLambdaHttp()
 
-> **AwsLambdaHttp**\<`T`\>(`options`): `ClassDecorator`
-
-Defined in: [aws-lambda-http-adapter/src/decorators/AwsLambdaHttp.ts:36](https://github.com/stonemjs/aws-lambda-http-adapter/blob/2fb8e4d048853c60484edbc94c3249aefb421def/src/decorators/AwsLambdaHttp.ts#L36)
+```ts
+function AwsLambdaHttp<T>(options): ClassDecorator;
+```
 
 A Stone.js decorator that integrates the AWS Lambda HTTP Adapter with a class.
 
@@ -18,7 +12,9 @@ the class is automatically configured with the necessary blueprint for AWS Lambd
 
 ## Type Parameters
 
-• **T** *extends* `ClassType` = `ClassType`
+### T
+
+`T` *extends* `ClassType` = `ClassType`
 
 The type of the class being decorated. Defaults to `ClassType`.
 

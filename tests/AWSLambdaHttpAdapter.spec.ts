@@ -1,6 +1,6 @@
 import { AdapterEventBuilder, IBlueprint } from '@stone-js/core'
-import { AwsLambdaHttpAdapter } from '../src/AwsLambdaHttpAdapter'
 import { AwsLambdaHttpAdapterError } from '../src/errors/AwsLambdaHttpAdapterError'
+import { AwsLambdaHttpAdapter } from '../src/AWSLambdaHttpAdapter'
 
 vi.mock('@stone-js/core', async () => {
   const actual = await vi.importActual<any>('@stone-js/core')

@@ -1,12 +1,4 @@
-[**AWS Lambda HTTP Adapter Documentation v0.0.2**](../../../README.md)
-
-***
-
-[AWS Lambda HTTP Adapter Documentation](../../../modules.md) / [middleware/BodyEventMiddleware](../README.md) / BodyEventMiddleware
-
 # Class: BodyEventMiddleware
-
-Defined in: [aws-lambda-http-adapter/src/middleware/BodyEventMiddleware.ts:26](https://github.com/stonemjs/aws-lambda-http-adapter/blob/2fb8e4d048853c60484edbc94c3249aefb421def/src/middleware/BodyEventMiddleware.ts#L26)
 
 Class representing a BodyEventMiddleware.
 
@@ -18,11 +10,11 @@ Mr. Stone
 
 ## Constructors
 
-### new BodyEventMiddleware()
+### Constructor
 
-> **new BodyEventMiddleware**(`options`): [`BodyEventMiddleware`](BodyEventMiddleware.md)
-
-Defined in: [aws-lambda-http-adapter/src/middleware/BodyEventMiddleware.ts:37](https://github.com/stonemjs/aws-lambda-http-adapter/blob/2fb8e4d048853c60484edbc94c3249aefb421def/src/middleware/BodyEventMiddleware.ts#L37)
+```ts
+new BodyEventMiddleware(options): BodyEventMiddleware;
+```
 
 Create a BodyEventMiddleware.
 
@@ -38,15 +30,15 @@ Options for creating the BodyEventMiddleware.
 
 #### Returns
 
-[`BodyEventMiddleware`](BodyEventMiddleware.md)
+`BodyEventMiddleware`
 
 ## Methods
 
 ### handle()
 
-> **handle**(`context`, `next`): `Promise`\<[`AwsLambdaHttpAdapterResponseBuilder`](../../../declarations/type-aliases/AwsLambdaHttpAdapterResponseBuilder.md)\>
-
-Defined in: [aws-lambda-http-adapter/src/middleware/BodyEventMiddleware.ts:50](https://github.com/stonemjs/aws-lambda-http-adapter/blob/2fb8e4d048853c60484edbc94c3249aefb421def/src/middleware/BodyEventMiddleware.ts#L50)
+```ts
+handle(context, next): Promise<AwsLambdaHttpAdapterResponseBuilder>;
+```
 
 Handles the incoming event, processes it, and invokes the next middleware in the pipeline.
 
@@ -60,7 +52,7 @@ The adapter context containing the raw event, execution context, and other data.
 
 ##### next
 
-`NextPipe`\<[`AwsLambdaHttpAdapterContext`](../../../declarations/interfaces/AwsLambdaHttpAdapterContext.md), [`AwsLambdaHttpAdapterResponseBuilder`](../../../declarations/type-aliases/AwsLambdaHttpAdapterResponseBuilder.md)\>
+`NextMiddleware`\<[`AwsLambdaHttpAdapterContext`](../../../declarations/interfaces/AwsLambdaHttpAdapterContext.md), [`AwsLambdaHttpAdapterResponseBuilder`](../../../declarations/type-aliases/AwsLambdaHttpAdapterResponseBuilder.md)\>
 
 The next middleware to be invoked in the pipeline.
 

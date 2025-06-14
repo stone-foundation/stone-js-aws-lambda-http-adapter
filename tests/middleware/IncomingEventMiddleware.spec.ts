@@ -1,5 +1,5 @@
 import proxyAddr from 'proxy-addr'
-import { NextPipe } from '@stone-js/pipeline'
+import { NextMiddleware } from '@stone-js/core'
 import { AwsLambdaHttpAdapterError } from '../../src/errors/AwsLambdaHttpAdapterError'
 import { IncomingEventMiddleware } from '../../src/middleware/IncomingEventMiddleware'
 import { getProtocol, CookieCollection, getHostname, isIpTrusted } from '@stone-js/http-core'
@@ -20,7 +20,7 @@ describe('IncomingEventMiddleware', () => {
   let mockBlueprint: any
   let middleware: IncomingEventMiddleware
   let mockContext: AwsLambdaHttpAdapterContext
-  let next: NextPipe<AwsLambdaHttpAdapterContext, AwsLambdaHttpAdapterResponseBuilder>
+  let next: NextMiddleware<AwsLambdaHttpAdapterContext, AwsLambdaHttpAdapterResponseBuilder>
 
   beforeEach(() => {
     mockBlueprint = {

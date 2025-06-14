@@ -1,5 +1,5 @@
 import { AdapterResolver, IBlueprint } from '@stone-js/core'
-import { AwsLambdaHttpAdapter } from './AwsLambdaHttpAdapter'
+import { AwsLambdaHttpAdapter } from './AWSLambdaHttpAdapter'
 
 /**
  * Adapter resolver for AWS Lambda HTTP adapter.
