@@ -1,8 +1,8 @@
 import proxyAddr from 'proxy-addr'
-import { IBlueprint } from '@stone-js/core'
 import { IncomingMessage } from 'node:http'
-import { NextPipe } from '@stone-js/pipeline'
-import { AwsLambdaAdapterError } from '../errors/AwsLambdaAdapterError'
+import { AWS_LAMBDA_HTTP_PLATFORM } from '../constants'
+import { IBlueprint, NextMiddleware } from '@stone-js/core'
+import { AwsLambdaHttpAdapterError } from '../errors/AwsLambdaHttpAdapterError'
 import { getHostname, getProtocol, isIpTrusted, CookieSameSite, CookieCollection } from '@stone-js/http-core'
 import { AwsLambdaHttpEvent, AwsLambdaHttpAdapterContext, AwsLambdaHttpAdapterResponseBuilder } from '../declarations'
 
@@ -55,11 +55,11 @@ export class IncomingEventMiddleware {
    * @param context - The adapter context containing the raw event, execution context, and other data.
    * @param next - The next middleware to be invoked in the pipeline.
    * @returns A promise that resolves to the processed context.
-   * @throws {AwsLambdaAdapterError} If required components are missing in the context.
+   * @throws {AwsLambdaHttpAdapterError} If required components are missing in the context.
    */
-  async handle (context: AwsLambdaHttpAdapterContext, next: NextPipe<AwsLambdaHttpAdapterContext, AwsLambdaHttpAdapterResponseBuilder>): Promise<AwsLambdaHttpAdapterResponseBuilder> {
-    if ((context.rawEvent == null) || ((context.incomingEventBuilder?.add) == null)) {
-      throw new AwsLambdaAdapterError('The context is missing required components.')
+  async handle (context: AwsLambdaHttpAdapterContext, next: NextMiddleware<AwsLambdaHttpAdapterContext, AwsLambdaHttpAdapterResponseBuilder>): Promise<AwsLambdaHttpAdapterResponseBuilder> {
+    if ((context.rawEvent === undefined) || ((context.incomingEventBuilder?.add) === undefined)) {
+      throw new AwsLambdaHttpAdapterError('The context is missing required components.')
     }
 
     const proxyOptions = this.getProxyOptions()
@@ -71,16 +71,31 @@ export class IncomingEventMiddleware {
       .incomingEventBuilder
       .add('url', url)
       .add('ips', ipAddresses)
-      .add('source', context.executionContext)
+      .add('source', this.getSource(context))
       .add('headers', context.rawEvent.headers)
-      .add('method', this.getMethod(context.rawEvent))
+      // If not defined by other middleware
+      // In fullstack forms, the method is spoofed and sent as a hidden field
+      .addIf('method', this.getMethod(context.rawEvent))
       .add('queryString', context.rawEvent.queryStringParameters)
       .add('protocol', this.getProtocol(context.rawEvent, proxyOptions))
-      .add('metadata', { lambda: { rawEvent: context.rawEvent, context: context.executionContext } })
       .add('cookies', CookieCollection.create(context.rawEvent.headers.cookie, cookieOptions, this.getCookieSecret()))
       .add('ip', proxyAddr(this.toNodeMessage(context.rawEvent), isIpTrusted(proxyOptions.trustedIp, proxyOptions.untrustedIp)))
 
     return await next(context)
+  }
+
+  /**
+   * Create the IncomingEventSource from the context.
+   *
+   * @param context - The adapter context containing the raw event, execution context, and other data.
+   * @returns The Incoming Event Source.
+   */
+  private getSource (context: AwsLambdaHttpAdapterContext): unknown {
+    return {
+      rawEvent: context.rawEvent,
+      platform: AWS_LAMBDA_HTTP_PLATFORM,
+      rawContext: context.executionContext
+    }
   }
 
   /**
@@ -185,3 +200,8 @@ export class IncomingEventMiddleware {
     return rawEvent.requestContext?.http?.sourceIp ?? rawEvent.requestContext?.identity?.sourceIp ?? ''
   }
 }
+
+/**
+ * Meta Middleware for processing incoming events.
+ */
+export const MetaIncomingEventMiddleware = { module: IncomingEventMiddleware, isClass: true }

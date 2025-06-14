@@ -1,7 +1,7 @@
 import { Mock } from 'vitest'
 import { AwsLambdaHttpAdapterContext } from '../../src/declarations'
 import { isMultipart, getFilesUploads } from '@stone-js/http-core'
-import { AwsLambdaAdapterError } from '../../src/errors/AwsLambdaAdapterError'
+import { AwsLambdaHttpAdapterError } from '../../src/errors/AwsLambdaHttpAdapterError'
 import { FilesEventMiddleware } from '../../src/middleware/FilesEventMiddleware'
 
 vi.mock('@stone-js/http-core')
@@ -35,14 +35,14 @@ describe('FilesEventMiddleware', () => {
     // @ts-expect-error
     mockContext.rawEvent = undefined
 
-    await expect(middleware.handle(mockContext, next)).rejects.toThrow(AwsLambdaAdapterError)
+    await expect(middleware.handle(mockContext, next)).rejects.toThrow(AwsLambdaHttpAdapterError)
 
     // @ts-expect-error
     mockContext.rawEvent = {}
     // @ts-expect-error
     mockContext.incomingEventBuilder = null
 
-    await expect(middleware.handle(mockContext, next)).rejects.toThrow(AwsLambdaAdapterError)
+    await expect(middleware.handle(mockContext, next)).rejects.toThrow(AwsLambdaHttpAdapterError)
   })
 
   it('should skip file upload handling if the request is not multipart', async () => {
@@ -62,7 +62,7 @@ describe('FilesEventMiddleware', () => {
     vi.mocked(isMultipart).mockReturnValue(true)
     vi.mocked(getFilesUploads).mockResolvedValue({
       files: { filename: [{ name: 'file1.txt', size: 123 }] } as any,
-      fields: { key: 'value' }
+      fields: { key: 'value', $method$: 'POST' } as any
     })
 
     await middleware.handle(mockContext, next)
@@ -71,7 +71,8 @@ describe('FilesEventMiddleware', () => {
     expect(mockBlueprint.get).toHaveBeenCalledWith('stone.http.files.upload', {})
     expect(getFilesUploads).toHaveBeenCalledWith(mockContext.rawEvent, {})
     expect(mockContext.incomingEventBuilder?.add).toHaveBeenCalledWith('files', { filename: [{ name: 'file1.txt', size: 123 }] })
-    expect(mockContext.incomingEventBuilder?.add).toHaveBeenCalledWith('body', { key: 'value' })
+    expect(mockContext.incomingEventBuilder?.add).toHaveBeenCalledWith('body', { key: 'value', $method$: 'POST' })
+    expect(mockContext.incomingEventBuilder?.add).toHaveBeenCalledWith('method', 'POST')
     expect(next).toHaveBeenCalledWith(mockContext)
   })
 

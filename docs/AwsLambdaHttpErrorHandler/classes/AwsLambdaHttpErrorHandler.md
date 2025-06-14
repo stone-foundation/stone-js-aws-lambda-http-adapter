@@ -1,12 +1,4 @@
-[**AWS Lambda Adapter Documentation v0.0.2**](../../README.md)
-
-***
-
-[AWS Lambda Adapter Documentation](../../modules.md) / [AwsLambdaHttpErrorHandler](../README.md) / AwsLambdaHttpErrorHandler
-
 # Class: AwsLambdaHttpErrorHandler
-
-Defined in: src/AwsLambdaHttpErrorHandler.ts:18
 
 Class representing an AwsLambdaHttpErrorHandler.
 
@@ -16,13 +8,13 @@ Class representing an AwsLambdaHttpErrorHandler.
 
 ## Constructors
 
-### new AwsLambdaHttpErrorHandler()
+### Constructor
 
-> **new AwsLambdaHttpErrorHandler**(`options`): [`AwsLambdaHttpErrorHandler`](AwsLambdaHttpErrorHandler.md)
+```ts
+new AwsLambdaHttpErrorHandler(options): AwsLambdaHttpErrorHandler;
+```
 
-Defined in: src/AwsLambdaHttpErrorHandler.ts:26
-
-Create an AwsLambdaHttpErrorHandler.
+Create an NodeHttpErrorHandler.
 
 #### Parameters
 
@@ -30,19 +22,19 @@ Create an AwsLambdaHttpErrorHandler.
 
 [`AwsLambdaHttpErrorHandlerOptions`](../interfaces/AwsLambdaHttpErrorHandlerOptions.md)
 
-AwsLambdaHttpErrorHandler options.
+NodeHttpErrorHandler options.
 
 #### Returns
 
-[`AwsLambdaHttpErrorHandler`](AwsLambdaHttpErrorHandler.md)
+`AwsLambdaHttpErrorHandler`
 
 ## Methods
 
 ### handle()
 
-> **handle**(`error`, `context`): `Promise`\<[`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)\>
-
-Defined in: src/AwsLambdaHttpErrorHandler.ts:41
+```ts
+handle(error, context): AdapterEventBuilderType<RawHttpResponseOptions>;
+```
 
 Handle an error.
 
@@ -62,10 +54,12 @@ The context of the adapter.
 
 #### Returns
 
-`Promise`\<[`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)\>
+`AdapterEventBuilderType`\<[`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)\>
 
-The raw response.
+The raw response builder.
 
 #### Implementation of
 
-`IAdapterErrorHandler.handle`
+```ts
+IAdapterErrorHandler.handle
+```

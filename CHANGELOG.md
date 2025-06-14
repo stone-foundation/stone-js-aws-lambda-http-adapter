@@ -10,4 +10,4 @@ All notable changes to the "Stone.js AWS Lambda Adapter" extension will be docum
 
 ### Features
 
-* implement aws adapters ([8695eb2](https://github.com/stonemjs/aws-lambda-adapter/commit/8695eb2c7960769d56015943ac0839e787f176d2))
+* implement aws adapters ([8695eb2](https://github.com/stone-foundation/stone-js-aws-lambda-http-adapter/commit/8695eb2c7960769d56015943ac0839e787f176d2))

@@ -1,12 +1,4 @@
-[**AWS Lambda Adapter Documentation v0.0.2**](../../README.md)
-
-***
-
-[AWS Lambda Adapter Documentation](../../modules.md) / [RawHttpResponseWrapper](../README.md) / RawHttpResponseWrapper
-
 # Class: RawHttpResponseWrapper
-
-Defined in: [src/RawHttpResponseWrapper.ts:12](https://github.com/stonemjs/aws-lambda-adapter/blob/9de4b38bb7a5afd4d5599dae1399969698a2422d/src/RawHttpResponseWrapper.ts#L12)
 
 Wrapper for HTTP raw responses in AWS Lambda.
 
@@ -23,17 +15,15 @@ with the Stone.js framework.
 
 ### respond()
 
-> **respond**(): [`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)
-
-Defined in: [src/RawHttpResponseWrapper.ts:66](https://github.com/stonemjs/aws-lambda-adapter/blob/9de4b38bb7a5afd4d5599dae1399969698a2422d/src/RawHttpResponseWrapper.ts#L66)
+```ts
+respond(): RawHttpResponseOptions;
+```
 
 Constructs and returns the raw HTTP response.
 
 The `respond` method generates a `RawHttpResponse` object based on the
 provided options. If any required fields are missing, it assigns default values:
 - `statusCode`: Defaults to `500`.
-- `statusMessage`: Defaults to an empty string.
-- `body`: Converts non-string bodies to a JSON string.
 
 #### Returns
 
@@ -51,15 +41,17 @@ console.log(response); // { statusCode: 500, statusMessage: '', body: 'Hello, wo
 
 #### Implementation of
 
-`IRawResponseWrapper.respond`
+```ts
+IRawResponseWrapper.respond
+```
 
 ***
 
 ### create()
 
-> `static` **create**(`options`): [`RawHttpResponseWrapper`](RawHttpResponseWrapper.md)
-
-Defined in: [src/RawHttpResponseWrapper.ts:34](https://github.com/stonemjs/aws-lambda-adapter/blob/9de4b38bb7a5afd4d5599dae1399969698a2422d/src/RawHttpResponseWrapper.ts#L34)
+```ts
+static create(options): RawHttpResponseWrapper;
+```
 
 Factory method to create an instance of `RawHttpResponseWrapper`.
 
@@ -76,7 +68,7 @@ Partial options to configure the HTTP response.
 
 #### Returns
 
-[`RawHttpResponseWrapper`](RawHttpResponseWrapper.md)
+`RawHttpResponseWrapper`
 
 A new instance of `RawHttpResponseWrapper`.
 

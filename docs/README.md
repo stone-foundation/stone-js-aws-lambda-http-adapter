@@ -1,23 +1,18 @@
-**AWS Lambda Adapter Documentation v0.0.2**
+# AWS Lambda HTTP Adapter
 
-***
+## Modules
 
-# Stone.js: AWS Lambda Adapters
-
-[![npm](https://img.shields.io/npm/l/@stone-js/aws-lambda-adapter)](https://opensource.org/licenses/Apache-2.0)
-[![npm](https://img.shields.io/npm/v/@stone-js/aws-lambda-adapter)](https://www.npmjs.com/package/@stone-js/aws-lambda-adapter)
-[![npm](https://img.shields.io/npm/dm/@stone-js/aws-lambda-adapter)](https://www.npmjs.com/package/@stone-js/aws-lambda-adapter)
-![Maintenance](https://img.shields.io/maintenance/yes/2025)
-[![Publish Package to npmjs](https://github.com/stonemjs/aws-lambda-adapter/actions/workflows/release.yml/badge.svg)](https://github.com/stonemjs/aws-lambda-adapter/actions/workflows/release.yml)
-[![Dependabot Status](https://img.shields.io/badge/Dependabot-enabled-brightgreen.svg?logo=dependabot)](https://github.com/stonemjs/aws-lambda-adapter/network/updates)
-[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
-
-Stone.js AWS Lambda Adapters with typings.
-
----
-
-Get started with the [documentation](https://stonejs.com/docs/http/aws-lambda-adapter).
-
-## Contributing
-
-See [Contributing Guide](https://github.com/stonemjs/aws-lambda-adapter/blob/main/CONTRIBUTING.md).
+- [AWSLambdaHttpAdapter](AWSLambdaHttpAdapter/README.md)
+- [AwsLambdaHttpErrorHandler](AwsLambdaHttpErrorHandler/README.md)
+- [constants](constants/README.md)
+- [declarations](declarations/README.md)
+- [decorators/AwsLambdaHttp](decorators/AwsLambdaHttp/README.md)
+- [errors/AwsLambdaHttpAdapterError](errors/AwsLambdaHttpAdapterError/README.md)
+- [middleware/BlueprintMiddleware](middleware/BlueprintMiddleware/README.md)
+- [middleware/BodyEventMiddleware](middleware/BodyEventMiddleware/README.md)
+- [middleware/FilesEventMiddleware](middleware/FilesEventMiddleware/README.md)
+- [middleware/IncomingEventMiddleware](middleware/IncomingEventMiddleware/README.md)
+- [middleware/ServerResponseMiddleware](middleware/ServerResponseMiddleware/README.md)
+- [options/AwsLambdaHttpAdapterBlueprint](options/AwsLambdaHttpAdapterBlueprint/README.md)
+- [RawHttpResponseWrapper](RawHttpResponseWrapper/README.md)
+- [resolvers](resolvers/README.md)

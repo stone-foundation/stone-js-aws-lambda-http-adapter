@@ -1,13 +1,20 @@
+import {
+  RawHttpResponse,
+  AwsLambdaContext,
+  AwsLambdaHttpEvent,
+  RawHttpResponseOptions,
+  AwsLambdaHttpAdapterContext,
+  AwsLambdaEventHandlerFunction
+} from './declarations'
 import { RawHttpResponseWrapper } from './RawHttpResponseWrapper'
-import { AwsLambdaAdapterError } from './errors/AwsLambdaAdapterError'
-import { Adapter, AdapterEventBuilder, AdapterOptions, LifecycleEventHandler } from '@stone-js/core'
+import { Adapter, AdapterEventBuilder, IBlueprint } from '@stone-js/core'
+import { AwsLambdaHttpAdapterError } from './errors/AwsLambdaHttpAdapterError'
 import { IncomingHttpEvent, IncomingHttpEventOptions, OutgoingHttpResponse } from '@stone-js/http-core'
-import { AwsLambdaContext, AwsLambdaHttpEvent, AwsLambdaHttpAdapterContext, AwsLambdaEventHandlerFunction, RawHttpResponse, RawHttpResponseOptions } from './declarations'
 
 /**
  * AWS Lambda HTTP Adapter for Stone.js.
  *
- * The `AWSLambdaHttpAdapter` extends the functionality of the Stone.js `Adapter`
+ * The `AwsLambdaHttpAdapter` extends the functionality of the Stone.js `Adapter`
  * to provide seamless integration with AWS Lambda for HTTP-based events. This adapter
  * transforms incoming HTTP events from AWS Lambda into `IncomingHttpEvent` instances
  * and produces a `RawHttpResponse` as output.
@@ -27,9 +34,9 @@ import { AwsLambdaContext, AwsLambdaHttpEvent, AwsLambdaHttpAdapterContext, AwsL
  *
  * @example
  * ```typescript
- * import { AWSLambdaHttpAdapter } from '@stone-js/aws-lambda-adapter';
+ * import { AwsLambdaHttpAdapter } from '@stone-js/aws-lambda-http-adapter';
  *
- * const adapter = AWSLambdaHttpAdapter.create({...});
+ * const adapter = AwsLambdaHttpAdapter.create({...});
  *
  * const handler = await adapter.run();
  *
@@ -39,7 +46,7 @@ import { AwsLambdaContext, AwsLambdaHttpEvent, AwsLambdaHttpAdapterContext, AwsL
  * @see {@link https://stone-js.com/docs Stone.js Documentation}
  * @see {@link https://docs.aws.amazon.com/lambda/latest/dg/ AWS Lambda Documentation}
  */
-export class AWSLambdaHttpAdapter extends Adapter<
+export class AwsLambdaHttpAdapter extends Adapter<
 AwsLambdaHttpEvent,
 RawHttpResponse,
 AwsLambdaContext,
@@ -49,16 +56,19 @@ OutgoingHttpResponse,
 AwsLambdaHttpAdapterContext
 > {
   /**
-   * Creates an instance of the `AWSLambdaHttpAdapter`.
+   * Creates an instance of the `AwsLambdaHttpAdapter`.
    *
-   * This factory method initializes the adapter with the specified configuration options.
+   * @param blueprint - The application blueprint.
+   * @returns A new instance of `AwsLambdaHttpAdapter`.
    *
-   * @param options - Configuration options for the adapter, including the handler resolver
-   *                  and error handling mechanisms.
-   * @returns A new instance of `AWSLambdaHttpAdapter`.
+   * @example
+   * ```typescript
+   * const adapter = AwsLambdaHttpAdapter.create(blueprint);
+   * await adapter.run();
+   * ```
    */
-  static create (options: AdapterOptions<IncomingHttpEvent, OutgoingHttpResponse>): AWSLambdaHttpAdapter {
-    return new this(options)
+  static create (blueprint: IBlueprint): AwsLambdaHttpAdapter {
+    return new this(blueprint)
   }
 
   /**
@@ -70,10 +80,10 @@ AwsLambdaHttpAdapterContext
    *
    * @template ExecutionResultType - The type representing the AWS Lambda event handler function.
    * @returns A promise resolving to the AWS Lambda HTTP handler function.
-   * @throws {AwsLambdaAdapterError} If used outside the AWS Lambda environment.
+   * @throws {AwsLambdaHttpAdapterError} If used outside the AWS Lambda environment.
    */
   public async run<ExecutionResultType = AwsLambdaEventHandlerFunction<RawHttpResponse>>(): Promise<ExecutionResultType> {
-    await this.onInit()
+    await this.onStart()
 
     const handler = async (rawEvent: AwsLambdaHttpEvent, executionContext: AwsLambdaContext): Promise<RawHttpResponse> => {
       return await this.eventListener(rawEvent, executionContext)
@@ -88,16 +98,16 @@ AwsLambdaHttpAdapterContext
    * Ensures that the adapter is running in an AWS Lambda environment. Throws an error
    * if it detects that the adapter is being used in an unsupported environment (e.g., a browser).
    *
-   * @throws {AwsLambdaAdapterError} If executed outside an AWS Lambda environment.
+   * @throws {AwsLambdaHttpAdapterError} If executed outside an AWS Lambda environment.
    */
-  protected async onInit (): Promise<void> {
+  protected async onStart (): Promise<void> {
     if (typeof window === 'object') {
-      throw new AwsLambdaAdapterError(
+      throw new AwsLambdaHttpAdapterError(
         'This `AWSLambdaAdapter` must be used only in AWS Lambda context.'
       )
     }
 
-    await super.onInit()
+    await this.executeHooks('onStart')
   }
 
   /**
@@ -111,10 +121,6 @@ AwsLambdaHttpAdapterContext
    * @returns A promise resolving to the processed `RawHttpResponse`.
    */
   protected async eventListener (rawEvent: AwsLambdaHttpEvent, executionContext: AwsLambdaContext): Promise<RawHttpResponse> {
-    const eventHandler = this.handlerResolver(this.blueprint) as LifecycleEventHandler<IncomingHttpEvent, OutgoingHttpResponse>
-
-    await this.onPrepare(eventHandler)
-
     const incomingEventBuilder = AdapterEventBuilder.create<IncomingHttpEventOptions, IncomingHttpEvent>({
       resolver: (options) => IncomingHttpEvent.create(options)
     })
@@ -125,12 +131,21 @@ AwsLambdaHttpAdapterContext
 
     const rawResponse: RawHttpResponse = { statusCode: 500 }
 
-    return await this.sendEventThroughDestination(eventHandler, {
+    const context: AwsLambdaHttpAdapterContext = {
       rawEvent,
       rawResponse,
       executionContext,
       rawResponseBuilder,
       incomingEventBuilder
-    })
+    }
+
+    try {
+      const eventHandler = this.resolveEventHandler()
+      await this.executeEventHandlerHooks('onInit', eventHandler)
+      return await this.sendEventThroughDestination(context, eventHandler)
+    } catch (error: any) {
+      const rawResponseBuilder = await this.handleError(error, context)
+      return await this.buildRawResponse({ ...context, rawResponseBuilder })
+    }
   }
 }

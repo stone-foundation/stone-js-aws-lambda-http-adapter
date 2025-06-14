@@ -1,16 +1,8 @@
-[**AWS Lambda Adapter Documentation v0.0.2**](../../README.md)
-
-***
-
-[AWS Lambda Adapter Documentation](../../modules.md) / [AWSLambdaHttpAdapter](../README.md) / AWSLambdaHttpAdapter
-
-# Class: AWSLambdaHttpAdapter
-
-Defined in: [src/AWSLambdaHttpAdapter.ts:42](https://github.com/stonemjs/aws-lambda-adapter/blob/9de4b38bb7a5afd4d5599dae1399969698a2422d/src/AWSLambdaHttpAdapter.ts#L42)
+# Class: AwsLambdaHttpAdapter
 
 AWS Lambda HTTP Adapter for Stone.js.
 
-The `AWSLambdaHttpAdapter` extends the functionality of the Stone.js `Adapter`
+The `AwsLambdaHttpAdapter` extends the functionality of the Stone.js `Adapter`
 to provide seamless integration with AWS Lambda for HTTP-based events. This adapter
 transforms incoming HTTP events from AWS Lambda into `IncomingHttpEvent` instances
 and produces a `RawHttpResponse` as output.
@@ -49,9 +41,9 @@ Context type specific to the HTTP adapter.
 ## Example
 
 ```typescript
-import { AWSLambdaHttpAdapter } from '@stone-js/aws-lambda-adapter';
+import { AwsLambdaHttpAdapter } from '@stone-js/aws-lambda-http-adapter';
 
-const adapter = AWSLambdaHttpAdapter.create({...});
+const adapter = AwsLambdaHttpAdapter.create({...});
 
 const handler = await adapter.run();
 
@@ -69,37 +61,47 @@ export { handler };
 
 ## Constructors
 
-### new AWSLambdaHttpAdapter()
+### Constructor
 
-> `protected` **new AWSLambdaHttpAdapter**(`options`): [`AWSLambdaHttpAdapter`](AWSLambdaHttpAdapter.md)
-
-Defined in: node\_modules/@stone-js/core/dist/index.d.ts:1876
+```ts
+protected new AwsLambdaHttpAdapter(blueprint): AwsLambdaHttpAdapter;
+```
 
 Create an Adapter.
 
 #### Parameters
 
-##### options
+##### blueprint
 
-`AdapterOptions`\<`IncomingHttpEvent`, `OutgoingHttpResponse`\>
+`IBlueprint`
 
-Adapter options.
+The blueprint to create the adapter.
 
 #### Returns
 
-[`AWSLambdaHttpAdapter`](AWSLambdaHttpAdapter.md)
+`AwsLambdaHttpAdapter`
 
 #### Inherited from
 
-`Adapter< AwsLambdaHttpEvent, RawHttpResponse, AwsLambdaContext, IncomingHttpEvent, IncomingHttpEventOptions, OutgoingHttpResponse, AwsLambdaHttpAdapterContext >.constructor`
+```ts
+Adapter<
+AwsLambdaHttpEvent,
+RawHttpResponse,
+AwsLambdaContext,
+IncomingHttpEvent,
+IncomingHttpEventOptions,
+OutgoingHttpResponse,
+AwsLambdaHttpAdapterContext
+>.constructor
+```
 
 ## Methods
 
 ### eventListener()
 
-> `protected` **eventListener**(`rawEvent`, `executionContext`): `Promise`\<[`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)\>
-
-Defined in: [src/AWSLambdaHttpAdapter.ts:113](https://github.com/stonemjs/aws-lambda-adapter/blob/9de4b38bb7a5afd4d5599dae1399969698a2422d/src/AWSLambdaHttpAdapter.ts#L113)
+```ts
+protected eventListener(rawEvent, executionContext): Promise<RawHttpResponseOptions>;
+```
 
 Processes an incoming AWS Lambda HTTP event.
 
@@ -128,11 +130,11 @@ A promise resolving to the processed `RawHttpResponse`.
 
 ***
 
-### onInit()
+### onStart()
 
-> `protected` **onInit**(): `Promise`\<`void`\>
-
-Defined in: [src/AWSLambdaHttpAdapter.ts:93](https://github.com/stonemjs/aws-lambda-adapter/blob/9de4b38bb7a5afd4d5599dae1399969698a2422d/src/AWSLambdaHttpAdapter.ts#L93)
+```ts
+protected onStart(): Promise<void>;
+```
 
 Initializes the adapter and validates its execution context.
 
@@ -147,17 +149,13 @@ if it detects that the adapter is being used in an unsupported environment (e.g.
 
 If executed outside an AWS Lambda environment.
 
-#### Overrides
-
-`Adapter.onInit`
-
 ***
 
 ### run()
 
-> **run**\<`ExecutionResultType`\>(): `Promise`\<`ExecutionResultType`\>
-
-Defined in: [src/AWSLambdaHttpAdapter.ts:75](https://github.com/stonemjs/aws-lambda-adapter/blob/9de4b38bb7a5afd4d5599dae1399969698a2422d/src/AWSLambdaHttpAdapter.ts#L75)
+```ts
+run<ExecutionResultType>(): Promise<ExecutionResultType>;
+```
 
 Executes the adapter and provides an AWS Lambda-compatible HTTP handler function.
 
@@ -167,7 +165,9 @@ instances and produces `RawHttpResponse` objects as output.
 
 #### Type Parameters
 
-• **ExecutionResultType** = [`AwsLambdaEventHandlerFunction`](../../declarations/type-aliases/AwsLambdaEventHandlerFunction.md)\<[`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)\>
+##### ExecutionResultType
+
+`ExecutionResultType` = [`AwsLambdaEventHandlerFunction`](../../declarations/type-aliases/AwsLambdaEventHandlerFunction.md)\<[`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)\>
 
 The type representing the AWS Lambda event handler function.
 
@@ -183,31 +183,37 @@ If used outside the AWS Lambda environment.
 
 #### Overrides
 
-`Adapter.run`
+```ts
+Adapter.run
+```
 
 ***
 
 ### create()
 
-> `static` **create**(`options`): [`AWSLambdaHttpAdapter`](AWSLambdaHttpAdapter.md)
+```ts
+static create(blueprint): AwsLambdaHttpAdapter;
+```
 
-Defined in: [src/AWSLambdaHttpAdapter.ts:60](https://github.com/stonemjs/aws-lambda-adapter/blob/9de4b38bb7a5afd4d5599dae1399969698a2422d/src/AWSLambdaHttpAdapter.ts#L60)
-
-Creates an instance of the `AWSLambdaHttpAdapter`.
-
-This factory method initializes the adapter with the specified configuration options.
+Creates an instance of the `AwsLambdaHttpAdapter`.
 
 #### Parameters
 
-##### options
+##### blueprint
 
-`AdapterOptions`\<`IncomingHttpEvent`, `OutgoingHttpResponse`\>
+`IBlueprint`
 
-Configuration options for the adapter, including the handler resolver
-                 and error handling mechanisms.
+The application blueprint.
 
 #### Returns
 
-[`AWSLambdaHttpAdapter`](AWSLambdaHttpAdapter.md)
+`AwsLambdaHttpAdapter`
 
-A new instance of `AWSLambdaHttpAdapter`.
+A new instance of `AwsLambdaHttpAdapter`.
+
+#### Example
+
+```typescript
+const adapter = AwsLambdaHttpAdapter.create(blueprint);
+await adapter.run();
+```

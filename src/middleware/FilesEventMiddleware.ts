@@ -1,8 +1,7 @@
-import { IBlueprint } from '@stone-js/core'
-import { NextPipe } from '@stone-js/pipeline'
 import { IncomingHttpHeaders, IncomingMessage } from 'node:http'
 import { isMultipart, getFilesUploads } from '@stone-js/http-core'
-import { AwsLambdaAdapterError } from '../errors/AwsLambdaAdapterError'
+import { IBlueprint, isNotEmpty, NextMiddleware } from '@stone-js/core'
+import { AwsLambdaHttpAdapterError } from '../errors/AwsLambdaHttpAdapterError'
 import { AwsLambdaHttpAdapterContext, AwsLambdaHttpAdapterResponseBuilder, AwsLambdaHttpEvent } from '../declarations'
 
 /**
@@ -32,21 +31,24 @@ export class FilesEventMiddleware {
    * @param next - The next middleware to be invoked in the pipeline.
    * @returns A promise that resolves to the destination type after processing.
    *
-   * @throws {AwsLambdaAdapterError} If required components such as the rawEvent or IncomingEventBuilder are not provided.
+   * @throws {AwsLambdaHttpAdapterError} If required components such as the rawEvent or IncomingEventBuilder are not provided.
    */
-  async handle (context: AwsLambdaHttpAdapterContext, next: NextPipe<AwsLambdaHttpAdapterContext, AwsLambdaHttpAdapterResponseBuilder>): Promise<AwsLambdaHttpAdapterResponseBuilder> {
+  async handle (context: AwsLambdaHttpAdapterContext, next: NextMiddleware<AwsLambdaHttpAdapterContext, AwsLambdaHttpAdapterResponseBuilder>): Promise<AwsLambdaHttpAdapterResponseBuilder> {
     if (context.rawEvent === undefined || context.incomingEventBuilder?.add === undefined) {
-      throw new AwsLambdaAdapterError('The context is missing required components.')
+      throw new AwsLambdaHttpAdapterError('The context is missing required components.')
     }
 
     if (isMultipart(this.normalizeEvent(context.rawEvent) as unknown as IncomingMessage)) {
       const options = this.blueprint.get<Record<string, any>>('stone.http.files.upload', {})
       const response = await getFilesUploads(this.normalizeEvent(context.rawEvent), options)
+      const method = response.fields.$method$
 
       context
         .incomingEventBuilder
         .add('files', response.files)
         .add('body', response.fields)
+        // In fullstack forms, the method is spoofed and sent as a hidden field
+      isNotEmpty(method) && context.incomingEventBuilder.add('method', method)
     }
 
     return await next(context)
@@ -69,3 +71,8 @@ export class FilesEventMiddleware {
     }
   }
 }
+
+/**
+ * Meta Middleware for processing files uploads.
+ */
+export const MetaFilesEventMiddleware = { module: FilesEventMiddleware, isClass: true }

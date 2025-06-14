@@ -4,7 +4,7 @@ import { Mock } from 'vitest'
 import { isMultipart, getCharset } from '@stone-js/http-core'
 import { AwsLambdaHttpAdapterContext } from '../../src/declarations'
 import { BodyEventMiddleware } from '../../src/middleware/BodyEventMiddleware'
-import { AwsLambdaAdapterError } from '../../src/errors/AwsLambdaAdapterError'
+import { AwsLambdaHttpAdapterError } from '../../src/errors/AwsLambdaHttpAdapterError'
 
 vi.mock('bytes')
 vi.mock('type-is')
@@ -40,7 +40,7 @@ describe('BodyEventMiddleware', () => {
         headers: { 'content-type': 'application/json', 'content-length': '123' }
       },
       incomingEventBuilder: {
-        add: vi.fn()
+        add: vi.fn().mockReturnThis()
       }
     } as unknown as AwsLambdaHttpAdapterContext
 
@@ -51,14 +51,14 @@ describe('BodyEventMiddleware', () => {
     // @ts-expect-error
     mockContext.rawEvent = undefined
 
-    await expect(middleware.handle(mockContext, next)).rejects.toThrow(AwsLambdaAdapterError)
+    await expect(middleware.handle(mockContext, next)).rejects.toThrow(AwsLambdaHttpAdapterError)
 
     // @ts-expect-error
     mockContext.rawEvent = {}
     // @ts-expect-error
     mockContext.incomingEventBuilder = null
 
-    await expect(middleware.handle(mockContext, next)).rejects.toThrow(AwsLambdaAdapterError)
+    await expect(middleware.handle(mockContext, next)).rejects.toThrow(AwsLambdaHttpAdapterError)
   })
 
   it('should skip body parsing if the request is multipart', async () => {
@@ -98,12 +98,13 @@ describe('BodyEventMiddleware', () => {
     vi.mocked(getCharset).mockReturnValue('utf-8')
     vi.mocked(typeIs.is).mockReturnValue('json')
 
-    mockContext.rawEvent.body = { key: 'value' }
+    mockContext.rawEvent.body = { key: 'value', $method$: 'POST' }
 
     await middleware.handle(mockContext, next)
 
     expect(mockBlueprint.get).toHaveBeenCalledWith('stone.http.body', expect.any(Object))
-    expect(mockContext.incomingEventBuilder?.add).toHaveBeenCalledWith('body', { key: 'value' })
+    expect(mockContext.incomingEventBuilder?.add).toHaveBeenCalledWith('body', { key: 'value', $method$: 'POST' })
+    expect(mockContext.incomingEventBuilder?.add).toHaveBeenCalledWith('method', 'POST')
     expect(next).toHaveBeenCalledWith(mockContext)
   })
 
@@ -130,7 +131,7 @@ describe('BodyEventMiddleware', () => {
 
     mockContext.rawEvent.headers = { 'Content-Type': 'multipart/form-data', 'Content-Length': '999999999' }
 
-    await expect(async () => await middleware.handle(mockContext, next)).rejects.toThrow(AwsLambdaAdapterError)
+    await expect(async () => await middleware.handle(mockContext, next)).rejects.toThrow(AwsLambdaHttpAdapterError)
     expect(next).not.toHaveBeenCalledWith(mockContext)
     // @ts-expect-error
     Buffer.byteLength.mockRestore()

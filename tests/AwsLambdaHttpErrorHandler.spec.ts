@@ -1,8 +1,8 @@
-import mime from 'mime/lite'
+import mime from 'mime'
 import { Mock } from 'vitest'
 import { HTTP_INTERNAL_SERVER_ERROR } from '@stone-js/http-core'
+import { AdapterErrorContext, ILogger, IBlueprint } from '@stone-js/core'
 import { AwsLambdaHttpErrorHandler } from '../src/AwsLambdaHttpErrorHandler'
-import { IntegrationError, AdapterErrorContext, ILogger } from '@stone-js/core'
 
 const MockAcceptsType: any = vi.fn(() => 'json')
 
@@ -11,7 +11,7 @@ vi.mock('accepts', () => ({
   default: () => ({ type: MockAcceptsType })
 }))
 
-vi.mock('mime/lite', () => ({
+vi.mock('mime', () => ({
   getType: vi.fn(() => 'application/json'),
   default: { getType: vi.fn(() => 'application/json') }
 }))
@@ -22,6 +22,7 @@ vi.mock('statuses', () => ({
 
 describe('AwsLambdaHttpErrorHandler', () => {
   let mockLogger: ILogger
+  let mockBlueprint: IBlueprint
   let handler: AwsLambdaHttpErrorHandler
   let mockContext: AdapterErrorContext<any, any, any>
 
@@ -30,27 +31,31 @@ describe('AwsLambdaHttpErrorHandler', () => {
       error: vi.fn()
     } as unknown as ILogger
 
+    mockBlueprint = {
+      get: () => () => mockLogger
+    } as unknown as IBlueprint
+
     mockContext = {
-      rawEvent: {},
+      rawEvent: {
+        headers: {
+          'content-type': 'application/json'
+        }
+      } as any,
       rawResponseBuilder: {
         add: vi.fn().mockReturnThis(),
         build: vi.fn().mockReturnValue({
-          respond: vi.fn().mockResolvedValue('response')
+          respond: vi.fn().mockReturnValue('response')
         })
       }
     } as unknown as AdapterErrorContext<any, any, any>
 
-    handler = new AwsLambdaHttpErrorHandler({ logger: mockLogger })
-  })
-
-  test('should throw an IntegrationError if logger is not provided', () => {
-    expect(() => new AwsLambdaHttpErrorHandler({ logger: undefined as any })).toThrowError(IntegrationError)
+    handler = new AwsLambdaHttpErrorHandler({ blueprint: mockBlueprint })
   })
 
   test('should handle an error and return a response with correct headers', async () => {
     const error = new Error('Something went wrong')
 
-    const response = await handler.handle(error, mockContext)
+    const response = handler.handle(error, mockContext)
 
     expect(mockContext.rawResponseBuilder.add).toHaveBeenCalledWith(
       'headers',
@@ -65,22 +70,24 @@ describe('AwsLambdaHttpErrorHandler', () => {
       'Internal Server Error'
     )
     expect(mockLogger.error).toHaveBeenCalledWith('Something went wrong', { error })
-    expect(response).toBe('response')
+    expect(response.build().respond()).toBe('response')
   })
 
   test('should default to text/plain if mime.getType returns undefined', async () => {
     (mime.getType as unknown as Mock).mockReturnValueOnce(undefined)
 
     const error = new Error('Fallback mime type')
+    error.cause = { status: HTTP_INTERNAL_SERVER_ERROR }
+    mockContext.rawEvent.headers['content-type'] = undefined
 
-    const response = await handler.handle(error, mockContext)
+    const response = handler.handle(error, mockContext)
 
     expect(mockContext.rawResponseBuilder.add).toHaveBeenCalledWith(
       'headers',
       expect.any(Headers)
     )
     expect(mockLogger.error).toHaveBeenCalledWith('Fallback mime type', { error })
-    expect(response).toBe('response')
+    expect(response.build().respond()).toBe('response')
   })
 
   test('should handle false return from accepts.type', async () => {
@@ -88,13 +95,13 @@ describe('AwsLambdaHttpErrorHandler', () => {
 
     const error = new Error('Accepts returned false')
 
-    const response = await handler.handle(error, mockContext)
+    const response = handler.handle(error, mockContext)
 
     expect(mockContext.rawResponseBuilder.add).toHaveBeenCalledWith(
       'headers',
       expect.any(Headers)
     )
     expect(mockLogger.error).toHaveBeenCalledWith('Accepts returned false', { error })
-    expect(response).toBe('response')
+    expect(response.build().respond()).toBe('response')
   })
 })

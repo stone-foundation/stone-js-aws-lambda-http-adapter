@@ -1,7 +1,7 @@
 import statuses from 'statuses'
-import { NextPipe } from '@stone-js/pipeline'
+import { NextMiddleware } from '@stone-js/core'
 import { BinaryFileResponse } from '@stone-js/http-core'
-import { AwsLambdaAdapterError } from '../errors/AwsLambdaAdapterError'
+import { AwsLambdaHttpAdapterError } from '../errors/AwsLambdaHttpAdapterError'
 import { AwsLambdaHttpAdapterContext, AwsLambdaHttpAdapterResponseBuilder } from '../declarations'
 
 /**
@@ -17,13 +17,13 @@ export class ServerResponseMiddleware {
    * @param context - The adapter context containing the raw event, execution context, and other data.
    * @param next - The next middleware to be invoked in the pipeline.
    * @returns A promise resolving to the rawResponseBuilder.
-   * @throws {AwsLambdaAdapterError} If required components are missing in the context.
+   * @throws {AwsLambdaHttpAdapterError} If required components are missing in the context.
    */
-  async handle (context: AwsLambdaHttpAdapterContext, next: NextPipe<AwsLambdaHttpAdapterContext, AwsLambdaHttpAdapterResponseBuilder>): Promise<AwsLambdaHttpAdapterResponseBuilder> {
+  async handle (context: AwsLambdaHttpAdapterContext, next: NextMiddleware<AwsLambdaHttpAdapterContext, AwsLambdaHttpAdapterResponseBuilder>): Promise<AwsLambdaHttpAdapterResponseBuilder> {
     const rawResponseBuilder = await next(context)
 
     if (context.rawEvent === undefined || context.incomingEvent === undefined || context.outgoingResponse === undefined || rawResponseBuilder?.add === undefined) {
-      throw new AwsLambdaAdapterError('The context is missing required components.')
+      throw new AwsLambdaHttpAdapterError('The context is missing required components.')
     }
 
     rawResponseBuilder
@@ -34,10 +34,17 @@ export class ServerResponseMiddleware {
     if (!context.incomingEvent.isMethod('HEAD')) {
       if (context.outgoingResponse instanceof BinaryFileResponse) {
         rawResponseBuilder
-          .add('body', context.outgoingResponse.file.getContent())
+          .add('isBase64Encoded', true)
+          .add('body', context.outgoingResponse.file.getContent('base64'))
       } else {
+        const isBuffer = Buffer.isBuffer(context.outgoingResponse.content)
+        const content = isBuffer
+          ? (context.outgoingResponse.content as Buffer).toString('base64')
+          : context.outgoingResponse.content
+
         rawResponseBuilder
-          .add('body', context.outgoingResponse.content)
+          .add('body', content)
+          .add('isBase64Encoded', isBuffer)
           .add('charset', context.outgoingResponse.charset)
       }
     }
@@ -45,3 +52,8 @@ export class ServerResponseMiddleware {
     return rawResponseBuilder
   }
 }
+
+/**
+ * Meta Middleware for processing server responses.
+ */
+export const MetaServerResponseMiddleware = { module: ServerResponseMiddleware, isClass: true }
