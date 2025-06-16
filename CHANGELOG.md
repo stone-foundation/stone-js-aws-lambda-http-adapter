@@ -5,6 +5,13 @@ All notable changes to the "Stone.js AWS Lambda Adapter" extension will be docum
 ## Unreleased
 
 
+## [0.2.0](https://github.com/stone-foundation/stone-js-aws-lambda-http-adapter/compare/v0.1.0...v0.2.0) (2025-06-16)
+
+
+### Features
+
+* add browser-safe fallback entry with no-op modules for frontend compatibility ([#35](https://github.com/stone-foundation/stone-js-aws-lambda-http-adapter/issues/35)) ([19e7c12](https://github.com/stone-foundation/stone-js-aws-lambda-http-adapter/commit/19e7c12c286ca56839ee3c8db6a2bcb02ad29f32))
+
 ## 0.1.0 (2025-06-14)
 
 
