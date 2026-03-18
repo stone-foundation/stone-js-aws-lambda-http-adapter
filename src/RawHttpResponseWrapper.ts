@@ -64,7 +64,21 @@ export class RawHttpResponseWrapper implements IRawResponseWrapper<RawHttpRespon
   respond (): RawHttpResponse {
     return {
       ...this.options,
-      statusCode: this.options.statusCode ?? 500
+      statusCode: this.options.statusCode ?? 500,
+      headers: this.normalizeHeaders(this.options.headers)
     }
+  }
+
+  /**
+   * Normalizes the headers to a consistent format.
+   *
+   * Converts Headers or Record<string, string> to a normalized Record<string, string>
+   * with all keys in lowercase.
+   *
+   * @param headers - The headers to normalize.
+   * @returns A normalized record of headers.
+   */
+  private normalizeHeaders (headers: Headers | Record<string, string> | undefined): Record<string, string> {
+    return Object.fromEntries(new Headers(headers ?? {}))
   }
 }

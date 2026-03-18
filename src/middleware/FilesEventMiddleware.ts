@@ -61,8 +61,16 @@ export class FilesEventMiddleware {
    * @returns The normalized event.
    */
   private normalizeEvent (rawEvent: AwsLambdaHttpEvent): { headers: IncomingHttpHeaders, body: unknown } {
+    let body: unknown = rawEvent.body
+
+    if (typeof rawEvent.body === 'string') {
+      body = rawEvent.isBase64Encoded === true
+        ? Buffer.from(rawEvent.body, 'base64')
+        : Buffer.from(rawEvent.body, 'utf-8')
+    }
+
     return {
-      body: rawEvent.body,
+      body,
       headers: {
         'content-type': rawEvent.headers['content-type'] ?? rawEvent.headers['Content-Type'],
         'content-length': rawEvent.headers['content-length'] ?? rawEvent.headers['Content-Length'],

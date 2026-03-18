@@ -10,7 +10,7 @@ describe('RawHttpResponseWrapper', () => {
       statusCode: 404,
       statusMessage: 'Not Found',
       body: 'Hello, world!',
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'content-type': 'application/json' }
     }
   })
 
@@ -32,7 +32,7 @@ describe('RawHttpResponseWrapper', () => {
     expect(rawResponse).not.toEqual(mockResponse)
     expect(rawResponse.statusCode).toBe(500)
     expect(rawResponse.body).toBeUndefined()
-    expect(rawResponse.headers).toBeUndefined()
+    expect(rawResponse.headers).toEqual({})
     expect(rawResponse.statusMessage).toBeUndefined()
   })
 })
