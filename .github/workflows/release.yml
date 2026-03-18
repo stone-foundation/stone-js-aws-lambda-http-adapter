@@ -5,16 +5,15 @@ on:
     types:
       - published
 
-permissions:
-  contents: read
-  packages: write
-
 jobs:
   publish:
+    permissions:
+      contents: read
+      packages: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
           ref: ${{ github.event.release.tag_name }}

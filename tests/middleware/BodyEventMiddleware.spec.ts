@@ -112,7 +112,7 @@ describe('BodyEventMiddleware', () => {
     vi.mocked(isMultipart).mockReturnValue(false)
     vi.mocked(typeIs.hasBody).mockReturnValue(true)
     vi.mocked(getCharset).mockReturnValue('utf-8')
-    vi.mocked(typeIs.is).mockReturnValue('text')
+    vi.mocked(typeIs).mockReturnValue('text')
 
     mockContext.rawEvent.body = '<h1>Hello, world!</h1>'
 
@@ -135,5 +135,94 @@ describe('BodyEventMiddleware', () => {
     expect(next).not.toHaveBeenCalledWith(mockContext)
     // @ts-expect-error
     Buffer.byteLength.mockRestore()
+  })
+
+  it('should decode base64 body using encoding', async () => {
+    vi.mocked(isMultipart).mockReturnValue(false)
+    vi.mocked(typeIs.hasBody).mockReturnValue(true)
+    vi.mocked(typeIs).mockReturnValue('text')
+    vi.mocked(getCharset).mockReturnValue('utf-8')
+
+    const base64 = Buffer.from('hello world').toString('base64')
+
+    mockContext.rawEvent.body = base64
+    mockContext.rawEvent.isBase64Encoded = true
+
+    await middleware.handle(mockContext, next)
+
+    expect(mockContext.incomingEventBuilder?.add).toHaveBeenCalledWith('body', 'hello world')
+  })
+
+  it('should parse urlencoded body into URLSearchParams', async () => {
+    vi.mocked(isMultipart).mockReturnValue(false)
+    vi.mocked(typeIs.hasBody).mockReturnValue(true)
+    vi.mocked(typeIs).mockReturnValue('urlencoded')
+    vi.mocked(getCharset).mockReturnValue('utf-8')
+
+    mockContext.rawEvent.body = 'key=value&foo=bar'
+
+    await middleware.handle(mockContext, next)
+
+    const call = (mockContext.incomingEventBuilder?.add as Mock).mock.calls.find(c => c[0] === 'body')
+    const params = call?.[1]
+
+    expect(params).toBeInstanceOf(URLSearchParams)
+    expect(params.get('key')).toBe('value')
+    expect(params.get('foo')).toBe('bar')
+  })
+
+  it('should parse binary body into Buffer', async () => {
+    vi.mocked(isMultipart).mockReturnValue(false)
+    vi.mocked(typeIs.hasBody).mockReturnValue(true)
+    vi.mocked(typeIs).mockReturnValue('bin')
+    vi.mocked(getCharset).mockReturnValue('utf-8')
+
+    mockContext.rawEvent.body = 'hello'
+
+    await middleware.handle(mockContext, next)
+
+    const call = (mockContext.incomingEventBuilder?.add as Mock).mock.calls.find(c => c[0] === 'body')
+    const buffer = call?.[1]
+
+    expect(Buffer.isBuffer(buffer)).toBe(true)
+    expect(buffer.toString()).toBe('hello')
+  })
+
+  it('should return empty object for unknown type', async () => {
+    vi.mocked(isMultipart).mockReturnValue(false)
+    vi.mocked(typeIs.hasBody).mockReturnValue(true)
+    vi.mocked(typeIs).mockReturnValue('unknown-type')
+    vi.mocked(getCharset).mockReturnValue('utf-8')
+
+    mockContext.rawEvent.body = 'whatever'
+
+    await middleware.handle(mockContext, next)
+
+    expect(mockContext.incomingEventBuilder?.add).toHaveBeenCalledWith('body', {})
+  })
+
+  it('should throw AwsLambdaHttpAdapterError when JSON parsing fails', async () => {
+    vi.mocked(isMultipart).mockReturnValue(false)
+    vi.mocked(typeIs.hasBody).mockReturnValue(true)
+    vi.mocked(typeIs).mockReturnValue('json')
+    vi.mocked(getCharset).mockReturnValue('utf-8')
+
+    mockContext.rawEvent.body = '{ invalid json'
+
+    await expect(middleware.handle(mockContext, next))
+      .rejects.toThrow(AwsLambdaHttpAdapterError)
+  })
+
+  it('should stringify object body before parsing', async () => {
+    vi.mocked(isMultipart).mockReturnValue(false)
+    vi.mocked(typeIs.hasBody).mockReturnValue(true)
+    vi.mocked(typeIs).mockReturnValue('json')
+    vi.mocked(getCharset).mockReturnValue('utf-8')
+
+    mockContext.rawEvent.body = { key: 'value' }
+
+    await middleware.handle(mockContext, next)
+
+    expect(mockContext.incomingEventBuilder?.add).toHaveBeenCalledWith('body', { key: 'value' })
   })
 })

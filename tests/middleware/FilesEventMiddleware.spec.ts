@@ -1,6 +1,6 @@
 import { Mock } from 'vitest'
-import { AwsLambdaHttpAdapterContext } from '../../src/declarations'
 import { isMultipart, getFilesUploads } from '@stone-js/http-core'
+import { AwsLambdaHttpAdapterContext } from '../../src/declarations'
 import { AwsLambdaHttpAdapterError } from '../../src/errors/AwsLambdaHttpAdapterError'
 import { FilesEventMiddleware } from '../../src/middleware/FilesEventMiddleware'
 
@@ -89,6 +89,40 @@ describe('FilesEventMiddleware', () => {
     expect(getFilesUploads).toHaveBeenCalled()
     expect(mockContext.incomingEventBuilder?.add).toHaveBeenCalledWith('files', {})
     expect(mockContext.incomingEventBuilder?.add).toHaveBeenCalledWith('body', {})
+    expect(next).toHaveBeenCalledWith(mockContext)
+  })
+
+  it('should convert string body to Buffer using utf-8 encoding', async () => {
+    vi.mocked(isMultipart).mockImplementation((req: any) => {
+      expect(Buffer.isBuffer(req.body)).toBe(true)
+      expect(req.body.toString('utf-8')).toBe('hello world')
+      return false
+    })
+
+    mockContext.rawEvent.body = 'hello world'
+    mockContext.rawEvent.isBase64Encoded = false
+    mockContext.rawEvent.headers = { 'content-type': 'multipart/form-data' }
+
+    await middleware.handle(mockContext, next)
+
+    expect(next).toHaveBeenCalledWith(mockContext)
+  })
+
+  it('should convert base64 string body to Buffer using base64 encoding', async () => {
+    const base64 = Buffer.from('hello world').toString('base64')
+
+    vi.mocked(isMultipart).mockImplementation((req: any) => {
+      expect(Buffer.isBuffer(req.body)).toBe(true)
+      expect(req.body.toString('utf-8')).toBe('hello world')
+      return false
+    })
+
+    mockContext.rawEvent.body = base64
+    mockContext.rawEvent.isBase64Encoded = true
+    mockContext.rawEvent.headers = { 'content-type': 'multipart/form-data' }
+
+    await middleware.handle(mockContext, next)
+
     expect(next).toHaveBeenCalledWith(mockContext)
   })
 })
