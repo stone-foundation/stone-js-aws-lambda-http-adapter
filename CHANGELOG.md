@@ -5,6 +5,13 @@ All notable changes to the "Stone.js AWS Lambda Adapter" extension will be docum
 ## Unreleased
 
 
+## [0.3.0](https://github.com/stone-foundation/stone-js-aws-lambda-http-adapter/compare/v0.2.0...v0.3.0) (2026-03-18)
+
+
+### Features
+
+* **http:** support base64 decoding, urlencoded parsing, binary payloads and safe body parsing ([#45](https://github.com/stone-foundation/stone-js-aws-lambda-http-adapter/issues/45)) ([cc09bf0](https://github.com/stone-foundation/stone-js-aws-lambda-http-adapter/commit/cc09bf04ebff951411131f481b6c65acd4a9f948))
+
 ## [0.2.0](https://github.com/stone-foundation/stone-js-aws-lambda-http-adapter/compare/v0.1.0...v0.2.0) (2025-06-16)
 
 
