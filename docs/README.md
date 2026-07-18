@@ -8,6 +8,7 @@
 - [declarations](declarations/README.md)
 - [decorators/AwsLambdaHttp](decorators/AwsLambdaHttp/README.md)
 - [errors/AwsLambdaHttpAdapterError](errors/AwsLambdaHttpAdapterError/README.md)
+- [event-normalizer](event-normalizer/README.md)
 - [middleware/BlueprintMiddleware](middleware/BlueprintMiddleware/README.md)
 - [middleware/BodyEventMiddleware](middleware/BodyEventMiddleware/README.md)
 - [middleware/FilesEventMiddleware](middleware/FilesEventMiddleware/README.md)

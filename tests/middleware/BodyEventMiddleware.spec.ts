@@ -126,15 +126,13 @@ describe('BodyEventMiddleware', () => {
     vi.mocked(isMultipart).mockReturnValue(false)
     vi.mocked(typeIs.hasBody).mockReturnValue(true)
     vi.mocked(typeIs.is).mockReturnValue('sting')
-    vi.mocked(bytes.parse).mockReturnValue(102400)
-    Buffer.byteLength = vi.fn().mockReturnValue(999999999)
+    vi.mocked(bytes.parse).mockReturnValueOnce(10) // 10-byte limit, only for this call
 
-    mockContext.rawEvent.headers = { 'Content-Type': 'multipart/form-data', 'Content-Length': '999999999' }
+    // A real oversized body: the limit is measured on the decoded byte length.
+    mockContext.rawEvent.body = 'x'.repeat(50)
 
     await expect(async () => await middleware.handle(mockContext, next)).rejects.toThrow(AwsLambdaHttpAdapterError)
     expect(next).not.toHaveBeenCalledWith(mockContext)
-    // @ts-expect-error
-    Buffer.byteLength.mockRestore()
   })
 
   it('should decode base64 body using encoding', async () => {

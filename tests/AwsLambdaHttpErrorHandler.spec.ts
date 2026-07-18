@@ -17,7 +17,9 @@ vi.mock('mime', () => ({
 }))
 
 vi.mock('statuses', () => ({
-  default: { message: { [HTTP_INTERNAL_SERVER_ERROR]: 'Internal Server Error' } }
+  // Use a literal (not the imported constant) — a hoisted vi.mock factory cannot reference
+  // top-level imports.
+  default: { message: { 500: 'Internal Server Error' } }
 }))
 
 describe('AwsLambdaHttpErrorHandler', () => {
@@ -71,6 +73,30 @@ describe('AwsLambdaHttpErrorHandler', () => {
     )
     expect(mockLogger.error).toHaveBeenCalledWith('Something went wrong', { error })
     expect(response.build().respond()).toBe('response')
+  })
+
+  test('should use the HTTP status carried on the error itself (not always 500)', async () => {
+    const error = Object.assign(new Error('Not found'), { statusCode: 404 })
+
+    handler.handle(error, mockContext)
+
+    expect(mockContext.rawResponseBuilder.add).toHaveBeenCalledWith('statusCode', 404)
+  })
+
+  test('should fall back to a status on error.cause', async () => {
+    const error = new Error('Unauthorized')
+    error.cause = { statusCode: 401 }
+
+    handler.handle(error, mockContext)
+
+    expect(mockContext.rawResponseBuilder.add).toHaveBeenCalledWith('statusCode', 401)
+  })
+
+  test('should tolerate a missing headers object on the raw event', async () => {
+    mockContext.rawEvent.headers = undefined
+    const error = new Error('no headers')
+
+    expect(() => handler.handle(error, mockContext)).not.toThrow()
   })
 
   test('should default to text/plain if mime.getType returns undefined', async () => {

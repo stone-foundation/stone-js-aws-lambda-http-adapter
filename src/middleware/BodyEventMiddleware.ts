@@ -1,6 +1,7 @@
 import bytes from 'bytes'
 import typeIs from 'type-is'
 import { IncomingMessage } from 'node:http'
+import { getRawBody, normalizeHeaders } from '../event-normalizer'
 import { isMultipart, getCharset } from '@stone-js/http-core'
 import { IBlueprint, isNotEmpty, NextMiddleware } from '@stone-js/core'
 import { AwsLambdaHttpAdapterError } from '../errors/AwsLambdaHttpAdapterError'
@@ -53,17 +54,31 @@ export class BodyEventMiddleware {
 
     if (!isMultipart(this.toNodeMessage(context.rawEvent))) {
       const body = this.getBody(this.toNodeMessage(context.rawEvent), context.rawEvent)
-      const method = (body as any).$method$
+      const method = this.extractSpoofedMethod(body)
 
       context
         .incomingEventBuilder
         .add('body', body)
-        .add('metadata', body)
-        // In fullstack forms, the method is spoofed and sent as a hidden field
+        // Keep the untouched payload available even after parsing (webhook signatures, etc.).
+        .add('metadata', { rawBody: getRawBody(context.rawEvent) })
+        // In fullstack forms, the method is spoofed and sent as a hidden field.
       isNotEmpty(method) && context.incomingEventBuilder.add('method', method)
     }
 
     return await next(context)
+  }
+
+  /**
+   * Extract a spoofed HTTP method from a parsed body, supporting both JSON objects and
+   * urlencoded bodies (whose fields live on a `URLSearchParams`, not as own properties).
+   *
+   * @param body - The parsed body.
+   * @returns The spoofed method, or undefined.
+   */
+  private extractSpoofedMethod (body: unknown): string | undefined {
+    if (body instanceof URLSearchParams) { return body.get('$method$') ?? undefined }
+    if (typeof body === 'object' && body !== null) { return (body as Record<string, any>).$method$ }
+    return undefined
   }
 
   /**
@@ -73,11 +88,12 @@ export class BodyEventMiddleware {
    * @returns The converted IncomingMessage.
    */
   private toNodeMessage (rawEvent: AwsLambdaHttpEvent): IncomingMessage {
+    const headers = normalizeHeaders(rawEvent)
     return {
       headers: {
-        'content-type': rawEvent.headers['content-type'] ?? rawEvent.headers['Content-Type'],
-        'content-length': rawEvent.headers['content-length'] ?? rawEvent.headers['Content-Length'],
-        'transfer-encoding': rawEvent.headers['transfer-encoding'] ?? rawEvent.headers['Transfer-Encoding']
+        'content-type': headers['content-type'],
+        'content-length': headers['content-length'],
+        'transfer-encoding': headers['transfer-encoding']
       }
     } as unknown as IncomingMessage
   }
@@ -100,56 +116,60 @@ export class BodyEventMiddleware {
     const encoding = getCharset(message, defaultCharset) as BufferEncoding
     const type = typeIs(message, ['urlencoded', 'json', 'text', 'bin']) ?? defaultType
 
-    const rawBodyContent = this.getNormalizedRawBody(rawEvent, encoding)
+    // Decode ONCE to a Buffer. Binary payloads must never round-trip through a lossy UTF-8 string
+    // (which corrupts any non-UTF-8 byte); the limit is measured on the true byte length.
+    const rawBuffer = this.getRawBuffer(rawEvent, encoding)
 
-    if (Buffer.byteLength(rawBodyContent, encoding) > limit) {
+    if (rawBuffer.byteLength > limit) {
       throw new AwsLambdaHttpAdapterError('Body payload exceeds configured limit.')
     }
 
-    return this.parseBodyContent(type, rawBodyContent, encoding)
+    return this.parseBodyContent(type, rawBuffer, encoding)
   }
 
   /**
-   * Get the normalized raw body from the event.
+   * Decode the request body into a Buffer, honouring base64 encoding.
    *
    * @param rawEvent - The raw event containing the body.
-   * @param encoding - The encoding to use for the body.
-   * @returns The normalized body as a string.
+   * @param encoding - The charset for a plain-text (non-base64) body.
+   * @returns The body as a Buffer.
    */
-  private getNormalizedRawBody (rawEvent: AwsLambdaHttpEvent, encoding: BufferEncoding): string {
+  private getRawBuffer (rawEvent: AwsLambdaHttpEvent, encoding: BufferEncoding): Buffer {
     if (typeof rawEvent.body === 'string') {
       return rawEvent.isBase64Encoded === true
-        ? Buffer.from(rawEvent.body, 'base64').toString(encoding)
-        : rawEvent.body
+        ? Buffer.from(rawEvent.body, 'base64')
+        : Buffer.from(rawEvent.body, encoding)
     }
 
     if (typeof rawEvent.body === 'object' && rawEvent.body !== null) {
-      return JSON.stringify(rawEvent.body)
+      return Buffer.from(JSON.stringify(rawEvent.body), encoding)
     }
 
-    return ''
+    return Buffer.alloc(0)
   }
 
   /**
    * Parse the body content based on the specified type and encoding.
    *
    * @param type - The content type of the body.
-   * @param body - The raw body content as a string.
+   * @param buffer - The raw body content as a Buffer.
    * @param encoding - The encoding of the body content.
    * @returns The parsed body content as an object, string, or Buffer.
    * @throws {AwsLambdaHttpAdapterError} If parsing fails.
    */
-  private parseBodyContent (type: string | false, body: string, encoding: BufferEncoding): unknown {
+  private parseBodyContent (type: string | false, buffer: Buffer, encoding: BufferEncoding): unknown {
     try {
       switch (type) {
-        case 'json':
-          return isNotEmpty(body) ? JSON.parse(body) : {}
+        case 'json': {
+          const text = buffer.toString(encoding)
+          return isNotEmpty(text) ? JSON.parse(text) : {}
+        }
         case 'text':
-          return body
+          return buffer.toString(encoding)
         case 'urlencoded':
-          return new URLSearchParams(body)
+          return new URLSearchParams(buffer.toString(encoding))
         case 'bin':
-          return Buffer.from(body, encoding)
+          return buffer // Return the raw bytes untouched — no lossy re-encoding.
         default:
           return {}
       }

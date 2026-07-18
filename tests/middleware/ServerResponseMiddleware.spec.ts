@@ -79,7 +79,7 @@ describe('ServerResponseMiddleware', () => {
     expect(mockContext.rawResponseBuilder?.add).toHaveBeenCalledWith('statusMessage', 'Internal Server Error')
   })
 
-  it('should add body and charset if the response is not a BinaryFileResponse', async () => {
+  it('should add a base64 body for a Buffer response (no charset leak into the Lambda response)', async () => {
     // @ts-expect-error
     vi.mocked(mockContext.incomingEvent.isMethod).mockReturnValue(false)
     const content = Buffer.from('{"success": true}')
@@ -88,7 +88,8 @@ describe('ServerResponseMiddleware', () => {
 
     await middleware.handle(mockContext, next)
 
-    expect(mockContext.rawResponseBuilder?.add).toHaveBeenCalledWith('charset', 'utf-8')
+    // `charset` is no longer forwarded — it is not part of the API Gateway proxy contract.
+    expect(mockContext.rawResponseBuilder?.add).not.toHaveBeenCalledWith('charset', expect.anything())
     expect(mockContext.rawResponseBuilder?.add).toHaveBeenCalledWith('isBase64Encoded', true)
     expect(mockContext.rawResponseBuilder?.add).toHaveBeenCalledWith('body', content.toString('base64'))
   })

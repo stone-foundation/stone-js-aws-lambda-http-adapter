@@ -5,198 +5,110 @@ import { IncomingEventMiddleware } from '../../src/middleware/IncomingEventMiddl
 import { getProtocol, CookieCollection, getHostname, isIpTrusted } from '@stone-js/http-core'
 import { AwsLambdaHttpAdapterContext, AwsLambdaHttpAdapterResponseBuilder } from '../../src/declarations'
 
-vi.mock('proxy-addr')
+vi.mock('proxy-addr', () => ({ default: Object.assign(vi.fn(() => '1.2.3.4'), { all: vi.fn(() => ['1.2.3.4']) }) }))
 
 vi.mock('@stone-js/http-core', () => ({
-  getProtocol: vi.fn(),
-  getHostname: vi.fn(),
-  isIpTrusted: vi.fn(),
-  CookieCollection: {
-    create: vi.fn()
-  }
+  getProtocol: vi.fn(() => 'https'),
+  getHostname: vi.fn(() => 'example.com'),
+  isIpTrusted: vi.fn(() => () => true),
+  CookieCollection: { create: vi.fn((v: string) => ({ raw: v })) }
 }))
 
+const makeContext = (rawEvent: any): AwsLambdaHttpAdapterContext => ({
+  rawEvent,
+  rawResponse: {},
+  executionContext: { awsRequestId: 'abc' },
+  incomingEventBuilder: {
+    add: vi.fn().mockReturnThis(),
+    addIf: vi.fn().mockReturnThis()
+  }
+} as unknown as AwsLambdaHttpAdapterContext)
+
+// Extract the value passed to `builder.add(key, ...)` / `addIf` for assertions.
+const added = (ctx: any, key: string): any => ctx.incomingEventBuilder.add.mock.calls.find((c: any[]) => c[0] === key)?.[1]
+const addedIf = (ctx: any, key: string): any => ctx.incomingEventBuilder.addIf.mock.calls.find((c: any[]) => c[0] === key)?.[1]
+
 describe('IncomingEventMiddleware', () => {
-  let mockBlueprint: any
   let middleware: IncomingEventMiddleware
-  let mockContext: AwsLambdaHttpAdapterContext
   let next: NextMiddleware<AwsLambdaHttpAdapterContext, AwsLambdaHttpAdapterResponseBuilder>
 
   beforeEach(() => {
-    mockBlueprint = {
-      get: vi.fn((key: string, defaultValue: any) => defaultValue)
-    }
-
-    middleware = new IncomingEventMiddleware({ blueprint: mockBlueprint })
-
-    mockContext = {
-      rawEvent: {
-        httpMethod: 'GET',
-        path: '/test',
-        headers: { cookie: 'testCookie' },
-        requestContext: {
-          identity: {
-            sourceIp: '127.0.0.1'
-          },
-          http: {
-            method: 'GET',
-            sourceIp: '127.0.0.1'
-          }
-        }
-      },
-      rawResponse: {},
-      incomingEventBuilder: {
-        add: vi.fn().mockReturnThis(),
-        addIf: vi.fn().mockReturnThis()
-      }
-    } as unknown as AwsLambdaHttpAdapterContext
-
-    next = vi.fn()
-
-    vi.mocked(proxyAddr).mockRestore()
-    vi.mocked(proxyAddr.all).mockRestore()
-  })
-
-  it('should throw error if context is missing rawEvent or incomingEventBuilder', async () => {
-    // @ts-expect-error
-    mockContext.rawEvent = undefined
-
-    await expect(middleware.handle(mockContext, next)).rejects.toThrow(AwsLambdaHttpAdapterError)
-
-    // @ts-expect-error
-    mockContext.rawEvent = { foo: 'bar' } as any
-    // @ts-expect-error
-    mockContext.incomingEventBuilder = undefined
-
-    await expect(middleware.handle(mockContext, next)).rejects.toThrow(AwsLambdaHttpAdapterError)
-  })
-
-  it('should call next with the modified context', async () => {
-    vi.mocked(getHostname).mockReturnValue('localhost')
-    vi.mocked(getProtocol).mockReturnValue('http')
-    vi.mocked(proxyAddr).mockReturnValue('127.0.0.1')
-    vi.mocked(proxyAddr.all).mockReturnValue(['127.0.0.1'])
-    vi.mocked(isIpTrusted).mockReturnValue(vi.fn().mockReturnValue(true))
-    vi.mocked(CookieCollection.create).mockReturnValue({ testCookie: 'value' } as any)
-
-    await middleware.handle(mockContext, next)
-
-    expect(next).toHaveBeenCalledWith(mockContext)
-    expect(mockContext.incomingEventBuilder?.add).toHaveBeenCalledWith('ips', [])
-    expect(mockContext.incomingEventBuilder?.addIf).toHaveBeenCalledWith('method', 'GET')
-    expect(mockContext.incomingEventBuilder?.add).toHaveBeenCalledWith('url', expect.any(URL))
-    expect(mockContext.incomingEventBuilder?.add).toHaveBeenCalledWith('cookies', { testCookie: 'value' })
-    expect(mockContext.incomingEventBuilder?.add).toHaveBeenCalledWith('headers', mockContext.rawEvent?.headers)
-
-    // Handle htt method from requestContext.httpMethod
-    mockContext.rawEvent.httpMethod = undefined
-    // @ts-expect-error
-    mockContext.rawEvent.requestContext.httpMethod = 'GET'
-    await middleware.handle(mockContext, next)
-
-    expect(mockContext.incomingEventBuilder?.addIf).toHaveBeenCalledWith('method', 'GET')
-
-    // Handle http method from requestContext.http.method
-    mockContext.rawEvent.httpMethod = undefined
-    // @ts-expect-error
-    mockContext.rawEvent.requestContext.httpMethod = undefined
-    // @ts-expect-error
-    mockContext.rawEvent.requestContext.http.method = 'GET'
-    await middleware.handle(mockContext, next)
-
-    expect(mockContext.incomingEventBuilder?.addIf).toHaveBeenCalledWith('method', 'GET')
-
-    // Return default http method
-    mockContext.rawEvent.httpMethod = undefined
-    // @ts-expect-error
-    mockContext.rawEvent.requestContext.httpMethod = undefined
-    // @ts-expect-error
-    mockContext.rawEvent.requestContext.http.method = undefined
-    await middleware.handle(mockContext, next)
-
-    expect(mockContext.incomingEventBuilder?.addIf).toHaveBeenCalledWith('method', 'GET')
-  })
-
-  it('should extract URL correctly', () => {
-    vi.mocked(getProtocol).mockImplementation((a, b, c, d) => 'http')
-    vi.mocked(getHostname).mockImplementation((a, b, c) => 'localhost')
-    mockContext.rawEvent.path = undefined
-    // @ts-expect-error
-    mockContext.rawEvent.requestContext.identity.sourceIp = undefined
-    // @ts-expect-error
-    mockContext.rawEvent.requestContext.http.sourceIp = undefined
-    // @ts-expect-error
-    const url = middleware.extractUrl(mockContext.rawEvent, {
-      trusted: [],
-      trustedIp: [],
-      untrustedIp: []
-    })
-
-    expect(url).toBeInstanceOf(URL)
-    expect(url.toString()).toBe('http://localhost/')
-  })
-
-  it('should extract protocol correctly', () => {
-    vi.mocked(getProtocol).mockImplementation((a, b, c, d) => 'http')
-    // @ts-expect-error
-    mockContext.rawEvent.requestContext.identity.sourceIp = undefined
-    // @ts-expect-error
-    mockContext.rawEvent.requestContext.http.sourceIp = undefined
-    // @ts-expect-error
-    const proto = middleware.getProtocol(mockContext.rawEvent, {
-      trusted: [],
-      trustedIp: [],
-      untrustedIp: []
-    })
-
-    expect(proto).toBe('http')
-  })
-
-  it('should extract IP addresses correctly', () => {
-    vi.mocked(proxyAddr.all).mockReturnValue(['127.0.0.1', '192.168.1.1'])
+    vi.clearAllMocks()
+    vi.mocked(getProtocol).mockReturnValue('https')
+    vi.mocked(getHostname).mockReturnValue('example.com')
     vi.mocked(isIpTrusted).mockReturnValue(() => true)
-
-    // @ts-expect-error
-    const ips = middleware.extractIpAddresses(mockContext.rawEvent, {
-      trusted: [],
-      trustedIp: [],
-      untrustedIp: []
-    })
-
-    expect(ips).toEqual(['192.168.1.1'])
-    expect(proxyAddr.all).toHaveBeenCalled()
+    vi.mocked(CookieCollection.create).mockImplementation(((v: string) => ({ raw: v })) as any)
+    vi.mocked(proxyAddr).mockReturnValue('1.2.3.4')
+    vi.mocked(proxyAddr.all).mockReturnValue(['1.2.3.4'])
+    middleware = new IncomingEventMiddleware({ blueprint: { get: vi.fn((_k, d) => d) } as any })
+    next = vi.fn()
   })
 
-  it('should retrieve proxy options from blueprint', () => {
-    // @ts-expect-error
-    const proxyOptions = middleware.getProxyOptions()
-
-    expect(proxyOptions).toEqual({ trusted: [], trustedIp: [], untrustedIp: [] })
-    expect(mockBlueprint.get).toHaveBeenCalledWith('stone.http.proxies', {
-      trusted: [],
-      trustedIp: [],
-      untrustedIp: []
-    })
+  it('should throw when required components are missing', async () => {
+    await expect(middleware.handle({} as any, next)).rejects.toThrow(AwsLambdaHttpAdapterError)
   })
 
-  it('should retrieve cookie options from blueprint', () => {
-    // @ts-expect-error
-    const cookieOptions = middleware.getCookieOptions()
-
-    expect(cookieOptions).toEqual({})
-    expect(mockBlueprint.get).toHaveBeenCalledWith('stone.http.cookie.options', {})
-  })
-
-  it('should retrieve cookie secret from blueprint', () => {
-    mockBlueprint.get.mockImplementation((key: string) => {
-      if (key === 'stone.http.cookie.secret') return 'secret'
-      return 'defaultSecret'
+  it('normalizes an API Gateway REST v1 event (method, path, query, cookies, rawBody)', async () => {
+    const ctx = makeContext({
+      httpMethod: 'POST',
+      path: '/users',
+      queryStringParameters: { q: 'a' },
+      multiValueQueryStringParameters: { tag: ['x', 'y'] },
+      headers: { Cookie: 'sid=1; theme=dark', Host: 'example.com' },
+      body: 'hello',
+      requestContext: { identity: { sourceIp: '9.9.9.9' } }
     })
 
-    // @ts-expect-error
-    const secret = middleware.getCookieSecret()
+    await middleware.handle(ctx, next)
 
-    expect(secret).toBe('secret')
-    expect(mockBlueprint.get).toHaveBeenCalledWith('stone.http.cookie.secret', 'defaultSecret')
+    expect(added(ctx, 'url').toString()).toBe('https://example.com/users?tag=x&tag=y')
+    expect(added(ctx, 'queryString')).toBe('tag=x&tag=y')
+    expect(addedIf(ctx, 'method')).toBe('POST')
+    expect(added(ctx, 'metadata')).toEqual({ rawBody: 'hello' })
+    expect(CookieCollection.create).toHaveBeenCalledWith('sid=1; theme=dark', expect.anything(), expect.anything())
+    expect(next).toHaveBeenCalled()
+  })
+
+  it('normalizes an API Gateway HTTP API v2 event (rawPath, rawQueryString, cookies[])', async () => {
+    const ctx = makeContext({
+      version: '2.0',
+      rawPath: '/items',
+      rawQueryString: 'page=2&sort=asc',
+      cookies: ['sid=2', 'lang=fr'],
+      headers: { 'content-type': 'application/json' },
+      requestContext: { http: { method: 'GET', sourceIp: '8.8.8.8' } }
+    })
+
+    await middleware.handle(ctx, next)
+
+    expect(added(ctx, 'url').toString()).toBe('https://example.com/items?page=2&sort=asc')
+    expect(added(ctx, 'queryString')).toBe('page=2&sort=asc')
+    expect(addedIf(ctx, 'method')).toBe('GET')
+    // v2 cookies[] are joined into a single cookie header for CookieCollection.
+    expect(CookieCollection.create).toHaveBeenCalledWith('sid=2; lang=fr', expect.anything(), expect.anything())
+  })
+
+  it('normalizes an ALB event (elb requestContext, base64 body → Buffer rawBody)', async () => {
+    const ctx = makeContext({
+      httpMethod: 'PUT',
+      path: '/upload',
+      headers: { 'x-forwarded-for': '5.5.5.5', 'content-type': 'application/octet-stream' },
+      body: Buffer.from([0xff, 0x00, 0x10]).toString('base64'),
+      isBase64Encoded: true,
+      requestContext: { elb: { targetGroupArn: 'arn:...' } }
+    })
+
+    await middleware.handle(ctx, next)
+
+    const rawBody = added(ctx, 'metadata').rawBody
+    expect(Buffer.isBuffer(rawBody)).toBe(true)
+    expect([...rawBody]).toEqual([0xff, 0x00, 0x10])
+    expect(addedIf(ctx, 'method')).toBe('PUT')
+  })
+
+  it('tolerates a missing headers object', async () => {
+    const ctx = makeContext({ httpMethod: 'GET', path: '/', headers: null, requestContext: {} })
+    await expect(middleware.handle(ctx, next)).resolves.not.toThrow()
+    expect(added(ctx, 'headers')).toEqual({})
   })
 })

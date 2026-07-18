@@ -2,9 +2,10 @@ import proxyAddr from 'proxy-addr'
 import { IncomingMessage } from 'node:http'
 import { AWS_LAMBDA_HTTP_PLATFORM } from '../constants'
 import { IBlueprint, NextMiddleware } from '@stone-js/core'
+import { getRawBody, normalizeHttpEvent, NormalizedHttpEvent } from '../event-normalizer'
 import { AwsLambdaHttpAdapterError } from '../errors/AwsLambdaHttpAdapterError'
 import { getHostname, getProtocol, isIpTrusted, CookieSameSite, CookieCollection } from '@stone-js/http-core'
-import { AwsLambdaHttpEvent, AwsLambdaHttpAdapterContext, AwsLambdaHttpAdapterResponseBuilder } from '../declarations'
+import { AwsLambdaHttpAdapterContext, AwsLambdaHttpAdapterResponseBuilder } from '../declarations'
 
 /**
  * Represents the options for the IncomingEventMiddleware.
@@ -31,8 +32,11 @@ interface HttpCommonCookieOptions {
 /**
  * Middleware for handling incoming events and transforming them into Stone.js events.
  *
- * This class processes incoming HTTP requests, extracting relevant data such as URL, IP addresses,
- * headers, cookies, and more, and forwards them to the next middleware in the pipeline.
+ * It first normalizes the raw AWS event (API Gateway v1/v2, ALB, Function URLs) into a single
+ * canonical shape, then extracts URL, IP addresses, headers, cookies, query and the raw body,
+ * so the pipeline never has to reason about which trigger fired. The untouched request body is
+ * always exposed as `metadata.rawBody` — even when no body-parsing middleware is installed — so
+ * consumers can read the original payload (e.g. to verify a webhook signature).
  */
 export class IncomingEventMiddleware {
   /**
@@ -43,7 +47,7 @@ export class IncomingEventMiddleware {
   /**
    * Create an IncomingEventMiddleware instance.
    *
-   * @param {blueprint} options - Options containing the blueprint for resolving configuration and dependencies.
+   * @param options - Options containing the blueprint for resolving configuration and dependencies.
    */
   constructor ({ blueprint }: { blueprint: IBlueprint }) {
     this.blueprint = blueprint
@@ -62,24 +66,24 @@ export class IncomingEventMiddleware {
       throw new AwsLambdaHttpAdapterError('The context is missing required components.')
     }
 
+    const event = normalizeHttpEvent(context.rawEvent)
     const proxyOptions = this.getProxyOptions()
     const cookieOptions = this.getCookieOptions()
-    const url = this.extractUrl(context.rawEvent, proxyOptions)
-    const ipAddresses = this.extractIpAddresses(context.rawEvent, proxyOptions)
 
     context
       .incomingEventBuilder
-      .add('url', url)
-      .add('ips', ipAddresses)
+      .add('url', this.extractUrl(event, proxyOptions))
+      .add('ips', this.extractIpAddresses(event, proxyOptions))
       .add('source', this.getSource(context))
-      .add('headers', context.rawEvent.headers)
-      // If not defined by other middleware
-      // In fullstack forms, the method is spoofed and sent as a hidden field
-      .addIf('method', this.getMethod(context.rawEvent))
-      .add('queryString', context.rawEvent.queryStringParameters)
-      .add('protocol', this.getProtocol(context.rawEvent, proxyOptions))
-      .add('cookies', CookieCollection.create(context.rawEvent.headers.cookie, cookieOptions, this.getCookieSecret()))
-      .add('ip', proxyAddr(this.toNodeMessage(context.rawEvent), isIpTrusted(proxyOptions.trustedIp, proxyOptions.untrustedIp)))
+      .add('headers', event.headers)
+      // Expose the untouched request body so any consumer can read it, regardless of parsing.
+      .add('metadata', { rawBody: getRawBody(context.rawEvent) })
+      // If not defined by other middleware; in fullstack forms the method is spoofed via a field.
+      .addIf('method', event.method)
+      .add('queryString', event.rawQueryString)
+      .add('protocol', this.getProtocol(event, proxyOptions))
+      .add('cookies', CookieCollection.create(event.cookies.join('; '), cookieOptions, this.getCookieSecret()))
+      .add('ip', proxyAddr(this.toNodeMessage(event), isIpTrusted(proxyOptions.trustedIp, proxyOptions.untrustedIp)))
 
     return await next(context)
   }
@@ -99,26 +103,13 @@ export class IncomingEventMiddleware {
   }
 
   /**
-   * Extracts the HTTP method from the incoming rawEvent.
-   *
-   * @param rawEvent - The incoming rawEvent.
-   * @returns The HTTP method string.
-   */
-  private getMethod (rawEvent: AwsLambdaHttpEvent): string {
-    return rawEvent.httpMethod ??
-      rawEvent.requestContext?.httpMethod ??
-      rawEvent.requestContext?.http?.method ??
-      'GET'
-  }
-
-  /**
    * Extracts proxy-related options from the blueprint.
    *
    * @returns Proxy options.
    */
   private getProxyOptions (): HttpProxyOptions {
     const defaultProxyOptions: HttpProxyOptions = { trusted: [], trustedIp: [], untrustedIp: [] }
-    const proxyOptions = this.blueprint.get<HttpProxyOptions>('stone.http.proxies', defaultProxyOptions)
+    const proxyOptions = { ...this.blueprint.get<HttpProxyOptions>('stone.http.proxies', defaultProxyOptions) }
     proxyOptions.trusted = this.blueprint.get<string[]>('stone.http.hosts.trusted', [])
     return proxyOptions
   }
@@ -142,62 +133,61 @@ export class IncomingEventMiddleware {
   }
 
   /**
-   * Extracts and parses the URL from the incoming rawEvent.
+   * Extracts and parses the URL (including the query string) from the normalized event.
    *
-   * @param rawEvent - The incoming HTTP rawEvent.
+   * @param event - The normalized HTTP event.
    * @param options - Proxy options.
    * @returns The parsed URL object.
    */
-  private extractUrl (rawEvent: AwsLambdaHttpEvent, options: HttpProxyOptions): URL {
-    const hostname = getHostname(this.getRemoteAddress(rawEvent), rawEvent.headers, options)
-    const proto = getProtocol(this.getRemoteAddress(rawEvent), rawEvent.headers, true, options)
-    return new URL(rawEvent.path ?? rawEvent.rawPath ?? '', `${String(proto)}://${String(hostname)}`)
+  private extractUrl (event: NormalizedHttpEvent, options: HttpProxyOptions): URL {
+    const hostname = getHostname(event.sourceIp, event.headers, options)
+    const proto = getProtocol(event.sourceIp, event.headers, true, options)
+    const pathWithQuery = event.rawQueryString.length > 0 ? `${event.path}?${event.rawQueryString}` : event.path
+    return new URL(pathWithQuery, `${String(proto)}://${String(hostname)}`)
   }
 
   /**
-   * Extracts a list of IP addresses from the incoming rawEvent.
+   * Extracts a list of IP addresses from the normalized event.
    *
-   * @param rawEvent - The incoming HTTP rawEvent.
+   * @param event - The normalized HTTP event.
    * @param options - Proxy options.
    * @returns An array of IP addresses.
    */
-  private extractIpAddresses (rawEvent: AwsLambdaHttpEvent, options: HttpProxyOptions): string[] {
+  private extractIpAddresses (event: NormalizedHttpEvent, options: HttpProxyOptions): string[] {
     const isTrusted = isIpTrusted(options.trustedIp, options.untrustedIp)
-    return proxyAddr.all(this.toNodeMessage(rawEvent), isTrusted).slice(1).reverse()
+    return proxyAddr.all(this.toNodeMessage(event), isTrusted).slice(1).reverse()
   }
 
   /**
-   * Converts the incoming rawEvent to a Node.js IncomingMessage.
+   * Converts the normalized event to a minimal Node.js IncomingMessage for `proxy-addr`.
    *
-   * @param rawEvent - The incoming rawEvent.
+   * All standard forwarding headers are forwarded (not just `x-forwarded-for`) so proxy-addr can
+   * honour the deployment's trust configuration.
+   *
+   * @param event - The normalized HTTP event.
    * @returns The converted IncomingMessage.
    */
-  private toNodeMessage (rawEvent: AwsLambdaHttpEvent): IncomingMessage {
+  private toNodeMessage (event: NormalizedHttpEvent): IncomingMessage {
     return {
-      connection: { remoteAddress: this.getRemoteAddress(rawEvent) },
-      headers: { 'x-forwarded-for': rawEvent.headers['x-forwarded-for'] ?? rawEvent.headers['X-Forwarded-For'] }
+      connection: { remoteAddress: event.sourceIp },
+      socket: { remoteAddress: event.sourceIp },
+      headers: {
+        forwarded: event.headers.forwarded,
+        'x-real-ip': event.headers['x-real-ip'],
+        'x-forwarded-for': event.headers['x-forwarded-for'] ?? event.sourceIp
+      }
     } as unknown as IncomingMessage
   }
 
   /**
-   * Determines the protocol from the incoming rawEvent.
+   * Determines the protocol from the normalized event.
    *
-   * @param rawEvent - The incoming rawEvent.
+   * @param event - The normalized HTTP event.
    * @param options - Proxy options.
    * @returns The protocol string.
    */
-  private getProtocol (rawEvent: AwsLambdaHttpEvent, options: HttpProxyOptions): string {
-    return getProtocol(this.getRemoteAddress(rawEvent), rawEvent.headers, true, options)
-  }
-
-  /**
-   * Retrieves the remote address from the incoming rawEvent.
-   * This method is used as a fallback when the remote address is not found in the rawEvent.
-   * @param rawEvent - The incoming rawEvent.
-   * @returns The remote address string.
-   */
-  private getRemoteAddress (rawEvent: AwsLambdaHttpEvent): string {
-    return rawEvent.requestContext?.http?.sourceIp ?? rawEvent.requestContext?.identity?.sourceIp ?? ''
+  private getProtocol (event: NormalizedHttpEvent, options: HttpProxyOptions): string {
+    return getProtocol(event.sourceIp, event.headers, true, options)
   }
 }
 

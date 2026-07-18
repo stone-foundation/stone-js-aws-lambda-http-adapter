@@ -1,5 +1,6 @@
 import { IncomingHttpHeaders, IncomingMessage } from 'node:http'
 import { isMultipart, getFilesUploads } from '@stone-js/http-core'
+import { getRawBody, normalizeHeaders } from '../event-normalizer'
 import { IBlueprint, isNotEmpty, NextMiddleware } from '@stone-js/core'
 import { AwsLambdaHttpAdapterError } from '../errors/AwsLambdaHttpAdapterError'
 import { AwsLambdaHttpAdapterContext, AwsLambdaHttpAdapterResponseBuilder, AwsLambdaHttpEvent } from '../declarations'
@@ -47,7 +48,9 @@ export class FilesEventMiddleware {
         .incomingEventBuilder
         .add('files', response.files)
         .add('body', response.fields)
-        // In fullstack forms, the method is spoofed and sent as a hidden field
+        // Keep the untouched multipart payload available (webhook signatures, re-streaming, etc.).
+        .add('metadata', { rawBody: getRawBody(context.rawEvent) })
+        // In fullstack forms, the method is spoofed and sent as a hidden field.
       isNotEmpty(method) && context.incomingEventBuilder.add('method', method)
     }
 
@@ -61,6 +64,7 @@ export class FilesEventMiddleware {
    * @returns The normalized event.
    */
   private normalizeEvent (rawEvent: AwsLambdaHttpEvent): { headers: IncomingHttpHeaders, body: unknown } {
+    const headers = normalizeHeaders(rawEvent)
     let body: unknown = rawEvent.body
 
     if (typeof rawEvent.body === 'string') {
@@ -72,9 +76,9 @@ export class FilesEventMiddleware {
     return {
       body,
       headers: {
-        'content-type': rawEvent.headers['content-type'] ?? rawEvent.headers['Content-Type'],
-        'content-length': rawEvent.headers['content-length'] ?? rawEvent.headers['Content-Length'],
-        'transfer-encoding': rawEvent.headers['transfer-encoding'] ?? rawEvent.headers['Transfer-Encoding']
+        'content-type': headers['content-type'],
+        'content-length': headers['content-length'],
+        'transfer-encoding': headers['transfer-encoding']
       }
     }
   }

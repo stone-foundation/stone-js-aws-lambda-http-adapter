@@ -48,9 +48,15 @@ export class AwsLambdaHttpErrorHandler implements IAdapterErrorHandler<AwsLambda
   ): AdapterEventBuilderType<RawHttpResponse> {
     this.logger.error(error.message, { error })
 
-    const statusCode = (error.cause as any)?.status ?? HTTP_INTERNAL_SERVER_ERROR
-    const type = accepts(context.rawEvent as any).type(['json', 'html']) as string | false
-    const contentType = mime.getType(type !== false ? type : 'txt') ?? context.rawEvent.headers['content-type'] ?? 'text/plain'
+    // http-core's HttpError carries `statusCode` on the error itself; fall back to a cause and
+    // finally to 500. (Reading only `cause.status` turned every typed HTTP error into a 500.)
+    const statusCode = (error as any).statusCode ??
+      (error.cause as any)?.statusCode ??
+      (error.cause as any)?.status ??
+      HTTP_INTERNAL_SERVER_ERROR
+    const requestHeaders = context.rawEvent.headers ?? {}
+    const type = accepts({ headers: requestHeaders } as any).type(['json', 'html']) as string | false
+    const contentType = mime.getType(type !== false ? type : 'txt') ?? requestHeaders['content-type'] ?? 'text/plain'
     const headers = new Headers({ 'Content-Type': contentType })
 
     return context

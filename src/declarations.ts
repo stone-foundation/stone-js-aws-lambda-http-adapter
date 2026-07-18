@@ -31,61 +31,60 @@ export type AwsLambdaEventHandlerFunction<RawResponseType = RawHttpResponse> = (
 export type AwsLambdaHttpAdapterResponseBuilder = IAdapterEventBuilder<RawHttpResponseOptions, RawHttpResponseWrapper>
 
 /**
- * Represents the structure of an AWS Lambda HTTP event.
- *
- * This interface defines the standard properties of an HTTP event in AWS Lambda,
- * including headers, query parameters, the request context, and other metadata.
+ * Represents the structure of an AWS Lambda HTTP event across every supported trigger:
+ * API Gateway REST (payload v1), API Gateway HTTP API and Lambda Function URLs (payload v2),
+ * and Application Load Balancer (ALB). Every field is optional because each trigger populates a
+ * different subset; use {@link normalizeHttpEvent} to reduce it to a canonical shape.
  */
 export interface AwsLambdaHttpEvent extends Record<string, unknown> {
-  /**
-   * The path of the HTTP request.
-   */
+  /** Payload format version, e.g. `'1.0'` (REST) or `'2.0'` (HTTP API / Function URL). */
+  version?: string
+
+  /** The path of the HTTP request (v1/ALB). */
   path?: string
 
-  /**
-   * The body of the HTTP request.
-   */
+  /** The body of the HTTP request. */
   body?: unknown
 
-  /**
-   * The encoding format of the body, such as `base64`.
-   */
+  /** The encoding format of the body, such as `base64`. */
   encoding?: string
 
-  /**
-   * The raw path of the HTTP request, as sent by the client.
-   */
+  /** The raw path of the HTTP request (v2). */
   rawPath?: string
 
-  /**
-   * Indicates whether the request body is base64-encoded.
-   */
+  /** The raw query string, without leading `?` (v2). */
+  rawQueryString?: string
+
+  /** Indicates whether the request body is base64-encoded. */
   isBase64Encoded?: boolean
 
-  /**
-   * The headers of the HTTP request as key-value pairs.
-   */
-  headers: Record<string, string>
+  /** The headers of the HTTP request as key-value pairs (may be null/absent on some triggers). */
+  headers?: Record<string, string> | null
 
-  /**
-   * The HTTP method of the request (e.g., `GET`, `POST`).
-   */
+  /** Multi-value headers (v1 / ALB with multi-value enabled). */
+  multiValueHeaders?: Record<string, string[]>
+
+  /** Raw cookie strings (v2 / Function URLs). */
+  cookies?: string[]
+
+  /** The HTTP method of the request (v1/ALB). */
   httpMethod?: string
 
-  /**
-   * The query string parameters included in the request.
-   */
-  queryStringParameters?: Record<string, string>
+  /** The single-value query string parameters. */
+  queryStringParameters?: Record<string, string> | null
 
-  /**
-   * The context of the request, including identity and HTTP metadata.
-   */
+  /** The multi-value query string parameters (v1 / ALB with multi-value enabled). */
+  multiValueQueryStringParameters?: Record<string, string[]>
+
+  /** The request context, whose shape varies by trigger. */
   requestContext?: {
+    elb?: unknown
     identity?: {
       sourceIp?: string
     }
     httpMethod?: string
     http?: {
+      path?: string
       method?: string
       sourceIp?: string
     }
@@ -135,10 +134,25 @@ export interface RawHttpResponseOptions extends RawResponseOptions {
   statusMessage?: string
 
   /**
-   * Headers to include in the HTTP response.
-   * Can be provided as key-value pairs.
+   * Headers to include in the HTTP response. May be a `Headers` instance (from http-core) or a
+   * plain record; the wrapper normalizes it and lifts out `Set-Cookie`.
    */
-  headers?: Record<string, string>
+  headers?: Headers | Record<string, string>
+
+  /**
+   * Multi-value response headers (used by API Gateway REST v1 / ALB to emit multiple `Set-Cookie`).
+   */
+  multiValueHeaders?: Record<string, string[]>
+
+  /**
+   * Response cookies as raw `Set-Cookie` strings (used by API Gateway HTTP API v2 / Function URLs).
+   */
+  cookies?: string[]
+
+  /**
+   * The detected trigger family, used to choose the correct multi-cookie response shape.
+   */
+  version?: 'v1' | 'v2' | 'alb'
 
   /**
    * The encoding format of the response body, such as `base64`.

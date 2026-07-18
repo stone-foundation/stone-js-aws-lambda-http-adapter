@@ -1,6 +1,6 @@
 {
   "name": "@stone-js/aws-lambda-http-adapter",
-  "version": "0.3.0",
+  "version": "0.8.0",
   "description": "Official AWS Lambda HTTP adapter for Stone.js. Run your Stone.js apps on AWS Lambda behind API Gateway with full Continuum lifecycle support.",
   "author": "Mr. Stone <evensstone@gmail.com>",
   "license": "MIT",
@@ -31,6 +31,7 @@
     "/dist"
   ],
   "type": "module",
+  "sideEffects": false,
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
@@ -62,12 +63,13 @@
     "prepare": "husky"
   },
   "peerDependencies": {
-    "@stone-js/core": "^0.1.1",
-    "@stone-js/env": "^0.1.1",
-    "@stone-js/filesystem": "^0.1.1",
-    "@stone-js/http-core": "^0.1.2"
+    "@stone-js/core": "workspace:*",
+    "@stone-js/env": "workspace:*",
+    "@stone-js/filesystem": "workspace:*",
+    "@stone-js/http-core": "workspace:*"
   },
   "dependencies": {
+    "@stone-js/config": "workspace:*",
     "accepts": "^1.3.8",
     "bytes": "^3.1.2",
     "content-type": "^1.0.5",

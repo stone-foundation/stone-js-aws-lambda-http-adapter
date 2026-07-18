@@ -103,7 +103,7 @@ AwsLambdaHttpAdapterContext
   protected async onStart (): Promise<void> {
     if (typeof window === 'object') {
       throw new AwsLambdaHttpAdapterError(
-        'This `AWSLambdaAdapter` must be used only in AWS Lambda context.'
+        'This `AwsLambdaHttpAdapter` must be used only in AWS Lambda context.'
       )
     }
 

@@ -1,4 +1,4 @@
-import deepmerge from 'deepmerge'
+import { cloneValue, deepMerge } from '@stone-js/config'
 import { addBlueprint, classDecoratorLegacyWrapper, ClassType } from '@stone-js/core'
 import { awsLambdaHttpAdapterBlueprint, AwsLambdaHttpAdapterAdapterConfig } from '../options/AwsLambdaHttpAdapterBlueprint'
 
@@ -35,12 +35,15 @@ export interface AwsLambdaHttpOptions extends Partial<AwsLambdaHttpAdapterAdapte
  */
 export const AwsLambdaHttp = <T extends ClassType = ClassType>(options: AwsLambdaHttpOptions = {}): ClassDecorator => {
   return classDecoratorLegacyWrapper<T>((target: T, context: ClassDecoratorContext<T>): undefined => {
-    if (awsLambdaHttpAdapterBlueprint.stone?.adapters?.[0] !== undefined) {
-      // Merge provided options with the default AWS Lambda HTTP adapter blueprint.
-      awsLambdaHttpAdapterBlueprint.stone.adapters[0] = deepmerge(awsLambdaHttpAdapterBlueprint.stone.adapters[0], options)
+    // Clone the module-level default before merging so decorating a class never mutates the shared
+    // singleton (which would leak options across classes and tests). cloneValue recreates plain
+    // objects/arrays while keeping functions and class references intact.
+    const blueprint = cloneValue(awsLambdaHttpAdapterBlueprint)
+
+    if (blueprint.stone?.adapters?.[0] !== undefined) {
+      blueprint.stone.adapters[0] = deepMerge(blueprint.stone.adapters[0], options)
     }
 
-    // Add the modified blueprint to the target class.
-    addBlueprint(target, context, awsLambdaHttpAdapterBlueprint)
+    addBlueprint(target, context, blueprint)
   })
 }

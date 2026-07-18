@@ -62,23 +62,40 @@ export class RawHttpResponseWrapper implements IRawResponseWrapper<RawHttpRespon
    * ```
    */
   respond (): RawHttpResponse {
-    return {
+    const headers = new Headers(this.options.headers ?? {})
+    const setCookies = this.extractSetCookies(headers)
+    headers.delete('set-cookie')
+
+    const response: RawHttpResponse = {
       ...this.options,
       statusCode: this.options.statusCode ?? 500,
-      headers: this.normalizeHeaders(this.options.headers)
+      headers: Object.fromEntries(headers)
     }
+
+    // Emit multiple Set-Cookie correctly per trigger: v2/Function URLs use the `cookies` field,
+    // v1/ALB use `multiValueHeaders`. Folding them into a single comma-joined header (the old
+    // behaviour) is unparseable by browsers and leaks a cookie's attributes into the next.
+    if (setCookies.length > 0) {
+      if (this.options.version === 'v2') {
+        response.cookies = setCookies
+      } else {
+        response.multiValueHeaders = { ...this.options.multiValueHeaders, 'set-cookie': setCookies }
+      }
+    }
+
+    return response
   }
 
   /**
-   * Normalizes the headers to a consistent format.
+   * Extract all `Set-Cookie` values from a Headers instance, tolerant of runtimes without
+   * `getSetCookie()`.
    *
-   * Converts Headers or Record<string, string> to a normalized Record<string, string>
-   * with all keys in lowercase.
-   *
-   * @param headers - The headers to normalize.
-   * @returns A normalized record of headers.
+   * @param headers - The response headers.
+   * @returns The raw `Set-Cookie` strings.
    */
-  private normalizeHeaders (headers: Headers | Record<string, string> | undefined): Record<string, string> {
-    return Object.fromEntries(new Headers(headers ?? {}))
+  private extractSetCookies (headers: Headers): string[] {
+    if (typeof headers.getSetCookie === 'function') { return headers.getSetCookie() }
+    const raw = headers.get('set-cookie')
+    return raw !== null && raw.length > 0 ? [raw] : []
   }
 }

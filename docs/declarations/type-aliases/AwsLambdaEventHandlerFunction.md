@@ -1,4 +1,4 @@
-# Type Alias: AwsLambdaEventHandlerFunction()\<RawResponseType\>
+# Type Alias: AwsLambdaEventHandlerFunction\<RawResponseType\>
 
 ```ts
 type AwsLambdaEventHandlerFunction<RawResponseType> = (rawEvent, context) => Promise<RawResponseType>;

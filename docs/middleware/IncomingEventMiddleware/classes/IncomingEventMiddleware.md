@@ -2,8 +2,11 @@
 
 Middleware for handling incoming events and transforming them into Stone.js events.
 
-This class processes incoming HTTP requests, extracting relevant data such as URL, IP addresses,
-headers, cookies, and more, and forwards them to the next middleware in the pipeline.
+It first normalizes the raw AWS event (API Gateway v1/v2, ALB, Function URLs) into a single
+canonical shape, then extracts URL, IP addresses, headers, cookies, query and the raw body,
+so the pipeline never has to reason about which trigger fired. The untouched request body is
+always exposed as `metadata.rawBody` — even when no body-parsing middleware is installed — so
+consumers can read the original payload (e.g. to verify a webhook signature).
 
 ## Constructors
 

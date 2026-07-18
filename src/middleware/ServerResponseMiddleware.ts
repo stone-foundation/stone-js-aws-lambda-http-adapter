@@ -1,6 +1,7 @@
 import statuses from 'statuses'
 import { NextMiddleware } from '@stone-js/core'
 import { BinaryFileResponse } from '@stone-js/http-core'
+import { detectEventVersion } from '../event-normalizer'
 import { AwsLambdaHttpAdapterError } from '../errors/AwsLambdaHttpAdapterError'
 import { AwsLambdaHttpAdapterContext, AwsLambdaHttpAdapterResponseBuilder } from '../declarations'
 
@@ -28,6 +29,7 @@ export class ServerResponseMiddleware {
 
     rawResponseBuilder
       .add('headers', context.outgoingResponse.headers)
+      .add('version', detectEventVersion(context.rawEvent))
       .add('statusCode', context.outgoingResponse.statusCode ?? 500)
       .add('statusMessage', context.outgoingResponse.statusMessage ?? statuses.message[context.outgoingResponse.statusCode ?? 500])
 
@@ -45,7 +47,6 @@ export class ServerResponseMiddleware {
         rawResponseBuilder
           .add('body', content)
           .add('isBase64Encoded', isBuffer)
-          .add('charset', context.outgoingResponse.charset)
       }
     }
 

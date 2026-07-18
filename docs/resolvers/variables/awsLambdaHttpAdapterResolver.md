@@ -10,6 +10,8 @@ Creates and configures an `AWSLambdaHttpAdapter` for handling HTTP events in AWS
 
 ## Param
 
+**blueprint**
+
 The `IBlueprint` providing configuration and dependencies.
 
 ## Returns

@@ -12,29 +12,43 @@ while adhering to the Stone.js framework's event-driven architecture.
 
 ## Template
 
+**AwsLambdaHttpEvent**
+
 The type of the raw HTTP event from AWS Lambda.
 
 ## Template
+
+**RawHttpResponse**
 
 The type of the raw HTTP response to send back.
 
 ## Template
 
+**AwsLambdaContext**
+
 The AWS Lambda execution context type.
 
 ## Template
+
+**IncomingHttpEvent**
 
 The type of the processed incoming HTTP event.
 
 ## Template
 
+**IncomingHttpEventOptions**
+
 Options used to create an incoming HTTP event.
 
 ## Template
 
+**OutgoingHttpResponse**
+
 The type of the outgoing HTTP response after processing.
 
 ## Template
+
+**AwsLambdaHttpAdapterContext**
 
 Context type specific to the HTTP adapter.
 
@@ -95,7 +109,99 @@ AwsLambdaHttpAdapterContext
 >.constructor
 ```
 
+## Properties
+
+### blueprint
+
+```ts
+protected readonly blueprint: IBlueprint;
+```
+
+#### Inherited from
+
+```ts
+Adapter.blueprint
+```
+
+***
+
+### hooks
+
+```ts
+protected readonly hooks: AdapterHookType<AwsLambdaHttpAdapterContext, RawHttpResponseOptions>;
+```
+
+#### Inherited from
+
+```ts
+Adapter.hooks
+```
+
+***
+
+### middleware
+
+```ts
+protected readonly middleware: AdapterMixedPipeType<AwsLambdaHttpAdapterContext, RawHttpResponseOptions>[];
+```
+
+#### Inherited from
+
+```ts
+Adapter.middleware
+```
+
+***
+
+### resolvedErrorHandlers
+
+```ts
+protected readonly resolvedErrorHandlers: Record<string, IAdapterErrorHandler<RawEventType, RawResponseType, ExecutionContextType>>;
+```
+
+#### Inherited from
+
+```ts
+Adapter.resolvedErrorHandlers
+```
+
 ## Methods
+
+### buildRawResponse()
+
+```ts
+protected buildRawResponse(context, eventHandler?): Promise<RawHttpResponseOptions>;
+```
+
+Build the raw response.
+
+#### Parameters
+
+##### context
+
+[`AwsLambdaHttpAdapterContext`](../../declarations/interfaces/AwsLambdaHttpAdapterContext.md)
+
+The event context.
+
+##### eventHandler?
+
+`AdapterEventHandlerType`\<`IncomingHttpEvent`, `OutgoingHttpResponse`\>
+
+The event handler to be run.
+
+#### Returns
+
+`Promise`\<[`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)\>
+
+The raw response wrapper.
+
+#### Inherited from
+
+```ts
+Adapter.buildRawResponse
+```
+
+***
 
 ### eventListener()
 
@@ -130,6 +236,177 @@ A promise resolving to the processed `RawHttpResponse`.
 
 ***
 
+### executeEventHandlerHooks()
+
+```ts
+protected executeEventHandlerHooks(hook, eventHandler): Promise<void>;
+```
+
+Execute the event handler lifecycle hooks.
+
+#### Parameters
+
+##### hook
+
+`KernelHookName`
+
+The hook to execute.
+
+##### eventHandler
+
+`AdapterEventHandlerType`\<`IncomingHttpEvent`, `OutgoingHttpResponse`\>
+
+The event handler to be run.
+
+#### Returns
+
+`Promise`\<`void`\>
+
+#### Inherited from
+
+```ts
+Adapter.executeEventHandlerHooks
+```
+
+***
+
+### executeHooks()
+
+```ts
+protected executeHooks(
+   name, 
+   context?, 
+error?): Promise<void>;
+```
+
+Execute adapter lifecycle hooks.
+
+#### Parameters
+
+##### name
+
+`AdapterHookName`
+
+The hook's name.
+
+##### context?
+
+[`AwsLambdaHttpAdapterContext`](../../declarations/interfaces/AwsLambdaHttpAdapterContext.md)
+
+The event context.
+
+##### error?
+
+`any`
+
+The error to handle.
+
+#### Returns
+
+`Promise`\<`void`\>
+
+#### Inherited from
+
+```ts
+Adapter.executeHooks
+```
+
+***
+
+### handleError()
+
+```ts
+protected handleError(error, context): Promise<AdapterEventBuilderType<RawHttpResponseOptions>>;
+```
+
+Handle error.
+
+#### Parameters
+
+##### error
+
+`Error`
+
+The error to handle.
+
+##### context
+
+[`AwsLambdaHttpAdapterContext`](../../declarations/interfaces/AwsLambdaHttpAdapterContext.md)
+
+The event context.
+
+#### Returns
+
+`Promise`\<`AdapterEventBuilderType`\<[`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)\>\>
+
+The raw response.
+
+#### Inherited from
+
+```ts
+Adapter.handleError
+```
+
+***
+
+### handleEvent()
+
+```ts
+protected handleEvent(context, eventHandler): Promise<IAdapterEventBuilder<RawResponseOptions, IRawResponseWrapper<RawHttpResponseOptions>>>;
+```
+
+Handle the event.
+
+#### Parameters
+
+##### context
+
+[`AwsLambdaHttpAdapterContext`](../../declarations/interfaces/AwsLambdaHttpAdapterContext.md)
+
+The event context.
+
+##### eventHandler
+
+`AdapterEventHandlerType`\<`IncomingHttpEvent`, `OutgoingHttpResponse`\>
+
+The event handler to be run.
+
+#### Returns
+
+`Promise`\<`IAdapterEventBuilder`\<`RawResponseOptions`, `IRawResponseWrapper`\<[`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)\>\>\>
+
+The raw response wrapper.
+
+#### Inherited from
+
+```ts
+Adapter.handleEvent
+```
+
+***
+
+### makePipelineOptions()
+
+```ts
+protected makePipelineOptions(): PipelineOptions<AwsLambdaHttpAdapterContext, AdapterEventBuilderType<RawHttpResponseOptions>>;
+```
+
+Create pipeline options for the Adapter.
+
+#### Returns
+
+`PipelineOptions`\<[`AwsLambdaHttpAdapterContext`](../../declarations/interfaces/AwsLambdaHttpAdapterContext.md), `AdapterEventBuilderType`\<[`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)\>\>
+
+The pipeline options for transforming the event.
+
+#### Inherited from
+
+```ts
+Adapter.makePipelineOptions
+```
+
+***
+
 ### onStart()
 
 ```ts
@@ -148,6 +425,66 @@ if it detects that the adapter is being used in an unsupported environment (e.g.
 #### Throws
 
 If executed outside an AWS Lambda environment.
+
+***
+
+### resolveErrorHandler()
+
+```ts
+protected resolveErrorHandler(error): IAdapterErrorHandler<AwsLambdaHttpEvent, RawHttpResponseOptions, AwsLambdaContext>;
+```
+
+Get the error handler for the given error.
+
+#### Parameters
+
+##### error
+
+`Error`
+
+The error to get the handler for.
+
+#### Returns
+
+`IAdapterErrorHandler`\<[`AwsLambdaHttpEvent`](../../declarations/interfaces/AwsLambdaHttpEvent.md), [`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md), [`AwsLambdaContext`](../../declarations/type-aliases/AwsLambdaContext.md)\>
+
+The error handler.
+
+#### Throws
+
+IntegrationError
+
+#### Inherited from
+
+```ts
+Adapter.resolveErrorHandler
+```
+
+***
+
+### resolveEventHandler()
+
+```ts
+protected resolveEventHandler(): AdapterEventHandlerType<IncomingHttpEvent, OutgoingHttpResponse>;
+```
+
+Get the event handler for the adapter.
+
+#### Returns
+
+`AdapterEventHandlerType`\<`IncomingHttpEvent`, `OutgoingHttpResponse`\>
+
+The event handler for the adapter.
+
+#### Throws
+
+If the event handler is missing.
+
+#### Inherited from
+
+```ts
+Adapter.resolveEventHandler
+```
 
 ***
 
@@ -185,6 +522,84 @@ If used outside the AWS Lambda environment.
 
 ```ts
 Adapter.run
+```
+
+***
+
+### sendEventThroughDestination()
+
+```ts
+protected sendEventThroughDestination(context, eventHandler): Promise<RawHttpResponseOptions>;
+```
+
+Send the raw event through the destination.
+
+#### Parameters
+
+##### context
+
+[`AwsLambdaHttpAdapterContext`](../../declarations/interfaces/AwsLambdaHttpAdapterContext.md)
+
+The event context.
+
+##### eventHandler
+
+`AdapterEventHandlerType`\<`IncomingHttpEvent`, `OutgoingHttpResponse`\>
+
+The event handler to be run.
+
+#### Returns
+
+`Promise`\<[`RawHttpResponseOptions`](../../declarations/interfaces/RawHttpResponseOptions.md)\>
+
+Platform-specific response.
+
+#### Throws
+
+IntegrationError
+
+#### Inherited from
+
+```ts
+Adapter.sendEventThroughDestination
+```
+
+***
+
+### validateContextAndEventHandler()
+
+```ts
+protected validateContextAndEventHandler(context, eventHandler): void;
+```
+
+Validate the context and event handler.
+
+#### Parameters
+
+##### context
+
+[`AwsLambdaHttpAdapterContext`](../../declarations/interfaces/AwsLambdaHttpAdapterContext.md)
+
+The context to validate.
+
+##### eventHandler
+
+`AdapterEventHandlerType`\<`IncomingHttpEvent`, `OutgoingHttpResponse`\>
+
+The event handler to validate.
+
+#### Returns
+
+`void`
+
+#### Throws
+
+IntegrationError
+
+#### Inherited from
+
+```ts
+Adapter.validateContextAndEventHandler
 ```
 
 ***
